@@ -1,13 +1,17 @@
 import { useState } from 'react'
 import './App.css'
+import { BrowserRouter } from 'react-router-dom'
+import Navbar from './Component/Navbar/Navbar.jsx';
+import Hero from './Component/Hero/Hero.jsx';
 
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
-    <div className="App">
-    <h1>AuraWell E-Commerce Site</h1>
-    </div>
+    <BrowserRouter>
+    <Navbar/>
+    <Hero/>
+    
+    </BrowserRouter>
   )
 }
 
