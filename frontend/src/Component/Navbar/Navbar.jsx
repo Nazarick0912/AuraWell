@@ -63,7 +63,11 @@ const Navbar = () => {
 
         <div className="nav-icons">
           <Link to="/login">
-            <button className='signup-btn'>Login</button>
+            <button className='login-btn'>Login</button>
+          </Link>
+
+          <Link to="/signup">
+            <button className='signup-btn'>Sign Up</button>
           </Link>
           <a href="#"><img src={cart} alt="Cart" /></a>
         </div>
