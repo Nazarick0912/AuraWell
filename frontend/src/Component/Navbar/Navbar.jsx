@@ -63,11 +63,11 @@ const Navbar = () => {
 
         <div className="nav-icons">
           <Link to="/login">
-            <button className='login-btn'>Login</button>
+            <button className='login-btn'>Sign In</button>
           </Link>
 
           <Link to="/signup">
-            <button className='signup-btn'>Sign Up</button>
+            <button className='signup-btn'>Get Started</button>
           </Link>
           <a href="#"><img src={cart} alt="Cart" /></a>
         </div>

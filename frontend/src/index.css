@@ -11,4 +11,32 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  --font-sans: 'DM Sans', system-ui, sans-serif;
+  --font-display: 'Playfair Display', Georgia, serif;
+
+  /* ==== Sage Colors ==== */
+  --sage-50: #f6f7f4;
+  --sage-100: #e8ebe3;
+  --sage-200: #d4dbc9;
+  --sage-300: #b5c2a4;
+  --sage-400: #93a57d;
+  --sage-500: #748a5f;
+  --sage-600: #5a6d4a;
+  --sage-700: #47563c;
+  --sage-800: #3b4633;
+  --sage-900: #333c2d;
+
+  /* ==== Cream Colors ==== */
+  --cream-50: #fdfcfa;
+  --cream-100: #f9f6f0;
+  --cream-200: #f3ede1;
+  --cream-300: #e9dfcc;
+  --cream-400: #dccdb0;
+  --cream-500: #ceb893;
+
+  /* ==== Terracotta ==== */
+  --terracotta-400: #c4856c;
+  --terracotta-500: #b5705a;
+  --terracotta-600: #9a5b47;
 }

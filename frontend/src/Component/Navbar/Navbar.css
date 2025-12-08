@@ -1,11 +1,11 @@
 .navbar {
-  width: 50;
+  width: 90%;
   height: 70px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 4%;
-  background-color: #ffffff;
+  background-color: var(--cream-50);
   border-bottom: 1px solid #eaeaea;
   position: sticky;
   top: 0;
@@ -89,20 +89,44 @@
   gap: 15px;
 }
 
-.signup-btn {
-  padding: 8px 16px;
-    border: 1px solid gray;
-    border-radius: 5px;
-    background-color: black;
-    color: white;
-    font-size: 16px;
-    cursor: pointer;
+.login-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  font-weight: bold;
+  color: var(--sage-500);
+  cursor: pointer;
 }
 
-.signup-btn:active{
-    background-color: lightgray;
-    border: 1px solid black;
-    color: black;
+.login-btn:hover {
+  color: var(--sage-700);
+  cursor: pointer;
+}
+
+
+.signup-btn {
+  padding: 6px 24px;
+  border: 1px solid gray;
+  border-radius: 14px;
+  background-color: var(--sage-600);
+  color: #F1F3E0;
+  font-family: var(--font-sans);
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease, border 0.3s ease;
+  align-items: center;
+  justify-content: center;
+}
+
+.signup-btn:hover{
+  background-color: var(--sage-700);
+  border-color: var(--sage-700);
+  color: #F1F3E0;
+}
+
+.signup-btn:active {
+  background-color: var(--sage-800);
 }
 
 .nav-icons input:focus {
