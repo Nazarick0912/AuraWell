@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import logo from '../../Assets/logo.png';
 import cart from '../../Assets/cart.png';
+import { Link } from 'react-router-dom';
 
 import "./Navbar.css"
 
@@ -61,7 +62,9 @@ const Navbar = () => {
         </ul>
 
         <div className="nav-icons">
-          <button className='signup-btn'>Sign Up</button>
+          <Link to="/login">
+            <button className='signup-btn'>Login</button>
+          </Link>
           <a href="#"><img src={cart} alt="Cart" /></a>
         </div>
     </nav>
