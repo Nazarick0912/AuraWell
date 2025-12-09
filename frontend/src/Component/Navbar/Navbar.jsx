@@ -36,7 +36,7 @@ const Navbar = () => {
           <a href="#" className="no-underline text-[#333] font-medium transition-colors duration-200 hover:text-brand-dark">
             Shop ▾
           </a>
-          <ul className="absolute top-10 left-0 bg-white border border-[#eaeaea] rounded-lg py-2.5 hidden group-hover:block list-none shadow-[0_3px_8px_rgba(0,0,0,0.05)] cursor-pointer min-w-[160px]">
+          <ul className="absolute top-full left-0 bg-white border border-[#eaeaea] rounded-lg py-2.5 hidden group-hover:block list-none shadow-[0_3px_8px_rgba(0,0,0,0.05)] cursor-pointer min-w-[160px]">
             <li className="py-2 px-5">
               <a href="#" className="text-[#333] no-underline block hover:bg-[#f7f7f7] hover:text-brand-dark">All Products</a>
             </li>
@@ -59,7 +59,7 @@ const Navbar = () => {
           <a href="#" className="no-underline text-[#333] font-medium transition-colors duration-200 hover:text-brand-dark">
             Your Goal ▾
           </a>
-          <ul className="absolute top-10 left-0 bg-white border border-[#eaeaea] rounded-lg py-2.5 hidden group-hover:block list-none shadow-[0_3px_8px_rgba(0,0,0,0.05)] cursor-pointer min-w-[160px]">
+          <ul className="absolute top-full left-0 bg-white border border-[#eaeaea] rounded-lg py-2.5 hidden group-hover:block list-none shadow-[0_3px_8px_rgba(0,0,0,0.05)] cursor-pointer min-w-[160px]">
             <li className="py-2 px-5">
               <a href="#" className="text-[#333] no-underline block hover:bg-[#f7f7f7] hover:text-brand-dark">Better Sleep</a>
             </li>
@@ -82,7 +82,7 @@ const Navbar = () => {
           <a href="#" className="no-underline text-[#333] font-medium transition-colors duration-200 hover:text-brand-dark">
             About ▾
           </a>
-          <ul className="absolute top-10 left-0 bg-white border border-[#eaeaea] rounded-lg py-2.5 hidden group-hover:block list-none shadow-[0_3px_8px_rgba(0,0,0,0.05)] cursor-pointer min-w-[160px]">
+          <ul className="absolute top-full left-0 bg-white border border-[#eaeaea] rounded-lg py-2.5 hidden group-hover:block list-none shadow-[0_3px_8px_rgba(0,0,0,0.05)] cursor-pointer min-w-[160px]">
             <li className="py-2 px-5">
               <a href="#" className="text-[#333] no-underline block hover:bg-[#f7f7f7] hover:text-brand-dark">Our Story</a>
             </li>
@@ -114,7 +114,7 @@ const Navbar = () => {
         </Link>
 
         <Link to="/signup">
-          <button className="py-1.5 px-6 border border-gray-400 rounded-[14px] bg-sage-600 text-[#F1F3E0] font-sans text-base cursor-pointer transition-all duration-300 flex items-center justify-center hover:bg-sage-700 hover:border-sage-700 active:bg-sage-800">
+          <button className="signup-btn">
             Get Started
           </button>
         </Link>
