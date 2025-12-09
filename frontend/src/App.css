@@ -1,15 +1,1 @@
-html {
-  scroll-behavior: smooth;
-}
-
-body {
-  font-family: var(--font-sans);
-  background-color: var(--cream-50);
-  color: var(--sage-900);
-  margin: 0;
-  min-height: 100vh;
-}
-
-h1, h2, h3 {
-  font-family: var(--font-display);
-}
+/* App-level utilities using Tailwind - most base styles are now in index.css */

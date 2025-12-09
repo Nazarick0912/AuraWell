@@ -50,7 +50,7 @@ frontend/build/
 frontend/.cache/
 
 # Bun
-frontend/bun.lockb
+frontend/bun.lock
 
 # Logs
 frontend/npm-debug.log*
