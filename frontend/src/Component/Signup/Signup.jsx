@@ -1,5 +1,6 @@
 import React, {useState} from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Eye, EyeOff, Loader2 } from 'lucide-react';
 
 export default function Signup(){
     const [formData, setFormData] = useState({
@@ -50,7 +51,7 @@ export default function Signup(){
 
     return (
         <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center py-12 px-4">
-            <div className="w-full max-w-md bg-white rounded-3xl shadow-xl px-8">
+            <div className="w-full max-w-md bg-white rounded-3xl shadow-xl px-8 py-14">
                 <div className="text-center mb-8">
                     <h1 className="text-3xl font-bold text-sage-800">Create Account</h1>
                     <p className="text-sage-500 mt-2">
@@ -58,7 +59,7 @@ export default function Signup(){
                     </p>
                 </div>
 
-                <form onSubmit={handleSubmit} className="space-y-4">
+                <form onSubmit={handleSubmit} className="space-y-5">
                     <div className="grid grid-cols-2 gap-4">
                       <div>
                         <label htmlFor="firstName" className="block text-sm font-medium text-sage-700 mb-2">
@@ -104,9 +105,73 @@ export default function Signup(){
                             onChange={handleChange}
                             required
                             className="input-field"
-                            placeholder="example123@gmail.com"
+                            placeholder="you@example.com"
                         />
                     </div>
+
+                    <div>
+                        <label htmlFor="password" className="block text-sm font-medium text-sage-700 mb-2">
+                            Password
+                        </label>
+                        <div className="relative">
+                            <input
+                            id="password"
+                            name="password"
+                            type={ showPassword ? 'text': 'password'}
+                            value={formData.password}
+                            onChange={handleChange}
+                            required
+                            className="input-field pr-12"
+                            placeholder="••••••••"
+                        />
+                        <button
+                            type="button"
+                            onClick={() => setShowPassword(!showPassword)}
+                            className="absolute right-4 top-1/2 -translate-y-1/2 text-sage-400 hover:text-sage-600"
+                        >
+                            { showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5"/>}
+                        </button>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label htmlFor="confirmPassword" className="block text-sm font-medium text-sage-700 mb-2">
+                            Confirm Password
+                        </label>
+                        <input
+                            id="confirmPassword"
+                            name="confirmPassword"
+                            type="password"
+                            value={formData.confirmPassword}
+                            onChange={handleChange}
+                            required
+                            className="input-field pr-12"
+                            placeholder="••••••••"
+                        />
+                    </div>
+
+                    <button
+                        type="submit"
+                        disabled={isLoading}
+                        className="w-full btn-primary flex items-center justify-center gap-2 py-4"
+                    >
+                        {isLoading ? (
+                          <>
+                            <Loader2 className="w-5 h-5 animate-spin" />
+                            Creating account...
+                          </>
+                        ) : (
+                            'Create Account'
+                        )
+                        }
+                    </button>
+
+                    <p className="text-sage-500 mt-2 flex items-center justify-center">
+                        Already have an account? 
+                        <Link to='/Login' className="text-sage-700 font-semibold hover: text-sage-800 ml-2">
+                            Sign In
+                        </Link>
+                    </p>
                 </form>
             </div>
         </div>

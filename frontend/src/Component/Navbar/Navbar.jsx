@@ -9,10 +9,13 @@ const Navbar = () => {
   return (
     <nav className="w-[90%] h-[70px] flex items-center justify-between px-[4%] bg-cream-50 border-b border-[#eaeaea] sticky top-0 z-100">
       {/* Logo */}
-      <div className="flex items-center gap-2.5">
-        <img src={logo} alt="AuraWell Logo" className="h-10" />
-        <h1 className="text-xl font-semibold text-brand-dark">AuraWell</h1>
-      </div>
+      <Link to="/" className='flex items-center gap-2 group'>
+        <div className="flex items-center gap-2.5">
+          <img src={logo} alt="AuraWell Logo" className="h-10" />
+          <h1 className="text-xl font-semibold text-brand-dark">AuraWell</h1>
+        </div>
+      </Link>
+      
 
       {/* Mobile Toggle */}
       <div
@@ -114,7 +117,7 @@ const Navbar = () => {
         </Link>
 
         <Link to="/signup">
-          <button className="signup-btn">
+          <button className="w-full btn-primary">
             Get Started
           </button>
         </Link>
