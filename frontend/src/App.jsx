@@ -4,6 +4,8 @@ import Navbar from './Component/Navbar/Navbar.jsx';
 import Login from './Component/Login/Login.jsx';
 import Signup from './Component/Signup/Signup.jsx';
 import Hero from './Component/Hero/Hero.jsx';
+import Terms from './Component/Signup/Terms.jsx';
+import Privacy from './Component/Signup/Privacy.jsx';
 
 function App() {
   return (
@@ -14,6 +16,8 @@ function App() {
         <Route path="/" element={<Hero />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/terms" element={<Terms />} />
+        <Route path="/privacy" element={<Privacy />} />
       </Routes>
     </Router>
   );

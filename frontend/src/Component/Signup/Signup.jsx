@@ -149,6 +149,30 @@ export default function Signup(){
                             placeholder="••••••••"
                         />
                     </div>
+                    
+                    <div className="flex items-start gap-3">
+                        <input
+                            id="agree"
+                            name="agree"
+                            type="checkbox"
+                            checked={formData.agree}
+                            onChange={(e) =>
+                            setFormData({ ...formData, agree: e.target.checked })
+                            }
+                            required
+                            className="mt-1 h-5 w-5 text-sage-600 border-sage-300 rounded focus:ring-sage-500"
+                        />
+                        <label htmlFor="agree" className="text-sm text-sage-600 leading-tight">
+                            By creating an account, I agree to the{' '}
+                            <Link to="/terms" className="text-sage-700 font-semibold hover:text-sage-800">
+                                Terms & Conditions
+                            </Link>
+                            {' '} and {' '}
+                            <Link to="/privacy" className="text-sage-700 font-semibold hover:text-sage-800">
+                                Privacy Policy
+                            </Link>.
+                        </label>
+                    </div>
 
                     <button
                         type="submit"
