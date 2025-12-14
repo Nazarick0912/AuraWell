@@ -45,6 +45,9 @@ export default function Footer(){
                         </ul>
                     </div>
                     
+                    <div className='mt-8 pt-8 border-t border-sage-700 text-center text-sm text-cream-400'>
+                        <p>&copy; {new Date().getFullYear()} AuraWell. All rights reserved.</p>
+                    </div>
                 </div>
             </div>
         </footer>
