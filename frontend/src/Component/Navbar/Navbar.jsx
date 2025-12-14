@@ -7,7 +7,7 @@ const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <nav className="w-[90%] h-[70px] flex items-center justify-between px-[4%] bg-cream-50 border-b border-[#eaeaea] sticky top-0 z-100">
+      <nav className="w-[90%] h-[70px] flex items-center justify-between px-[4%] bg-cream-50 border-b border-[#eaeaea] sticky top-0 z-100">
       {/* Logo */}
       <Link to="/" className='flex items-center gap-2 group'>
         <div className="flex items-center gap-2.5">
@@ -15,7 +15,6 @@ const Navbar = () => {
           <h1 className="text-xl font-semibold text-brand-dark">AuraWell</h1>
         </div>
       </Link>
-      
 
       {/* Mobile Toggle */}
       <div
@@ -29,11 +28,11 @@ const Navbar = () => {
 
       {/* Nav Links */}
       <ul className={`flex gap-6 list-none max-[850px]:absolute max-[850px]:top-[70px] max-[850px]:left-0 max-[850px]:w-full max-[850px]:flex-col max-[850px]:bg-white max-[850px]:border-t max-[850px]:border-[#eee] max-[850px]:py-4 max-[850px]:text-center ${menuOpen ? 'max-[850px]:flex' : 'max-[850px]:hidden'}`}>
-        <li>
+        <Link to="/">
           <a href="#" className="no-underline text-[#333] font-medium transition-colors duration-200 hover:text-brand-dark">
             Home
           </a>
-        </li>
+        </Link>
 
         <li className="relative group">
           <a href="#" className="no-underline text-[#333] font-medium transition-colors duration-200 hover:text-brand-dark">
@@ -126,7 +125,7 @@ const Navbar = () => {
           <img src={cart} alt="Cart" className="ml-2.5 h-10 cursor-pointer" />
         </a>
       </div>
-    </nav>
+     </nav>  
   );
 };
 
