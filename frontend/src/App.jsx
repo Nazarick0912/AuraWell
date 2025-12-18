@@ -1,20 +1,20 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './App.css';
-import Navbar from './Component/Navbar/Navbar.jsx';
-import Login from './Component/Login/Login.jsx';
-import Signup from './Component/Signup/Signup.jsx';
-import Hero from './Component/Hero/Hero.jsx';
-import Footer from './Component/Footer/Footer.jsx'
-import Terms from './Component/Signup/Terms.jsx';
-import Privacy from './Component/Signup/Privacy.jsx';
+import Navbar from './Component/common/Navbar.jsx';
+import Login from './pages/Login.jsx';
+import Signup from './pages/Signup.jsx';
+import Home from './pages/Home.jsx';
+import Footer from './Component/common/Footer.jsx';
+import Terms from './pages/Terms.jsx';
+import Privacy from './pages/Privacy.jsx';
 
 function App() {
   return (
     <Router>
-      <Navbar /> {/* always visible */}
-
+      <Navbar />
       <Routes>
-        <Route path="/" element={<Hero />} />
+        <Route path="/" element={<Home />} />
+
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/terms" element={<Terms />} />

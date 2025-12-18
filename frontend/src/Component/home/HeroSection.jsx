@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom';
-import search from '../../Assets/search.png';
-import leaf from '../../Assets/leaf.png';
+import search from '../../assets/search.png';
+import leaf from '../../assets/leaf.png';
 import { ArrowRight } from 'lucide-react';
 
 const SearchBar = ({ query, setQuery }) => {
@@ -19,7 +19,7 @@ const SearchBar = ({ query, setQuery }) => {
   );
 };
 
-export default function Hero(){
+export default function HeroSection(){
   const [query, setQuery] = useState("");
 
   return (

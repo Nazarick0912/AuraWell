@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import logo from '../../Assets/logo.png';
-import cart from '../../Assets/cart.png';
+import logo from '../../assets/logo.png';
+import cart from '../../assets/cart.png';
 import { Link } from 'react-router-dom';
 
 const Navbar = () => {
