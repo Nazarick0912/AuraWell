@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom';
-import search from '../../assets/search.png';
-import leaf from '../../assets/leaf.png';
+import search from '../../../assets/search.png';
+import leaf from '../../../assets/leaf.png';
 import { ArrowRight } from 'lucide-react';
 
 const SearchBar = ({ query, setQuery }) => {
@@ -70,7 +70,7 @@ export default function HeroSection(){
               Join thousands of customers who trust AuraWell for their health and wellness needs.
             </p>
             <Link
-              to="/register"
+              to="/signup"
               className="inline-flex items-center gap-2 px-8 py-4 bg-white text-sage-700 font-semibold rounded-xl hover:bg-cream-100 transition-colors"
             >
               Create Your Account
