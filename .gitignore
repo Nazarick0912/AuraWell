@@ -37,6 +37,7 @@ backend/logs/
 # backend/src/main/resources/data/users.json
 backend/src/main/resources/data/carts.json
 backend/src/main/resources/data/orders.json
+backend/data/
 
 # Uploaded images (user-generated content)
 # backend/uploads/
