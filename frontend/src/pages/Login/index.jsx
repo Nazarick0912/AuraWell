@@ -73,10 +73,10 @@ export default function Login() {
           >
             {isLoading ? "Logging in..." : "Sign In"}
           </button>
-          
+
           <p className="text-sage-500 mt-2 flex items-center justify-center">
             Don't have an account?
-            <Link to="/Signup" className= "text-sage-700 font-semibold hover:text-sage-800 ml-2">
+            <Link to="/signup" className="text-sage-700 font-semibold hover:text-sage-800 ml-2">
                 Sign Up
             </Link>
           </p>

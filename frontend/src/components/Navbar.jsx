@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import logo from '../../assets/logo.png';
-import cart from '../../assets/cart.png';
+import logo from '../assets/logo.png';
+import cart from '../assets/cart.png';
 import { Link } from 'react-router-dom';
 
 const Navbar = () => {
@@ -28,11 +28,11 @@ const Navbar = () => {
 
       {/* Nav Links */}
       <ul className={`flex gap-6 list-none max-[850px]:absolute max-[850px]:top-[70px] max-[850px]:left-0 max-[850px]:w-full max-[850px]:flex-col max-[850px]:bg-white max-[850px]:border-t max-[850px]:border-[#eee] max-[850px]:py-4 max-[850px]:text-center ${menuOpen ? 'max-[850px]:flex' : 'max-[850px]:hidden'}`}>
-        <Link to="/">
-          <a href="#" className="no-underline text-[#333] font-medium transition-colors duration-200 hover:text-brand-dark">
+        <li>
+          <Link to="/" className="no-underline text-[#333] font-medium transition-colors duration-200 hover:text-brand-dark">
             Home
-          </a>
-        </Link>
+          </Link>
+        </li>
 
         <li className="relative group">
           <a href="#" className="no-underline text-[#333] font-medium transition-colors duration-200 hover:text-brand-dark">
@@ -130,3 +130,4 @@ const Navbar = () => {
 };
 
 export default Navbar;
+
