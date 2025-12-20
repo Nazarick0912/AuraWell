@@ -1,36 +1,25 @@
 package com.aurawell.api;
 
 import javax.servlet.*;
+import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+@WebFilter(filterName = "CorsFilter", urlPatterns = "/api/*")
 public class CorsFilter implements Filter {
-    private String allowedOrigin;
-
     @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
-        // Read from environment variable, fallback to localhost for dev
-        String envOrigin = System.getenv("CORS_ALLOW_ORIGIN");
-        this.allowedOrigin = (envOrigin != null && !envOrigin.isEmpty()) 
-            ? envOrigin 
-            : "http://localhost:5173";
-    }
-
-    @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
-            throws IOException, ServletException {
-        HttpServletRequest httpRequest = (HttpServletRequest) request;
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletResponse httpResponse = (HttpServletResponse) response;
+        HttpServletRequest httpRequest = (HttpServletRequest) request;
 
-        // Set CORS headers
-        httpResponse.setHeader("Access-Control-Allow-Origin", allowedOrigin);
+        // Allow React to talk to Java
+        httpResponse.setHeader("Access-Control-Allow-Origin", "http://localhost:5173"); 
         httpResponse.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
         httpResponse.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
         httpResponse.setHeader("Access-Control-Allow-Credentials", "true");
-        httpResponse.setHeader("Access-Control-Max-Age", "3600");
 
-        // Handle preflight OPTIONS request
+        // If it's just a pre-check (OPTIONS), say OK and stop
         if ("OPTIONS".equalsIgnoreCase(httpRequest.getMethod())) {
             httpResponse.setStatus(HttpServletResponse.SC_OK);
             return;
@@ -40,9 +29,7 @@ public class CorsFilter implements Filter {
     }
 
     @Override
-    public void destroy() {
-        // Cleanup if needed
-    }
+    public void init(FilterConfig filterConfig) {}
+    @Override
+    public void destroy() {}
 }
-
-
