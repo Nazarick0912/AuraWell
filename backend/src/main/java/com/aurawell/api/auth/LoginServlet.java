@@ -1,4 +1,4 @@
-package com.aurawell.servlets.auth;
+package com.aurawell.api.catalog.auth;
 
 import com.aurawell.models.User;
 import com.aurawell.services.UserService;

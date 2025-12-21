@@ -208,5 +208,15 @@ public class DataManager {
         }
         return removed;
     }
+
+    // Check user email and password for login
+    public synchronized User login(String email, String password) {
+    for (User user : users) {
+        if (user.getEmail().equalsIgnoreCase(email) && user.getPassword().equals(password)) {
+            return user;
+        }
+    }
+    return null; 
+}
 }
 
