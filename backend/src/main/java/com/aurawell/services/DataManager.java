@@ -2,6 +2,7 @@ package com.aurawell.services;
 
 import com.aurawell.models.Cart;
 import com.aurawell.models.Order;
+import com.aurawell.models.OrderItem;
 import com.aurawell.models.Product;
 import com.aurawell.models.User;
 import com.google.gson.Gson;
@@ -217,6 +218,48 @@ public class DataManager {
         }
     }
     return null; 
+}
+
+public synchronized Cart getCartByUserId(String userId) {
+    // Look for an existing cart for this user
+    return carts.stream()
+            .filter(c -> c.getUserId().equals(userId))
+            .findFirst()
+            .orElseGet(() -> {
+                // If not found, create a new one and add it to our list
+                Cart newCart = new Cart(userId);
+                carts.add(newCart);
+                return newCart;
+            });
+}
+
+public synchronized void saveCarts() {
+    saveListToFile("carts.json", carts);
+    System.out.println("[DataManager] Saved " + carts.size() + " carts.");
+}
+
+public synchronized Optional<Order> placeOrder(Order order) {
+    // 1. Check stock for all items first
+    for (OrderItem item : order.getItems()) {
+        Optional<Product> productOpt = getProductById(item.getProductId());
+        if (productOpt.isEmpty() || productOpt.get().getStock() < item.getQuantity()) {
+            return Optional.empty(); // Fail if out of stock
+        }
+    }
+
+    // 2. Deduct stock
+    for (OrderItem item : order.getItems()) {
+        getProductById(item.getProductId()).ifPresent(p -> {
+            p.setStock(p.getStock() - item.getQuantity());
+        });
+    }
+
+    // 3. Save Order and updated Products
+    orders.add(order);
+    saveListToFile("orders.json", orders);
+    saveProducts();
+
+    return Optional.of(order);
 }
 }
 
