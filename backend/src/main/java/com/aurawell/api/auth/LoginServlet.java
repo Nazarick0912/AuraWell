@@ -29,7 +29,7 @@ public class LoginServlet extends HttpServlet {
             if (user != null) {
                 HttpSession session = req.getSession();
                 session.setAttribute("userId", user.getId());
-                
+
                 user.setPassword(null); // Security
                 JsonObject jsonResponse = new JsonObject();
                 jsonResponse.addProperty("success", true);
@@ -40,8 +40,15 @@ public class LoginServlet extends HttpServlet {
                 resp.getWriter().write("{\"success\": false, \"message\": \"Invalid credentials\"}");
             }
         } catch (Exception e) {
+            e.printStackTrace(); // Keep this to see errors in your VS Code terminal
             resp.setStatus(500);
-            resp.getWriter().write("{\"error\": \"Server error\"}");
+            resp.setContentType("application/json");
+
+            // Use Gson to safely create the error JSON
+            JsonObject errorObj = new JsonObject();
+            errorObj.addProperty("success", false);
+            errorObj.addProperty("error", e.getClass().getSimpleName() + ": " + e.getMessage());
+            resp.getWriter().write(gson.toJson(errorObj));
         }
     }
 }
