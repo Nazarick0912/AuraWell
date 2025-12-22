@@ -71,4 +71,22 @@
         <url-pattern>/api/auth/me</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>CartServlet</servlet-name>
+        <servlet-class>com.aurawell.api.cart.CartServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>CartServlet</servlet-name>
+        <url-pattern>/api/cart</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>CartItemServlet</servlet-name>
+        <servlet-class>com.aurawell.api.cart.CartItemServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>CartItemServlet</servlet-name>
+        <url-pattern>/api/cart/*</url-pattern>
+    </servlet-mapping>
+
 </web-app>
