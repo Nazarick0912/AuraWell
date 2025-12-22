@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Link } from 'react-router-dom';
 import search from '../../../assets/search.png';
 import leaf from '../../../assets/leaf.png';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, SunMedium} from 'lucide-react';
 
 const SearchBar = ({ query, setQuery }) => {
   return (
@@ -35,8 +35,9 @@ export default function HeroSection(){
 
         <div className="relative max-w-7xl mx-auto px-4 sm-px-6 lg:px-8 py-24" >
           <div className='grid lg:grid-cols-2 gap-12 items-center'>
-            <span className='inline-block px-4 py-2 bg-sage-100 text-sage-700 rounded-full text-sm font-medium mb-6' >
-              ✨ Wellness for Every Generation
+            <span className='inline-flex items-center gap-2 px-4 py-2 bg-sage-100 text-sage-700 rounded-full text-sm font-medium mb-6'>
+                <SunMedium className="w-4 h-4" />
+                Wellness for Every Generation
             </span>
 
             <h1 className='text-5xl lg:text-7xl font-display font-bold text-sage-900 leading-tight mb-6'>

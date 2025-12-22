@@ -1,133 +1,74 @@
-import React, { useState } from 'react'
+import React from 'react';
+import {Link} from 'react-router-dom';
 import logo from '../assets/logo.png';
-import cart from '../assets/cart.png';
-import { Link } from 'react-router-dom';
+import {ShoppingCart} from "lucide-react";
 
 const Navbar = () => {
-  const [menuOpen, setMenuOpen] = useState(false);
+    const navLinkClass = "text-sage-700 hover:text-sage-900 font-medium transition";
 
-  return (
-      <nav className="w-full h-[70px] flex items-center justify-between px-[4%] bg-cream-50 border-b border-[#eaeaea] sticky top-0 z-100">
-      {/* Logo */}
-      <Link to="/" className='flex items-center gap-2 group'>
-        <div className="flex items-center gap-2.5">
-          <img src={logo} alt="AuraWell Logo" className="h-10" />
-          <h1 className="text-xl font-semibold text-brand-dark">AuraWell</h1>
-        </div>
-      </Link>
+    return (
+        <nav className="
+          w-full h-[76px]
+          flex flex-nowrap items-center justify-between
+          px-[4%]
+          bg-gradient-to-b from-cream-50 to-cream-100
+          border-b border-cream-200
+          sticky top-0 z-50
+        ">
 
-      {/* Mobile Toggle */}
-      <div
-        className={`flex-col cursor-pointer gap-1 hidden max-[850px]:flex ${menuOpen ? "active" : ""}`}
-        onClick={() => setMenuOpen(!menuOpen)}
-      >
-        <span className="w-[25px] h-[3px] bg-[#333] rounded-sm"></span>
-        <span className="w-[25px] h-[3px] bg-[#333] rounded-sm"></span>
-        <span className="w-[25px] h-[3px] bg-[#333] rounded-sm"></span>
-      </div>
+            {/* Logo */}
+            <Link to="/" className="flex items-center gap-2">
+                <img src={logo} alt="AuraWell Logo" className="h-10"/>
+                <h1 className="text-xl font-semibold text-sage-800">AuraWell</h1>
+            </Link>
 
-      {/* Nav Links */}
-      <ul className={`flex gap-6 list-none max-[850px]:absolute max-[850px]:top-[70px] max-[850px]:left-0 max-[850px]:w-full max-[850px]:flex-col max-[850px]:bg-white max-[850px]:border-t max-[850px]:border-[#eee] max-[850px]:py-4 max-[850px]:text-center ${menuOpen ? 'max-[850px]:flex' : 'max-[850px]:hidden'}`}>
-        <li>
-          <Link to="/" className="no-underline text-[#333] font-medium transition-colors duration-200 hover:text-brand-dark">
-            Home
-          </Link>
-        </li>
+            {/* Mobile Toggle */}
+            <div className="md:hidden">
+                <span className="w-[25px] h-[3px] bg-[#333] rounded-sm"></span>
+                <span className="w-[25px] h-[3px] bg-[#333] rounded-sm"></span>
+                <span className="w-[25px] h-[3px] bg-[#333] rounded-sm"></span>
+            </div>
 
-        <li className="relative group">
-          <a href="#" className="no-underline text-[#333] font-medium transition-colors duration-200 hover:text-brand-dark">
-            Shop ▾
-          </a>
-          <ul className="absolute top-full left-0 bg-white border border-[#eaeaea] rounded-lg py-2.5 hidden group-hover:block list-none shadow-[0_3px_8px_rgba(0,0,0,0.05)] cursor-pointer min-w-[160px]">
-            <li className="py-2 px-5">
-              <a href="#" className="text-[#333] no-underline block hover:bg-[#f7f7f7] hover:text-brand-dark">All Products</a>
-            </li>
-            <li className="py-2 px-5">
-              <a href="#" className="text-[#333] no-underline block hover:bg-[#f7f7f7] hover:text-brand-dark">Herbal Teas</a>
-            </li>
-            <li className="py-2 px-5">
-              <a href="#" className="text-[#333] no-underline block hover:bg-[#f7f7f7] hover:text-brand-dark">Essential Oils</a>
-            </li>
-            <li className="py-2 px-5">
-              <a href="#" className="text-[#333] no-underline block hover:bg-[#f7f7f7] hover:text-brand-dark">Vitamin</a>
-            </li>
-            <li className="py-2 px-5">
-              <a href="#" className="text-[#333] no-underline block hover:bg-[#f7f7f7] hover:text-brand-dark">Aromatherapy</a>
-            </li>
-          </ul>
-        </li>
+            {/* Nav Links */}
+            <ul className="hidden md:flex gap-7 items-center">
+                <li>
+                    <Link to="/Products" className={navLinkClass}>
+                        Shop All
+                    </Link>
+                </li>
 
-        <li className="relative group">
-          <a href="#" className="no-underline text-[#333] font-medium transition-colors duration-200 hover:text-brand-dark">
-            Your Goal ▾
-          </a>
-          <ul className="absolute top-full left-0 bg-white border border-[#eaeaea] rounded-lg py-2.5 hidden group-hover:block list-none shadow-[0_3px_8px_rgba(0,0,0,0.05)] cursor-pointer min-w-[160px]">
-            <li className="py-2 px-5">
-              <a href="#" className="text-[#333] no-underline block hover:bg-[#f7f7f7] hover:text-brand-dark">Better Sleep</a>
-            </li>
-            <li className="py-2 px-5">
-              <a href="#" className="text-[#333] no-underline block hover:bg-[#f7f7f7] hover:text-brand-dark">Boost Energy</a>
-            </li>
-            <li className="py-2 px-5">
-              <a href="#" className="text-[#333] no-underline block hover:bg-[#f7f7f7] hover:text-brand-dark">Relieve Stress</a>
-            </li>
-            <li className="py-2 px-5">
-              <a href="#" className="text-[#333] no-underline block hover:bg-[#f7f7f7] hover:text-brand-dark">Immunity</a>
-            </li>
-            <li className="py-2 px-5">
-              <a href="#" className="text-[#333] no-underline block hover:bg-[#f7f7f7] hover:text-brand-dark">Focus</a>
-            </li>
-          </ul>
-        </li>
+                <li>
+                    <Link to="/Products?category=supplements" className={navLinkClass}>
+                        Essential Oils
+                    </Link>
+                </li>
 
-        <li className="relative group">
-          <a href="#" className="no-underline text-[#333] font-medium transition-colors duration-200 hover:text-brand-dark">
-            About ▾
-          </a>
-          <ul className="absolute top-full left-0 bg-white border border-[#eaeaea] rounded-lg py-2.5 hidden group-hover:block list-none shadow-[0_3px_8px_rgba(0,0,0,0.05)] cursor-pointer min-w-[160px]">
-            <li className="py-2 px-5">
-              <a href="#" className="text-[#333] no-underline block hover:bg-[#f7f7f7] hover:text-brand-dark">Our Story</a>
-            </li>
-            <li className="py-2 px-5">
-              <a href="#" className="text-[#333] no-underline block hover:bg-[#f7f7f7] hover:text-brand-dark">Blog</a>
-            </li>
-            <li className="py-2 px-5">
-              <a href="#" className="text-[#333] no-underline block hover:bg-[#f7f7f7] hover:text-brand-dark">Sustainability</a>
-            </li>
-            <li className="py-2 px-5">
-              <a href="#" className="text-[#333] no-underline block hover:bg-[#f7f7f7] hover:text-brand-dark">Team Member</a>
-            </li>
-          </ul>
-        </li>
+                <li>
+                    <Link to="/Products?category=vitamins" className={navLinkClass}>
+                        Vitamins
+                    </Link>
+                </li>
 
-        <li>
-          <a href="#" className="no-underline text-[#333] font-medium transition-colors duration-200 hover:text-brand-dark">
-            Personalise Me
-          </a>
-        </li>
-      </ul>
+                <li>
+                    <Link to="/Products?category=aromatherapy" className={navLinkClass}>
+                        Aromatherapy
+                    </Link>
+                </li>
+            </ul>
 
-      {/* Nav Icons */}
-      <div className="flex items-center gap-4">
-        <Link to="/login">
-          <button className="bg-transparent border-none p-0 font-sans font-bold text-sage-500 cursor-pointer hover:text-sage-700 transition-colors duration-200">
-            Sign In
-          </button>
-        </Link>
 
-        <Link to="/signup">
-          <button className="w-full btn-primary">
-            Get Started
-          </button>
-        </Link>
-
-        <a href="#">
-          <img src={cart} alt="Cart" className="ml-2.5 h-10 cursor-pointer" />
-        </a>
-      </div>
-     </nav>  
-  );
+            {/* Right side */}
+            <div className="flex items-center gap-3">
+                <Link to="/login">Sign In</Link>
+                <Link to="/signup" className="btn-primary">
+                    Get Started
+                </Link>
+                <ShoppingCart
+                    className="w-6 h-6 text-sage-700 hover:text-sage-900 cursor-pointer transition"
+                />
+            </div>
+        </nav>
+    );
 };
 
 export default Navbar;
-
