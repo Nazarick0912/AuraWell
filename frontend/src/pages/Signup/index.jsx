@@ -12,7 +12,7 @@ export default function Signup(){
     });
     const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);  
+    const [isLoading, setIsLoading] = useState(false);
 
     const location = useLocation();
     const navigate = useNavigate();
@@ -80,7 +80,7 @@ export default function Signup(){
                         <label htmlFor="lastName" className="block text-sm font-medium text-sage-700 mb-2">
                             Last Name
                         </label>
-                        <input 
+                        <input
                             id="lastName"
                             name="lastName"
                             type="text"
@@ -90,14 +90,14 @@ export default function Signup(){
                             className="input-field"
                             placeholder="Doe"
                         />
-                      </div>   
+                      </div>
                     </div>
 
                     <div>
                         <label htmlFor="email" className="block text-sm font-medium text-sage-700 mb-2">
                             Email Address
                         </label>
-                        <input 
+                        <input
                             id="email"
                             name="email"
                             type="text"
@@ -149,7 +149,7 @@ export default function Signup(){
                             placeholder="••••••••"
                         />
                     </div>
-                    
+
                     <div className="flex items-start gap-3">
                         <input
                             id="agree"
@@ -191,8 +191,8 @@ export default function Signup(){
                     </button>
 
                     <p className="text-sage-500 mt-2 flex items-center justify-center">
-                        Already have an account? 
-                        <Link to='/Login' className="text-sage-700 font-semibold hover: text-sage-800 ml-2">
+                        Already have an account?
+                        <Link to="/login" className="text-sage-700 font-semibold hover:text-sage-800 ml-2">
                             Sign In
                         </Link>
                     </p>

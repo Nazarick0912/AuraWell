@@ -4,5 +4,29 @@
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
          version="4.0">
 
-</web-app>
+    <!-- Context Listener for initialization -->
+    <listener>
+        <listener-class>com.aurawell.api.AppContextListener</listener-class>
+    </listener>
 
+    <!-- CORS Filter -->
+    <filter>
+        <filter-name>CorsFilter</filter-name>
+        <filter-class>com.aurawell.api.CorsFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>CorsFilter</filter-name>
+        <url-pattern>/api/*</url-pattern>
+    </filter-mapping>
+
+    <!-- Products Servlets -->
+    <servlet>
+        <servlet-name>ProductsServlet</servlet-name>
+        <servlet-class>com.aurawell.api.catalog.ProductsServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ProductsServlet</servlet-name>
+        <url-pattern>/api/products/*</url-pattern>
+    </servlet-mapping>
+
+</web-app>
