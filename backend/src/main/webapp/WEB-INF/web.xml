@@ -31,4 +31,44 @@
         <url-pattern>/api/products/*</url-pattern>
     </servlet-mapping>
 
+    <!-- LoginServlet -->
+    <servlet>
+        <servlet-name>LoginServlet</servlet-name>
+        <servlet-class>com.aurawell.api.auth.LoginServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>LoginServlet</servlet-name>
+        <url-pattern>/api/auth/login</url-pattern>
+    </servlet-mapping>
+
+    <!-- RegisterServlet -->
+    <servlet>
+        <servlet-name>RegisterServlet</servlet-name>
+        <servlet-class>com.aurawell.api.auth.RegisterServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>RegisterServlet</servlet-name>
+        <url-pattern>/api/auth/register</url-pattern>
+    </servlet-mapping>
+
+    <!-- LogoutServlet -->
+    <servlet>
+        <servlet-name>LogoutServlet</servlet-name>
+        <servlet-class>com.aurawell.api.auth.LogoutServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>LogoutServlet</servlet-name>
+        <url-pattern>/api/auth/logout</url-pattern>
+    </servlet-mapping>
+
+    <!-- MeServlet -->
+    <servlet>
+        <servlet-name>MeServlet</servlet-name>
+        <servlet-class>com.aurawell.api.auth.MeServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>MeServlet</servlet-name>
+        <url-pattern>/api/auth/me</url-pattern>
+    </servlet-mapping>
+
 </web-app>
