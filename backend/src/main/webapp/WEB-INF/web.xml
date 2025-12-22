@@ -89,4 +89,14 @@
         <url-pattern>/api/cart/*</url-pattern>
     </servlet-mapping>
 
+    <!-- OrdersServlet -->
+    <servlet>
+        <servlet-name>OrdersServlet</servlet-name>
+        <servlet-class>com.aurawell.api.orders.OrdersServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>OrdersServlet</servlet-name>
+        <url-pattern>/api/orders</url-pattern>
+    </servlet-mapping>
+
 </web-app>
