@@ -275,4 +275,14 @@ public class DataManager {
                 .filter(o -> o.getUserId().equals(userId))
                 .toList();
     }
+
+    public void removeItemFromCart(String userId, String productId) {
+    carts.stream()
+        .filter(c -> c.getUserId().equals(userId))
+        .findFirst()
+        .ifPresent(cart -> {
+            cart.getItems().removeIf(item -> item.getProductId().equals(productId));
+            saveCarts(); // Write the change back to carts.json
+        });
+}
 }
