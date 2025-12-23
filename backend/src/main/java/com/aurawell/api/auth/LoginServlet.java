@@ -21,11 +21,10 @@ public class LoginServlet extends HttpServlet {
         resp.setCharacterEncoding("UTF-8");
 
         try {
-            //read the JSON body from React
             String requestBody = req.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
             User loginRequest = gson.fromJson(requestBody, User.class);
 
-            //verify using DataManager
+            //verify using your DataManager
             User user = dataManager.login(loginRequest.getEmail(), loginRequest.getPassword());
 
             if (user != null) {
@@ -33,19 +32,23 @@ public class LoginServlet extends HttpServlet {
                 HttpSession session = req.getSession();
                 session.setAttribute("userId", user.getId());
 
-                user.setPassword(null);
+                //convert to JsonObject
+                // We do NOT call user.setPassword(null) anymore!
+                JsonObject userJson = gson.toJsonTree(user).getAsJsonObject();
+                userJson.remove("password"); 
                 
+                //build a clean JSON response
                 JsonObject jsonResponse = new JsonObject();
                 jsonResponse.addProperty("success", true);
-                jsonResponse.add("user", gson.toJsonTree(user));
+                jsonResponse.add("user", userJson);
                 resp.getWriter().write(gson.toJson(jsonResponse));
             } else {
-                //return 401 Unauthorized if login fails
+                //return 401 Unauthorized if user login fails
                 resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 resp.getWriter().write("{\"success\": false, \"message\": \"Invalid email or password\"}");
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            e.printStackTrace(); 
             resp.setStatus(500);
             JsonObject errorObj = new JsonObject();
             errorObj.addProperty("success", false);
