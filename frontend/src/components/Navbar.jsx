@@ -1,11 +1,22 @@
 import React from 'react';
-import {Link} from 'react-router-dom';
+import {Link, useLocation, useSearchParams} from 'react-router-dom';
 import logo from '../assets/logo.png';
 import {ShoppingCart} from "lucide-react";
 
 const Navbar = () => {
-    const navLinkClass = "text-sage-700 hover:text-sage-900 font-medium transition";
+    const location = useLocation();
+    const [searchParams] = useSearchParams();
 
+    const isProductPage = location.pathname === "/products";
+    const activeCategory = searchParams.get("category");
+    const isActiveCategory = (categoryValue) => {
+        if (!isProductPage) return false;
+
+        if (!categoryValue) {
+            return activeCategory === null;
+        }
+        return activeCategory === categoryValue;
+    };
     return (
         <nav className="
           w-full h-[76px]
@@ -32,25 +43,37 @@ const Navbar = () => {
             {/* Nav Links */}
             <ul className="hidden md:flex gap-7 items-center">
                 <li>
-                    <Link to="/Products" className={navLinkClass}>
+                    <Link to="/Products" className={`nav-link ${isActiveCategory(null) ? "nav-link-active" : ""}`}>
                         Shop All
                     </Link>
                 </li>
 
                 <li>
-                    <Link to="/Products?category=supplements" className={navLinkClass}>
+                    <Link to="/Products?category=supplements"
+                          className={`nav-link ${
+                              isActiveCategory("supplements") ? "nav-link-active" : ""
+                          }`}
+                    >
                         Supplements
                     </Link>
                 </li>
 
                 <li>
-                    <Link to="/Products?category=vitamins" className={navLinkClass}>
+                    <Link to="/Products?category=vitamins"
+                          className={`nav-link ${
+                              isActiveCategory("vitamins") ? "nav-link-active" : ""
+                          }`}
+                    >
                         Vitamins
                     </Link>
                 </li>
 
                 <li>
-                    <Link to="/Products?category=aromatherapy" className={navLinkClass}>
+                    <Link to="/Products?category=aromatherapy"
+                          className={`nav-link ${
+                              isActiveCategory("aromatherapy") ? "nav-link-active" : ""
+                          }`}
+                    >
                         Aromatherapy
                     </Link>
                 </li>
