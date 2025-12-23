@@ -7,6 +7,7 @@ import Home from './pages/Home';
 import Terms from './pages/Terms';
 import Privacy from './pages/Privacy';
 import Products from './pages/Products';
+import Cart from './pages/Cart';
 
 function App() {
     return (
@@ -19,6 +20,7 @@ function App() {
                     <Route path="signup" element={<Signup/>}/>
                     <Route path="terms" element={<Terms/>}/>
                     <Route path="privacy" element={<Privacy/>}/>
+                    <Route path="/cart" element={<Cart/>} />
                 </Route>
             </Routes>
         </Router>
