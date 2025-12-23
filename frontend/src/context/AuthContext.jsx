@@ -29,12 +29,18 @@ export const AuthProvider = ({ children }) => {
     };
 
     //logout
-    const logout = () => {
-        fetch('http://localhost:9090/api/auth/logout', { 
-            method: 'POST', 
-            credentials: 'include' 
-        })
-        .then(() => setUser(null));
+    const logout = async () => {
+        try {
+            await fetch('http://localhost:9090/api/auth/logout', {
+                method: 'POST',
+                credentials: 'include' // Important to send the cookie so the server knows which session to kill
+            });
+        } catch (err) {
+            console.error("Logout failed:", err);
+        } finally {
+            setUser(null); // Always clear the local user even if the network request fails
+            window.location.href = '/login'; // Redirect to login page
+        }
     };
 
     return (

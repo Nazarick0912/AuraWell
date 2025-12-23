@@ -2,11 +2,16 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import logo from '../assets/logo.png';
 import { ShoppingCart, LogOut, User as UserIcon } from "lucide-react";
-import { useAuth } from '../context/AuthContext'; // Added this import
+import { useAuth } from '../context/AuthContext';
+import { useCart } from '../context/CartContext';
 
 const Navbar = () => {
-    const { user, logout } = useAuth(); // Access global user state and logout function
+    const { user, logout } = useAuth(); //
+    const { cart } = useCart(); //get the current cart state
     const navLinkClass = "text-sage-700 hover:text-sage-900 font-medium transition";
+
+    //calculate total item count (sum of all quantities)
+    const cartCount = cart?.items?.reduce((sum, item) => sum + item.quantity, 0) || 0;
 
     return (
         <nav className="
@@ -23,7 +28,6 @@ const Navbar = () => {
                 <h1 className="text-xl font-semibold text-sage-800">AuraWell</h1>
             </Link>
 
-            {/* Nav Links */}
             <ul className="hidden md:flex gap-7 items-center">
                 <li><Link to="/Products" className={navLinkClass}>Shop All</Link></li>
                 <li><Link to="/Products?category=supplements" className={navLinkClass}>Essential Oils</Link></li>
@@ -31,10 +35,9 @@ const Navbar = () => {
                 <li><Link to="/Products?category=aromatherapy" className={navLinkClass}>Aromatherapy</Link></li>
             </ul>
 
-            {/* Right side - DYNAMIC SECTION */}
             <div className="flex items-center gap-5">
                 {user ? (
-                    /* Show this when LOGGED IN */
+                    //show this when login
                     <div className="flex items-center gap-4">
                         <div className="flex items-center gap-2 text-sage-800">
                             <UserIcon className="w-5 h-5" />
@@ -49,7 +52,7 @@ const Navbar = () => {
                         </button>
                     </div>
                 ) : (
-                    /* Show this when LOGGED OUT */
+                    //show this when logout
                     <div className="flex items-center gap-3">
                         <Link to="/login" className="text-sage-700 hover:text-sage-900 font-medium">
                             Sign In
@@ -59,9 +62,14 @@ const Navbar = () => {
                         </Link>
                     </div>
                 )}
-                
-                <Link to="/cart" className="relative">
+
+                <Link to="/cart" className="relative p-2">
                     <ShoppingCart className="w-6 h-6 text-sage-700 hover:text-sage-900 cursor-pointer transition" />
+                    {cartCount > 0 && (
+                        <span className="absolute top-0 right-0 bg-sage-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center border-2 border-cream-50">
+                            {cartCount}
+                        </span>
+                    )}
                 </Link>
             </div>
         </nav>
