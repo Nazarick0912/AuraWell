@@ -14,22 +14,31 @@ public class RegisterServlet extends HttpServlet {
     private final DataManager dataManager = DataManager.getInstance();
     private final Gson gson = new Gson();
 
+    @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setContentType("application/json");
-        String body = req.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
-        User newUser = gson.fromJson(body, User.class);
+        try {
+            // Read incoming JSON body
+            String body = req.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
+            User newUser = gson.fromJson(body, User.class);
 
-        //Call register method from datamanager
-        java.util.Optional<User> registered = dataManager.register(newUser);
+            // Use DataManager to save the user
+            java.util.Optional<User> registered = dataManager.register(newUser);
 
-        if (registered.isPresent()) {
-            HttpSession session = req.getSession();
-            session.setAttribute("userId", registered.get().getId());
-            resp.setStatus(HttpServletResponse.SC_CREATED);
-            resp.getWriter().write(gson.toJson(registered.get()));
-        } else {
-            resp.setStatus(HttpServletResponse.SC_CONFLICT);
-            resp.getWriter().write("{\"error\": \"Email already exists\"}");
+            if (registered.isPresent()) {
+                // Auto-login: Create session immediately after successful signup
+                HttpSession session = req.getSession();
+                session.setAttribute("userId", registered.get().getId());
+                
+                resp.setStatus(HttpServletResponse.SC_CREATED);
+                resp.getWriter().write("{\"success\": true, \"message\": \"User created successfully\"}");
+            } else {
+                resp.setStatus(HttpServletResponse.SC_CONFLICT);
+                resp.getWriter().write("{\"success\": false, \"message\": \"Email already exists\"}");
+            }
+        } catch (Exception e) {
+            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            resp.getWriter().write("{\"success\": false, \"error\": \"" + e.getMessage() + "\"}");
         }
     }
 }
