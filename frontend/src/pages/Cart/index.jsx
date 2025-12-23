@@ -1,6 +1,6 @@
 import React from 'react';
 import { useCart } from '../../context/CartContext'; 
-import { ShoppingBag, Minus, Plus, Trash2 } from 'lucide-react'; // Added Trash2
+import { ShoppingBag, Minus, Plus, Trash2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const PRODUCTS = [
@@ -11,7 +11,6 @@ const PRODUCTS = [
 ];
 
 export default function Cart() {
-    // Access the new delete and clear functions from your context
     const { cart, loading, addToCart, removeFromCart, clearCart } = useCart(); 
 
     const cartItems = cart?.items.map(item => {
@@ -25,9 +24,20 @@ export default function Cart() {
 
     const grandTotal = cartItems.reduce((sum, item) => sum + item.itemTotal, 0);
 
+    // New logic to handle deducting items
+    const handleDeduct = (itemId, currentQuantity) => {
+        if (currentQuantity > 1) {
+            // If more than 1, send -1 to the backend to reduce count
+            addToCart(itemId, -1);
+        } else {
+            // If only 1 left, remove the item entirely
+            removeFromCart(itemId);
+        }
+    };
+
     const handleCheckout = () => {
         alert("Order Placed Successfully! Your wellness journey continues.");
-        clearCart(); // Resets the cart UI after checkout
+        clearCart();
     };
 
     if (loading) return <div className="p-20 text-center">Loading your cart...</div>;
@@ -49,12 +59,7 @@ export default function Cart() {
                     {cartItems.map((item) => (
                         <div key={item.id} className="flex items-center justify-between p-6 bg-white rounded-2xl border border-cream-200">
                             <div className="flex gap-4 items-center">
-                                {/* Trash Icon Button for Removing Items */}
-                                <button 
-                                    onClick={() => removeFromCart(item.id)}
-                                    className="p-2 text-sage-300 hover:text-red-500 transition-colors"
-                                    title="Remove item"
-                                >
+                                <button onClick={() => removeFromCart(item.id)} className="p-2 text-sage-300 hover:text-red-500 transition-colors">
                                     <Trash2 className="w-5 h-5" />
                                 </button>
                                 <div>
@@ -65,9 +70,22 @@ export default function Cart() {
                             
                             <div className="flex items-center gap-4">
                                 <div className="flex items-center border border-cream-200 rounded-lg">
-                                    <button className="p-2 hover:bg-cream-50"><Minus className="w-4 h-4"/></button>
-                                    <span className="px-3">{item.quantity}</span>
-                                    <button onClick={() => addToCart(item.id, 1)} className="p-2 hover:bg-cream-50"><Plus className="w-4 h-4"/></button>
+                                    {/* FIXED: Added onClick for Minus button */}
+                                    <button 
+                                        onClick={() => handleDeduct(item.id, item.quantity)}
+                                        className="p-2 hover:bg-cream-50 transition"
+                                    >
+                                        <Minus className="w-4 h-4"/>
+                                    </button>
+                                    
+                                    <span className="px-3 min-w-[30px] text-center">{item.quantity}</span>
+                                    
+                                    <button 
+                                        onClick={() => addToCart(item.id, 1)} 
+                                        className="p-2 hover:bg-cream-50 transition"
+                                    >
+                                        <Plus className="w-4 h-4"/>
+                                    </button>
                                 </div>
                                 <p className="font-bold w-20 text-right text-sage-900">RM{item.itemTotal.toFixed(2)}</p>
                             </div>
@@ -80,12 +98,7 @@ export default function Cart() {
                     <div className="flex justify-between text-xl font-bold border-t border-sage-200 pt-4 text-sage-900">
                         <span>Total</span><span>RM{grandTotal.toFixed(2)}</span>
                     </div>
-                    <button 
-                        onClick={handleCheckout}
-                        className="w-full btn-primary mt-8 py-4 shadow-lg shadow-sage-200"
-                    >
-                        Checkout
-                    </button>
+                    <button onClick={handleCheckout} className="w-full btn-primary mt-8 py-4">Checkout</button>
                 </div>
             </div>
         </div>
