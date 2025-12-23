@@ -39,7 +39,7 @@ const Navbar = () => {
 
                 <li>
                     <Link to="/Products?category=supplements" className={navLinkClass}>
-                        Essential Oils
+                        Supplements
                     </Link>
                 </li>
 
