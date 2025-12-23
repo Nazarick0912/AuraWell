@@ -1,9 +1,13 @@
+import {useState} from 'react';
 import {useSearchParams} from 'react-router-dom';
 import ProductCard from './ProductCard';
+import {Funnel} from 'lucide-react';
 
 export default function Products() {
+    const [isAgeFilterOpen, setIsAgeFilterOpen] = useState(false);
     const [searchParams, setSearchParams] = useSearchParams();
     const category = searchParams.get('category');
+    const age = searchParams.get('age');
 
     const CATEGORIES = [
         {label: "All", value: null},
@@ -12,10 +16,20 @@ export default function Products() {
         {label: "Aromatherapy", value: "aromatherapy"},
     ];
     const PRODUCTS = [
-        {id: 1, name: "Vitamin D3 1000IU", category: "vitamins", price: 24.99, ageGroup: "Adults"},
-        {id: 2, name: "Kids Multivitamin Gummies", category: "vitamins", price: 19.99, ageGroup: "Children"},
-        {id: 3, name: "Omega-3 Fish Oil", category: "supplements", price: 29.99, ageGroup: "Adults"},
-        {id: 4, name: "Lavender Essential Oil", category: "aromatherapy", price: 18.99, ageGroup: "All Ages"},
+        {id: 1, name: "Vitamin D3 1000IU", category: "vitamins", price: 24.99, ageGroup: "adults"},
+        {id: 2, name: "Kids Multivitamin Gummies", category: "vitamins", price: 19.99, ageGroup: "children"},
+        {id: 3, name: "Omega-3 Fish Oil", category: "supplements", price: 29.99, ageGroup: "adults"},
+        {id: 4, name: "Lavender Essential Oil", category: "aromatherapy", price: 18.99, ageGroup: "universal"},
+    ];
+
+    const AGE_GROUPS = [
+        {label: "All Ages", value: null},
+        {label: "Toddler", value: "toddler"},
+        {label: "Children", value: "children"},
+        {label: "Teens", value: "teens"},
+        {label: "Adults", value: "adults"},
+        {label: "Seniors", value: "seniors"},
+        {label: "Universal", value: "universal"},
     ];
 
     const setCategory = (value) => {
@@ -27,9 +41,30 @@ export default function Products() {
         }
     };
 
-    const filteredProducts = category
-        ? PRODUCTS.filter(p => p.category === category)
-        : PRODUCTS;
+    const setAge = (value) => {
+        if (!value) {
+            const next = new URLSearchParams(searchParams);
+            next.delete("age");
+            setSearchParams(next);
+        } else {
+            setSearchParams({category, age: value});
+        }
+        setIsAgeFilterOpen(false);
+    };
+
+    const filteredProducts = PRODUCTS.filter(product => {
+        const matchCategory = category
+            ? product.category === category
+            : true;
+
+        const matchAge = age
+            ? product.ageGroup.toLowerCase() === age
+            : true;
+
+        return matchCategory && matchAge;
+    })
+
+    const hasResults = filteredProducts.length > 0;
 
     return (
         <div className="max-w-7xl mx-auto px-6 py-12">
@@ -43,6 +78,7 @@ export default function Products() {
             </p>
 
             <div className="flex flex-wrap gap-2 mb-6">
+                { /* Categories Filter Button */}
                 {CATEGORIES.map((cat) => {
                     const isActive =
                         cat.value === null
@@ -57,7 +93,7 @@ export default function Products() {
                               ${
                                 isActive
                                     ? "bg-sage-600 text-white shadow-sm cursor-default"
-                                    : "bg-cream-100 text-sage-700 hover:bg-cream-200 active:scale-[0.98"
+                                    : "bg-cream-100 text-sage-700 hover:bg-cream-200 active:scale-[0.98]"
                             }
                             `}
                         >
@@ -65,13 +101,88 @@ export default function Products() {
                         </button>
                     );
                 })}
+
+                {/* Age Filter Toggle Button */}
+                <button
+                    onClick={() => setIsAgeFilterOpen(prev => !prev)}
+                    className={`
+                      px-5 py-2 rounded-full text-sm font-medium flex items-center gap-2 transition
+                      ${
+                        age
+                            ? "bg-sage-600 text-white"
+                            : "bg-cream-100 text-sage-700 hover:bg-cream-200"
+                    }
+                    `}
+                >
+                    <Funnel className="w-4 h-4"/>
+                    Filter
+                    {age && (
+                        <span className="opacity-80">
+                        • {AGE_GROUPS.find(g => g.value === age)?.label}
+                        </span>
+                    )}
+                </button>
             </div>
+
+            {isAgeFilterOpen && (
+                <div className="mt-6 p-6 bg-white rounded-xl border border-cream-200 shadow-sm">
+                    <h3 className="text-sm font-semibold text-sage-700 mb-4">
+                        Filter by Age Group
+                    </h3>
+
+                    <div className="flex flex-wrap gap-2">
+                        {AGE_GROUPS.map((group) => {
+                            const isActive =
+                                group.value === null
+                                    ? age === null
+                                    : age === group.value;
+
+                            return (
+                                <button
+                                    key={group.label}
+                                    onClick={() => setAge(group.value)}
+                                    className={`
+                                      px-4 py-2 rounded-full text-sm font-medium transition
+                                      ${
+                                        isActive
+                                            ? "bg-sage-600 text-white"
+                                            : "bg-cream-100 text-sage-700 hover:bg-cream-200"
+                                    }
+                                `}
+                                >
+                                    {group.label}
+                                </button>
+                            );
+                        })}
+                    </div>
+                </div>
+            )}
+
+
             {/* Product Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                {filteredProducts.map((product) => (
-                    <ProductCard key={product.id} product={product}/>
-                ))}
-            </div>
+            {hasResults ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    {filteredProducts.map((product) => (
+                        <ProductCard key={product.id} product={product}/>
+                    ))}
+                </div>
+            ) : (
+                <div className={"text-center py-16"}>
+                    <p className="text-lg font-medium text-sage-700">
+                        No products found
+                    </p>
+                    <p className="mt-2 text-sm text-sage-500">
+                        Try adjusting your filters or browse all products.
+                    </p>
+
+                    <button
+                        onClick={() => setSearchParams({})}
+                        className="mt-6 px-6 py-2 rounded-full bg-sage-600 text-white text-sm font-medium hover:bg-sage-700 transition"
+                    >
+                        View all products
+                    </button>
+                </div>
+            )}
         </div>
     );
 }
