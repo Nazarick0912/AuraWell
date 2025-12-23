@@ -1,6 +1,6 @@
 import React from 'react';
-import { useCart } from '../../context/CartContext'; //
-import { ShoppingBag, Minus, Plus } from 'lucide-react';
+import { useCart } from '../../context/CartContext'; 
+import { ShoppingBag, Minus, Plus, Trash2 } from 'lucide-react'; // Added Trash2
 import { Link } from 'react-router-dom';
 
 const PRODUCTS = [
@@ -11,7 +11,8 @@ const PRODUCTS = [
 ];
 
 export default function Cart() {
-    const { cart, loading, addToCart } = useCart(); //
+    // Access the new delete and clear functions from your context
+    const { cart, loading, addToCart, removeFromCart, clearCart } = useCart(); 
 
     const cartItems = cart?.items.map(item => {
         const product = PRODUCTS.find(p => p.id === item.productId);
@@ -23,6 +24,11 @@ export default function Cart() {
     }) || [];
 
     const grandTotal = cartItems.reduce((sum, item) => sum + item.itemTotal, 0);
+
+    const handleCheckout = () => {
+        alert("Order Placed Successfully! Your wellness journey continues.");
+        clearCart(); // Resets the cart UI after checkout
+    };
 
     if (loading) return <div className="p-20 text-center">Loading your cart...</div>;
 
@@ -42,24 +48,44 @@ export default function Cart() {
                 <div className="lg:col-span-2 space-y-4">
                     {cartItems.map((item) => (
                         <div key={item.id} className="flex items-center justify-between p-6 bg-white rounded-2xl border border-cream-200">
-                            <div>
-                                <h3 className="font-semibold">{item.name}</h3>
-                                <p className="text-sage-500">RM{item.price}</p>
+                            <div className="flex gap-4 items-center">
+                                {/* Trash Icon Button for Removing Items */}
+                                <button 
+                                    onClick={() => removeFromCart(item.id)}
+                                    className="p-2 text-sage-300 hover:text-red-500 transition-colors"
+                                    title="Remove item"
+                                >
+                                    <Trash2 className="w-5 h-5" />
+                                </button>
+                                <div>
+                                    <h3 className="font-semibold text-sage-800">{item.name}</h3>
+                                    <p className="text-sage-500">RM{item.price}</p>
+                                </div>
                             </div>
+                            
                             <div className="flex items-center gap-4">
-                                <button onClick={() => addToCart(item.id, 1)} className="p-1 border rounded"><Plus className="w-4 h-4"/></button>
-                                <span>{item.quantity}</span>
-                                <p className="font-bold w-20 text-right">RM{item.itemTotal.toFixed(2)}</p>
+                                <div className="flex items-center border border-cream-200 rounded-lg">
+                                    <button className="p-2 hover:bg-cream-50"><Minus className="w-4 h-4"/></button>
+                                    <span className="px-3">{item.quantity}</span>
+                                    <button onClick={() => addToCart(item.id, 1)} className="p-2 hover:bg-cream-50"><Plus className="w-4 h-4"/></button>
+                                </div>
+                                <p className="font-bold w-20 text-right text-sage-900">RM{item.itemTotal.toFixed(2)}</p>
                             </div>
                         </div>
                     ))}
                 </div>
-                <div className="bg-sage-50 p-8 rounded-3xl h-fit">
-                    <h2 className="text-xl font-bold mb-4">Summary</h2>
-                    <div className="flex justify-between text-xl font-bold border-t pt-4">
+                
+                <div className="bg-sage-50 p-8 rounded-3xl h-fit border border-sage-100">
+                    <h2 className="text-xl font-bold mb-4 text-sage-800">Summary</h2>
+                    <div className="flex justify-between text-xl font-bold border-t border-sage-200 pt-4 text-sage-900">
                         <span>Total</span><span>RM{grandTotal.toFixed(2)}</span>
                     </div>
-                    <button className="w-full btn-primary mt-8 py-4">Checkout</button>
+                    <button 
+                        onClick={handleCheckout}
+                        className="w-full btn-primary mt-8 py-4 shadow-lg shadow-sage-200"
+                    >
+                        Checkout
+                    </button>
                 </div>
             </div>
         </div>
