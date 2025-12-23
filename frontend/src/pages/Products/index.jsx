@@ -2,6 +2,7 @@ import {useState} from 'react';
 import {useSearchParams} from 'react-router-dom';
 import ProductCard from './ProductCard';
 import {Funnel} from 'lucide-react';
+import {AnimatePresence, motion} from "framer-motion";
 
 export default function Products() {
     const [isAgeFilterOpen, setIsAgeFilterOpen] = useState(false);
@@ -195,11 +196,16 @@ export default function Products() {
 
             {/* Product Grid */}
             {hasResults ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                    {filteredProducts.map((product) => (
-                        <ProductCard key={product.id} product={product}/>
-                    ))}
-                </div>
+                <motion.div
+                    layout
+                    className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
+                >
+                    <AnimatePresence>
+                        {filteredProducts.map((product) => (
+                            <ProductCard key={product.id} product={product}/>
+                        ))}
+                    </AnimatePresence>
+                </motion.div>
             ) : (
                 <div className={"text-center py-16"}>
                     <p className="text-lg font-medium text-sage-700">
