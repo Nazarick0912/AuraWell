@@ -115,10 +115,14 @@ public class DataManager {
     }
 
     private void loadAll() {
-        this.products = loadListFromFile("products.json", new TypeToken<List<Product>>() {}.getType());
-        this.users = loadListFromFile("users.json", new TypeToken<List<User>>() {}.getType());
-        this.carts = loadListFromFile("carts.json", new TypeToken<List<Cart>>() {}.getType());
-        this.orders = loadListFromFile("orders.json", new TypeToken<List<Order>>() {}.getType());
+        this.products = loadListFromFile("products.json", new TypeToken<List<Product>>() {
+        }.getType());
+        this.users = loadListFromFile("users.json", new TypeToken<List<User>>() {
+        }.getType());
+        this.carts = loadListFromFile("carts.json", new TypeToken<List<Cart>>() {
+        }.getType());
+        this.orders = loadListFromFile("orders.json", new TypeToken<List<Order>>() {
+        }.getType());
 
         System.out.println("[DataManager] Loaded products=" + products.size()
                 + ", users=" + users.size()
@@ -200,7 +204,9 @@ public class DataManager {
 
     public synchronized boolean deleteProduct(String id) {
         boolean removed = products.removeIf(p -> p.getId().equals(id));
-        if (removed) { saveProducts(); }
+        if (removed) {
+            saveProducts();
+        }
         return removed;
     }
 
@@ -216,7 +222,9 @@ public class DataManager {
 
     public synchronized Optional<User> register(User newUser) {
         boolean exists = users.stream().anyMatch(u -> u.getEmail().equalsIgnoreCase(newUser.getEmail()));
-        if (exists) { return Optional.empty(); }
+        if (exists) {
+            return Optional.empty();
+        }
         users.add(newUser);
         saveUsers();
         return Optional.of(newUser);
@@ -252,7 +260,7 @@ public class DataManager {
         for (OrderItem item : order.getItems()) {
             Optional<Product> productOpt = getProductById(item.getProductId());
             if (productOpt.isEmpty() || productOpt.get().getStock() < item.getQuantity()) {
-                return Optional.empty(); 
+                return Optional.empty();
             }
         }
 
@@ -277,12 +285,12 @@ public class DataManager {
     }
 
     public void removeItemFromCart(String userId, String productId) {
-    carts.stream()
-        .filter(c -> c.getUserId().equals(userId))
-        .findFirst()
-        .ifPresent(cart -> {
-            cart.getItems().removeIf(item -> item.getProductId().equals(productId));
-            saveCarts(); // Write the change back to carts.json
-        });
-}
+        carts.stream()
+                .filter(c -> c.getUserId().equals(userId))
+                .findFirst()
+                .ifPresent(cart -> {
+                    cart.getItems().removeIf(item -> item.getProductId().equals(productId));
+                    saveCarts(); // Write the change back to carts.json
+                });
+    }
 }

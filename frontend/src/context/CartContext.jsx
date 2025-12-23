@@ -20,7 +20,9 @@ export const CartProvider = ({ children }) => {
     const fetchCart = async () => {
         setLoading(true);
         try {
-            const response = await fetch('http://localhost:9090/api/cart', { credentials: 'include' });
+            const response = await fetch('http://localhost:9090/api/cart', { 
+                credentials: 'include' 
+            });
             if (response.ok) {
                 const data = await response.json();
                 setCart(data);
@@ -32,7 +34,7 @@ export const CartProvider = ({ children }) => {
         }
     };
 
-    //add item to cart
+    //increase or update item quantity
     const addToCart = async (productId, quantity = 1) => {
         try {
             const response = await fetch('http://localhost:9090/api/cart', {
@@ -52,8 +54,31 @@ export const CartProvider = ({ children }) => {
         return false;
     };
 
+    //remove specific product entirely from cart
+    const removeFromCart = async (productId) => {
+        try {
+            const response = await fetch(`http://localhost:9090/api/cart?productId=${productId}`, {
+                method: 'DELETE',
+                credentials: 'include'
+            });
+            
+            if (response.ok) {
+                await fetchCart(); //refresh UI after successful deletion
+                return true;
+            }
+        } catch (err) {
+            console.error("Error removing from cart:", err);
+        }
+        return false;
+    };
+
+    //local UI clear for checkout simulation
+    const clearCart = () => {
+        setCart(null);
+    };
+
     return (
-        <CartContext.Provider value={{ cart, addToCart, fetchCart, loading }}>
+        <CartContext.Provider value={{ cart, addToCart, removeFromCart, clearCart, fetchCart, loading }}>
             {children}
         </CartContext.Provider>
     );
