@@ -21,33 +21,35 @@ public class LoginServlet extends HttpServlet {
         resp.setCharacterEncoding("UTF-8");
 
         try {
+            //read the JSON body from React
             String requestBody = req.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
             User loginRequest = gson.fromJson(requestBody, User.class);
 
+            //verify using DataManager
             User user = dataManager.login(loginRequest.getEmail(), loginRequest.getPassword());
 
             if (user != null) {
+                //create session
                 HttpSession session = req.getSession();
                 session.setAttribute("userId", user.getId());
 
-                user.setPassword(null); // Security
+                user.setPassword(null);
+                
                 JsonObject jsonResponse = new JsonObject();
                 jsonResponse.addProperty("success", true);
                 jsonResponse.add("user", gson.toJsonTree(user));
                 resp.getWriter().write(gson.toJson(jsonResponse));
             } else {
+                //return 401 Unauthorized if login fails
                 resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                resp.getWriter().write("{\"success\": false, \"message\": \"Invalid credentials\"}");
+                resp.getWriter().write("{\"success\": false, \"message\": \"Invalid email or password\"}");
             }
         } catch (Exception e) {
-            e.printStackTrace(); // Keep this to see errors in your VS Code terminal
+            e.printStackTrace();
             resp.setStatus(500);
-            resp.setContentType("application/json");
-
-            // Use Gson to safely create the error JSON
             JsonObject errorObj = new JsonObject();
             errorObj.addProperty("success", false);
-            errorObj.addProperty("error", e.getClass().getSimpleName() + ": " + e.getMessage());
+            errorObj.addProperty("message", "Server error: " + e.getMessage());
             resp.getWriter().write(gson.toJson(errorObj));
         }
     }
