@@ -6,6 +6,7 @@ export default function CartDrawer({ isOpen, onClose }) {
     const navigate = useNavigate();
 
     // --- STATE ---
+    // Remember to replace these dummy data with real data
     const [cartItems, setCartItems] = useState([
         {
             id: 1,
