@@ -3,7 +3,8 @@ import {Link, useLocation, useSearchParams} from "react-router-dom";
 import logo from "../assets/logo.png";
 import {ShoppingCart} from "lucide-react";
 
-const Navbar = () => {
+// CHANGE 1: Accept the 'onCartClick' prop here
+const Navbar = ({ onCartClick }) => {
     const location = useLocation();
     const [searchParams] = useSearchParams();
     const [mobileOpen, setMobileOpen] = useState(false);
@@ -51,7 +52,15 @@ const Navbar = () => {
                 <div className="hidden md:flex items-center gap-3">
                     <Link to="/login">Sign In</Link>
                     <Link to="/signup" className="btn-primary">Get Started</Link>
-                    <ShoppingCart className="w-6 h-6 text-sage-700"/>
+
+                    {/* CHANGE 2: Wrapped the icon in a button with onClick */}
+                    <button
+                        onClick={onCartClick}
+                        className="p-2 hover:bg-cream-200/60 rounded-full transition-colors cursor-pointer"
+                        aria-label="Open Cart"
+                    >
+                        <ShoppingCart className="w-6 h-6 text-sage-700"/>
+                    </button>
                 </div>
 
                 {/* Hamburger */}
@@ -70,7 +79,7 @@ const Navbar = () => {
                 </button>
             </div>
 
-            {/* MOBILE MENU (NO overflow-hidden HERE) */}
+            {/* MOBILE MENU */}
             <div className="md:hidden transition-all duration-300 ease-out">
                 <div className={`
                   bg-cream-50 border-t border-cream-200
