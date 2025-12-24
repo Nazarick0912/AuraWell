@@ -2,6 +2,7 @@ package com.aurawell.services;
 
 import com.aurawell.models.Cart;
 import com.aurawell.models.Order;
+import com.aurawell.models.OrderItem;
 import com.aurawell.models.Product;
 import com.aurawell.models.User;
 import com.google.gson.Gson;
@@ -18,7 +19,6 @@ import java.lang.reflect.Type;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.Files;
-import java.util.Collections;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -91,7 +91,6 @@ public class DataManager {
             return;
         }
 
-        // Prefer seeding from classpath if present, else write empty JSON array.
         boolean seeded = false;
         if (classpathResource != null && !classpathResource.isBlank()) {
             try (InputStream is = getClass().getClassLoader().getResourceAsStream(classpathResource)) {
@@ -149,7 +148,7 @@ public class DataManager {
         try {
             Files.createDirectories(dataDir);
         } catch (IOException e) {
-            System.err.println("[DataManager] Cannot save " + filename + " - failed to ensure data directory: " + e.getMessage());
+            System.err.println("[DataManager] Cannot save " + filename + " - failed directory: " + e.getMessage());
             return;
         }
 
@@ -178,7 +177,6 @@ public class DataManager {
 
     public synchronized void saveProducts() {
         saveListToFile("products.json", products);
-        System.out.println("[DataManager] Saved " + products.size() + " products to: " + filePath("products.json"));
     }
 
     public synchronized Product addProduct(Product product) {
@@ -190,7 +188,6 @@ public class DataManager {
     public synchronized Optional<Product> updateProduct(String id, Product updatedProduct) {
         for (int i = 0; i < products.size(); i++) {
             if (products.get(i).getId().equals(id)) {
-                // Preserve original createdAt
                 updatedProduct.setId(id);
                 updatedProduct.setCreatedAt(products.get(i).getCreatedAt());
                 products.set(i, updatedProduct);
@@ -203,10 +200,79 @@ public class DataManager {
 
     public synchronized boolean deleteProduct(String id) {
         boolean removed = products.removeIf(p -> p.getId().equals(id));
-        if (removed) {
-            saveProducts();
-        }
+        if (removed) { saveProducts(); }
         return removed;
     }
-}
 
+    // check if the email and password match
+    public synchronized User login(String email, String password) {
+        for (User user : users) {
+            if (user.getEmail().equalsIgnoreCase(email) && user.getPassword().equals(password)) {
+                return user;
+            }
+        }
+        return null;
+    }
+
+    public synchronized Optional<User> register(User newUser) {
+        boolean exists = users.stream().anyMatch(u -> u.getEmail().equalsIgnoreCase(newUser.getEmail()));
+        if (exists) { return Optional.empty(); }
+        users.add(newUser);
+        saveUsers();
+        return Optional.of(newUser);
+    }
+
+    public synchronized Optional<User> getUserById(String id) {
+        return users.stream().filter(u -> u.getId().equals(id)).findFirst();
+    }
+
+    public synchronized void saveUsers() {
+        saveListToFile("users.json", users);
+        System.out.println("[DataManager] Saved " + users.size() + " users.");
+    }
+
+    public synchronized Cart getCartByUserId(String userId) {
+        return carts.stream()
+                .filter(c -> c.getUserId().equals(userId))
+                .findFirst()
+                .orElseGet(() -> {
+                    Cart newCart = new Cart(userId);
+                    carts.add(newCart);
+                    return newCart;
+                });
+    }
+
+    public synchronized void saveCarts() {
+        saveListToFile("carts.json", carts);
+        System.out.println("[DataManager] Saved " + carts.size() + " carts.");
+    }
+
+    public synchronized Optional<Order> placeOrder(Order order) {
+        // Check stock
+        for (OrderItem item : order.getItems()) {
+            Optional<Product> productOpt = getProductById(item.getProductId());
+            if (productOpt.isEmpty() || productOpt.get().getStock() < item.getQuantity()) {
+                return Optional.empty(); 
+            }
+        }
+
+        // Deduct stock
+        for (OrderItem item : order.getItems()) {
+            getProductById(item.getProductId()).ifPresent(p -> {
+                p.setStock(p.getStock() - item.getQuantity());
+            });
+        }
+
+        // Add and save
+        orders.add(order);
+        saveListToFile("orders.json", orders);
+        saveProducts();
+        return Optional.of(order);
+    }
+
+    public synchronized List<Order> getOrdersByUserId(String userId) {
+        return orders.stream()
+                .filter(o -> o.getUserId().equals(userId))
+                .toList();
+    }
+}
