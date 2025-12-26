@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { X, Trash2, Minus, Plus, ArrowRight, ShoppingBag, Leaf, AlertCircle } from 'lucide-react';
-import { useCart } from '../contexts/CartContext';
-import { useAuth } from '../contexts/AuthContext';
+import { useCart } from '../../contexts/CartContext';
+import { useAuth } from '../../contexts/AuthContext';
 
 export default function CartDrawer({ isOpen, onClose }) {
     const navigate = useNavigate();
     const { user } = useAuth();
     const { cart, addToCart, removeFromCart, loading } = useCart();
-    
+
     const [itemToDelete, setItemToDelete] = useState(null);
 
     // Get cart items from context or use empty array
