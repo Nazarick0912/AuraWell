@@ -1,59 +1,58 @@
+import { Shield, Lock, Eye, Database } from 'lucide-react';
+import PolicyCard from '../../components/ui/PolicyCard';
+
 export default function Privacy() {
+    const sections = [
+        {
+            icon: Database,
+            title: "Information We Collect",
+            content: "We collect information you provide directly: name, email, shipping address, and payment details when you make a purchase. We also collect usage data to improve our services."
+        },
+        {
+            icon: Lock,
+            title: "How We Protect Your Data",
+            content: "Your data is encrypted using industry-standard SSL technology. We never store complete payment information on our servers and use trusted payment processors."
+        },
+        {
+            icon: Eye,
+            title: "How We Use Your Information",
+            content: "We use your information to process orders, send order updates, improve our products and services, and occasionally send promotional emails (you can opt out anytime)."
+        },
+        {
+            icon: Shield,
+            title: "Your Rights",
+            content: "You can request access to, correction of, or deletion of your personal data at any time. Contact us at privacy@aurawell.com for any privacy-related requests."
+        }
+    ];
+
     return (
-        <div className="p-8 max-w-4xl mx-auto">
-            <h1 className="text-3xl font-display font-bold mb-6 text-sage-600">Privacy Policy</h1>
-            <p className="mb-4 text-sage-600">Last Updated: {new Date().toLocaleString("en-US", {
-                month: "long",
-                year: "numeric",
-            })}</p>
+        <div className="min-h-screen bg-cream-50">
+            {/* Header */}
+            <div className="bg-cream-50 pt-12 pb-6">
+                <div className="max-w-4xl mx-auto px-6 text-center">
+                    <Shield className="w-10 h-10 mx-auto mb-3 text-sage-500" />
+                    <h1 className="text-3xl font-display font-bold text-sage-800 mb-2">Privacy Policy</h1>
+                    <p className="text-sage-500 text-sm">Last updated: December 2025</p>
+                </div>
+            </div>
 
-            <section className="mb-6">
-                <h2 className="text-xl font-display font-bold mb-2 text-sage-600">1. Information We Collect</h2>
-                <p className="mb-2 text-sage-800">We collect information that you voluntarily provide to us,
-                    including:</p>
-                <ul className="list-disc pl-5 space-y-1 text-sage-700">
-                    <li><strong>Personal Information:</strong> First name, last name, and email address when you
-                        register an account.
-                    </li>
-                    <li><strong>Order Information:</strong> Shipping address and purchase history when you buy products.
-                    </li>
-                    <li><strong>Usage Data:</strong> Information about how you interact with our website.</li>
-                </ul>
-            </section>
-
-            <section className="mb-6">
-                <h2 className="text-xl font-display font-bold mb-2 text-sage-600">2. How We Use Your Information</h2>
-                <p className="text-sage-800">We use your data for the following purposes:</p>
-                <ul className="list-disc pl-5 space-y-1 mt-2 text-sage-700">
-                    <li>To process and fulfill your orders for vitamins and supplements.</li>
-                    <li>To manage your account and authentication.</li>
-                    <li>To communicate with you regarding your orders or policy updates.</li>
-                </ul>
-            </section>
-
-            <section className="mb-6">
-                <h2 className="text-xl font-display font-bold mb-2 text-sage-600">3. Data Security</h2>
-                <p className="text-sage-800">
-                    We implement appropriate security measures to protect your personal information. However, no method
-                    of transmission over the Internet is 100% secure.
+            {/* Content */}
+            <div className="max-w-4xl mx-auto px-6 pb-12">
+                <p className="text-sage-600 mb-6 text-center text-sm">
+                    At AuraWell, we value your privacy and are committed to protecting your personal information.
                 </p>
-            </section>
 
-            <section className="mb-6">
-                <h2 className="text-xl font-display font-bold mb-2 text-sage-600">4. Third-Party Services</h2>
-                <p className="text-sage-800">
-                    We may share your data with third-party vendors solely for the purpose of payment processing and
-                    shipping delivery. We do not sell your personal data to advertisers.
-                </p>
-            </section>
-
-            <section className="mb-6">
-                <h2 className="text-xl font-display font-bold mb-2 text-sage-600">5. Your Rights</h2>
-                <p className="text-sage-800">
-                    You have the right to access, correct, or delete your personal information. Please contact us if you
-                    wish to exercise these rights.
-                </p>
-            </section>
+                <div className="space-y-6">
+                    {sections.map((section, index) => (
+                        <PolicyCard
+                            key={index}
+                            icon={section.icon}
+                            title={section.title}
+                            content={section.content}
+                        />
+                    ))}
+                </div>
+            </div>
         </div>
     );
 }
