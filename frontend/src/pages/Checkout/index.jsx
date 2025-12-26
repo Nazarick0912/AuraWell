@@ -5,7 +5,6 @@ import { Link } from 'react-router-dom';
 export default function Checkout() {
     const [shippingMethod, setShippingMethod] = useState('standard');
 
-    // State for Mobile Order Summary Toggle
     const [isSummaryOpen, setIsSummaryOpen] = useState(false);
 
     // Dummy Data
@@ -36,12 +35,12 @@ export default function Checkout() {
     return (
         <div className="min-h-screen bg-white font-sans text-sage-900">
 
-            {/* --- MOBILE ORDER SUMMARY (Phone Only) --- */}
+            {/* MOBILE ORDER SUMMARY */}
             <div className={`lg:hidden border-b border-stone-200 bg-stone-50 transition-all duration-300 ease-in-out overflow-hidden ${isSummaryOpen ? 'max-h-[1000px]' : 'max-h-16'}`}>
                 <button
                     onClick={() => setIsSummaryOpen(!isSummaryOpen)}
                     className="w-full flex items-center justify-between p-4 text-sm font-medium text-[#3A4D39]"
-                >
+                    >
                     <div className="flex items-center gap-2">
                         <span className="text-stone-500">
                             {isSummaryOpen ? 'Hide' : 'Show'} order summary
@@ -112,7 +111,7 @@ export default function Checkout() {
 
                         <div className="space-y-12">
 
-                            {/* 1. Contact Info */}
+                            {/* 1. Contact Information */}
                             <section>
                                 <div className="flex flex-col sm:flex-row sm:justify-between sm:items-baseline mb-4 gap-2">
                                     <h2 className="font-display text-xl font-bold flex items-center gap-3 text-[#3A4D39]">
@@ -234,13 +233,10 @@ export default function Checkout() {
                         </div>
                     </div>
 
-                    {/* --- RIGHT COLUMN: ORDER SUMMARY CARD (Span 5) --- */}
+                    {/* --- Order Summary --- */}
                     <div className="hidden lg:block lg:col-span-5 order-1 lg:order-2">
                         <div className="sticky top-24">
-
-                            {/* THE CARD ITSELF */}
                             <div className="bg-[#3A4D39] text-cream-50 rounded-3xl p-8 shadow-2xl">
-
                                 <h3 className="font-display text-lg font-bold text-white mb-6">Order Summary</h3>
 
                                 {/* Item List */}

@@ -4,7 +4,7 @@ import {
     Package, Plus, Search, Filter,
     AlertCircle, CheckCircle2, Archive, X, UploadCloud,
     MoreHorizontal, Pencil, Trash2, FileText, Power,
-    LogOut // Imported LogOut icon
+    LogOut
 } from 'lucide-react';
 
 export default function AdminPanel() {
@@ -17,12 +17,10 @@ export default function AdminPanel() {
         { id: 3, name: "Magnesium Glycinate Sleep Blend", category: "Supplements", price: 45.00, stock: 0, status: "Draft", image: "https://images.unsplash.com/photo-1550572017-edd951aa8f72?auto=format&fit=crop&q=80&w=200", description: "Sleep aid supplement.", ageGroup: "Adult" },
     ]);
 
-    // --- STATE MANAGEMENT ---
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [openActionMenuId, setOpenActionMenuId] = useState(null);
     const [isEditing, setIsEditing] = useState(false);
 
-    // Form State
     const initialFormState = {
         id: null,
         name: '',
@@ -98,7 +96,6 @@ export default function AdminPanel() {
         setOpenActionMenuId(null);
     };
 
-    // --- NEW LOGOUT HANDLER ---
     const handleLogout = () => {
         if(window.confirm("Are you sure you want to sign out?")) {
             navigate('/login');
@@ -132,7 +129,6 @@ export default function AdminPanel() {
                     </button>
                 </nav>
                 <div className="border-t border-stone-100 pt-4">
-                     {/* REPLACED SETTINGS WITH SIGN OUT BUTTON */}
                      <button
                         onClick={handleLogout}
                         className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sage-600 hover:bg-red-50 hover:text-red-600 transition-colors font-medium"
@@ -261,7 +257,7 @@ export default function AdminPanel() {
                 </div>
             </main>
 
-            {/* --- ADD / EDIT PRODUCT MODAL --- */}
+            {/* --- ADD / EDIT PRODUCT --- */}
             {isAddModalOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6" onClick={(e) => e.stopPropagation()}>
                     <div className="absolute inset-0 bg-sage-900/40 backdrop-blur-sm" onClick={() => setIsAddModalOpen(false)}></div>

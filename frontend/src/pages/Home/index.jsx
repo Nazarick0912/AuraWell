@@ -6,8 +6,6 @@ export default function Home(){
     return (
         <main>
            <HeroSection/>
-
-           {/* This adds the fancy section ONLY to the Home page */}
            <TrustAndTestimonials />
 
         </main>
