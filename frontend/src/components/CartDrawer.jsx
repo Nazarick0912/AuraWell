@@ -1,55 +1,47 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { X, Trash2, Minus, Plus, ArrowRight, ShoppingBag, Leaf, AlertCircle } from 'lucide-react';
+import { useCart } from '../contexts/CartContext';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function CartDrawer({ isOpen, onClose }) {
     const navigate = useNavigate();
-
-    // --- STATE ---
-    // Remember to replace these dummy data with real data
-    const [cartItems, setCartItems] = useState([
-        {
-            id: 1,
-            name: "Organic Lavender Oil",
-            price: 24.00,
-            image: "https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?auto=format&fit=crop&q=80&w=200",
-            qty: 1
-        },
-        {
-            id: 2,
-            name: "Vitamin C Complex",
-            price: 32.50,
-            image: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&q=80&w=200",
-            qty: 2
-        }
-    ]);
-
+    const { user } = useAuth();
+    const { cart, addToCart, removeFromCart, loading } = useCart();
+    
     const [itemToDelete, setItemToDelete] = useState(null);
 
+    // Get cart items from context or use empty array
+    const cartItems = cart?.items || [];
+
     // --- HELPER LOGIC ---
-    const subtotal = cartItems.reduce((total, item) => total + (item.price * item.qty), 0);
+    const subtotal = cartItems.reduce((total, item) => {
+        // If we have price info from backend, use it
+        const price = item.price || 0;
+        return total + (price * item.quantity);
+    }, 0);
 
     // This is the amount of purchase needed to get the free shipping (RM100)
     const freeShippingThreshold = 100;
     const progress = Math.min((subtotal / freeShippingThreshold) * 100, 100);
 
-    const updateQty = (id, change) => {
-        setCartItems(items => items.map(item => {
-            if (item.id === id) {
-                const newQty = item.qty + change;
-                return newQty > 0 ? { ...item, qty: newQty } : item;
-            }
-            return item;
-        }));
+    const updateQty = async (productId, change) => {
+        if (change > 0) {
+            await addToCart(productId, change);
+        } else if (change < 0) {
+            // For decreasing, we'll need to handle this differently
+            // For now, we can add negative (the backend should handle this)
+            await addToCart(productId, change);
+        }
     };
 
-    const requestRemove = (id) => {
-        setItemToDelete(id);
+    const requestRemove = (productId) => {
+        setItemToDelete(productId);
     };
 
-    const confirmRemove = () => {
+    const confirmRemove = async () => {
         if (itemToDelete) {
-            setCartItems(items => items.filter(item => item.id !== itemToDelete));
+            await removeFromCart(itemToDelete);
             setItemToDelete(null);
         }
     };
@@ -61,6 +53,11 @@ export default function CartDrawer({ isOpen, onClose }) {
     const handleStartShopping = () => {
         onClose();
         navigate('/products');
+    };
+
+    const handleLogin = () => {
+        onClose();
+        navigate('/login');
     };
 
     if (!isOpen) return null;
@@ -95,7 +92,6 @@ export default function CartDrawer({ isOpen, onClose }) {
                         <div className="mt-2 animate-in fade-in slide-in-from-top-2 duration-500">
                             <p className="text-xs text-sage-600 mb-2 font-medium tracking-wide">
                                 {progress < 100
-                                    // UPDATED CURRENCY HERE
                                     ? <span>You are <span className="font-bold text-sage-800">RM {(freeShippingThreshold - subtotal).toFixed(2)}</span> away from free shipping.</span>
                                     : <span className="text-emerald-700 font-bold flex items-center gap-1"><Leaf size={12}/> You've unlocked Free Shipping!</span>
                                 }
@@ -141,8 +137,33 @@ export default function CartDrawer({ isOpen, onClose }) {
                         </div>
                     )}
 
-                    {/* --- EMPTY STATE --- */}
-                    {cartItems.length === 0 ? (
+                    {/* --- NOT LOGGED IN STATE --- */}
+                    {!user ? (
+                        <div className="flex flex-col items-center justify-center h-full text-center pb-20">
+                            <div className="w-24 h-24 bg-gradient-to-br from-cream-100 to-white rounded-full flex items-center justify-center mb-6 shadow-sm border border-white">
+                                <ShoppingBag size={32} className="text-sage-400 opacity-80 ml-1" />
+                            </div>
+                            <h3 className="font-display text-2xl font-bold text-sage-900 mb-2">
+                                Sign in to view your cart
+                            </h3>
+                            <p className="text-sage-500 max-w-[250px] mx-auto mb-8 leading-relaxed text-sm">
+                                Login to add items and manage your shopping cart.
+                            </p>
+                            <button
+                                onClick={handleLogin}
+                                className="bg-sage-900 text-cream-50 px-8 py-3.5 rounded-full font-medium text-sm hover:bg-sage-800 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 flex items-center gap-2"
+                            >
+                                Sign In <ArrowRight size={16} />
+                            </button>
+                        </div>
+                    ) : loading ? (
+                        // Loading state
+                        <div className="flex flex-col items-center justify-center h-full text-center pb-20">
+                            <div className="w-8 h-8 border-2 border-sage-300 border-t-sage-600 rounded-full animate-spin mb-4"></div>
+                            <p className="text-sage-500">Loading cart...</p>
+                        </div>
+                    ) : cartItems.length === 0 ? (
+                        // --- EMPTY STATE ---
                         <div className="flex flex-col items-center justify-center h-full text-center pb-20">
                             <div className="w-24 h-24 bg-gradient-to-br from-cream-100 to-white rounded-full flex items-center justify-center mb-6 shadow-sm border border-white">
                                 <ShoppingBag size={32} className="text-sage-400 opacity-80 ml-1" />
@@ -163,39 +184,48 @@ export default function CartDrawer({ isOpen, onClose }) {
                     ) : (
                         // --- LIST ITEMS ---
                         cartItems.map((item) => (
-                            <div key={item.id} className="flex gap-4 group bg-white p-4 rounded-2xl border border-transparent hover:border-sage-200 hover:shadow-sm transition-all duration-300">
-                                {/* Image */}
-                                <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-xl bg-stone-50 border border-stone-100">
-                                    <img
-                                        src={item.image}
-                                        alt={item.name}
-                                        className="h-full w-full object-cover mix-blend-multiply group-hover:scale-105 transition-transform duration-500"
-                                    />
+                            <div key={item.productId} className="flex gap-4 group bg-white p-4 rounded-2xl border border-transparent hover:border-sage-200 hover:shadow-sm transition-all duration-300">
+                                {/* Image placeholder or actual image */}
+                                <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-xl bg-stone-50 border border-stone-100 flex items-center justify-center">
+                                    {item.image ? (
+                                        <img
+                                            src={item.image}
+                                            alt={item.productName || 'Product'}
+                                            className="h-full w-full object-cover mix-blend-multiply group-hover:scale-105 transition-transform duration-500"
+                                        />
+                                    ) : (
+                                        <ShoppingBag size={24} className="text-sage-300" />
+                                    )}
                                 </div>
 
                                 {/* Details */}
                                 <div className="flex flex-1 flex-col justify-between py-1">
                                     <div className="flex justify-between items-start gap-2">
                                         <div>
-                                            <h3 className="text-base font-bold text-sage-900 leading-tight">{item.name}</h3>
-                                            <p className="text-xs text-sage-500 mt-1">50ml Bottle</p>
+                                            <h3 className="text-base font-bold text-sage-900 leading-tight">
+                                                {item.productName || `Product #${item.productId}`}
+                                            </h3>
+                                            <p className="text-xs text-sage-500 mt-1">Qty: {item.quantity}</p>
                                         </div>
-                                        {/* UPDATED CURRENCY HERE */}
-                                        <p className="font-bold text-sage-900 text-sm">RM {(item.price * item.qty).toFixed(2)}</p>
+                                        {item.price && (
+                                            <p className="font-bold text-sage-900 text-sm">
+                                                RM {(item.price * item.quantity).toFixed(2)}
+                                            </p>
+                                        )}
                                     </div>
 
                                     {/* Controls */}
                                     <div className="flex items-center justify-between mt-2">
                                         <div className="flex items-center bg-stone-50 rounded-lg border border-stone-200 h-8">
                                             <button
-                                                onClick={() => updateQty(item.id, -1)}
+                                                onClick={() => updateQty(item.productId, -1)}
                                                 className="w-8 h-full flex items-center justify-center text-sage-500 hover:text-sage-900 hover:bg-white rounded-l-lg transition-colors"
                                             >
                                                 <Minus size={12} />
                                             </button>
-                                            <span className="w-8 text-center text-sm font-semibold text-sage-900">{item.qty}</span>
+                                            <span className="w-8 text-center text-sm font-semibold text-sage-900">{item.quantity}</span>
                                             <button
-                                                onClick={() => updateQty(item.id, 1)}
+                                                onClick={() => updateQty(item.productId, 1)}
                                                 className="w-8 h-full flex items-center justify-center text-sage-500 hover:text-sage-900 hover:bg-white rounded-r-lg transition-colors"
                                             >
                                                 <Plus size={12} />
@@ -203,7 +233,7 @@ export default function CartDrawer({ isOpen, onClose }) {
                                         </div>
 
                                         <button
-                                            onClick={() => requestRemove(item.id)}
+                                            onClick={() => requestRemove(item.productId)}
                                             className="text-xs font-medium text-stone-400 hover:text-red-500 transition-colors p-2 hover:bg-red-50 rounded-lg"
                                             title="Remove item"
                                         >
@@ -217,12 +247,11 @@ export default function CartDrawer({ isOpen, onClose }) {
                 </div>
 
                 {/* --- FOOTER --- */}
-                {cartItems.length > 0 && (
+                {user && cartItems.length > 0 && (
                     <div className="border-t border-stone-100 p-6 bg-white">
                         <div className="space-y-3 mb-6">
                             <div className="flex justify-between text-sm text-sage-600">
                                 <p>Subtotal</p>
-                                {/* UPDATED CURRENCY HERE */}
                                 <p className="font-bold text-sage-900">RM {subtotal.toFixed(2)}</p>
                             </div>
                             <div className="flex justify-between text-sm text-sage-600">
@@ -242,7 +271,6 @@ export default function CartDrawer({ isOpen, onClose }) {
                         >
                             <span>Checkout</span>
                             <span className="flex items-center gap-2 group-hover:translate-x-1 transition-transform">
-                                {/* UPDATED CURRENCY HERE */}
                                 RM {subtotal.toFixed(2)} <ArrowRight size={16} />
                             </span>
                         </button>

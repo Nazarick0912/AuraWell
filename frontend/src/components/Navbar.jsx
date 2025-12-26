@@ -1,13 +1,19 @@
 import React, {useState} from "react";
 import {Link, useLocation, useSearchParams} from "react-router-dom";
 import logo from "../assets/logo.png";
-import {ShoppingCart} from "lucide-react";
+import {ShoppingCart, LogOut, User as UserIcon} from "lucide-react";
+import { useAuth } from "../contexts/AuthContext";
+import { useCart } from "../contexts/CartContext";
 
 // Accept the 'onCartClick' prop
 const Navbar = ({ onCartClick }) => {
     const location = useLocation();
     const [searchParams] = useSearchParams();
     const [mobileOpen, setMobileOpen] = useState(false);
+    
+    // Auth & Cart context
+    const { user, logout } = useAuth();
+    const { cart } = useCart();
 
     const isProductPage = location.pathname === "/products";
     const activeCategory = searchParams.get("category");
@@ -18,6 +24,9 @@ const Navbar = ({ onCartClick }) => {
     };
 
     const closeMobile = () => setMobileOpen(false);
+
+    // Calculate total cart items count
+    const cartCount = cart?.items?.reduce((sum, item) => sum + item.quantity, 0) || 0;
 
     return (
         <nav className="
@@ -50,15 +59,40 @@ const Navbar = ({ onCartClick }) => {
 
                 {/* Desktop Actions (Hidden on Mobile) */}
                 <div className="hidden md:flex items-center gap-3">
-                    <Link to="/login">Sign In</Link>
-                    <Link to="/signup" className="btn-primary">Get Started</Link>
+                    {user ? (
+                        // Logged in state
+                        <div className="flex items-center gap-4">
+                            <div className="flex items-center gap-2 text-sage-800">
+                                <UserIcon className="w-5 h-5" />
+                                <span className="font-medium">Hi, {user.firstName}</span>
+                            </div>
+                            <button 
+                                onClick={logout}
+                                className="flex items-center gap-1 text-sage-600 hover:text-red-600 transition text-sm font-medium"
+                            >
+                                <LogOut className="w-4 h-4" />
+                                Logout
+                            </button>
+                        </div>
+                    ) : (
+                        // Logged out state
+                        <>
+                            <Link to="/login">Sign In</Link>
+                            <Link to="/signup" className="btn-primary">Get Started</Link>
+                        </>
+                    )}
 
                     <button
                         onClick={onCartClick}
-                        className="p-2 hover:bg-cream-200/60 rounded-full transition-colors cursor-pointer"
+                        className="relative p-2 hover:bg-cream-200/60 rounded-full transition-colors cursor-pointer"
                         aria-label="Open Cart"
                     >
                         <ShoppingCart className="w-6 h-6 text-sage-700"/>
+                        {cartCount > 0 && (
+                            <span className="absolute top-0 right-0 bg-sage-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center border-2 border-cream-50">
+                                {cartCount}
+                            </span>
+                        )}
                     </button>
                 </div>
 
@@ -67,10 +101,15 @@ const Navbar = ({ onCartClick }) => {
                     {/* 1. Mobile Cart Button */}
                     <button
                         onClick={onCartClick}
-                        className="p-2 hover:bg-cream-200/60 rounded-full transition-colors"
+                        className="relative p-2 hover:bg-cream-200/60 rounded-full transition-colors"
                         aria-label="Open Cart"
                     >
                         <ShoppingCart className="w-6 h-6 text-sage-700"/>
+                        {cartCount > 0 && (
+                            <span className="absolute top-0 right-0 bg-sage-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center border-2 border-cream-50">
+                                {cartCount}
+                            </span>
+                        )}
                     </button>
 
                     {/* 2. Hamburger Button */}
@@ -111,17 +150,40 @@ const Navbar = ({ onCartClick }) => {
                         ))}
 
                         <li className="pt-4 border-t border-cream-200">
-                            <Link to="/login" onClick={closeMobile}
-                                  className="block w-full py-3 rounded-lg bg-cream-200 text-sage-800 font-medium text-center"
-                            >
-                                Sign In
-                            </Link>
+                            {user ? (
+                                // Logged in mobile state
+                                <div className="space-y-3">
+                                    <div className="flex items-center gap-2 text-sage-800 py-2">
+                                        <UserIcon className="w-5 h-5" />
+                                        <span className="font-medium">Hi, {user.firstName}</span>
+                                    </div>
+                                    <button
+                                        onClick={() => {
+                                            closeMobile();
+                                            logout();
+                                        }}
+                                        className="flex items-center gap-2 w-full py-3 rounded-lg bg-red-50 text-red-600 font-medium justify-center"
+                                    >
+                                        <LogOut className="w-4 h-4" />
+                                        Logout
+                                    </button>
+                                </div>
+                            ) : (
+                                // Logged out mobile state
+                                <>
+                                    <Link to="/login" onClick={closeMobile}
+                                          className="block w-full py-3 rounded-lg bg-cream-200 text-sage-800 font-medium text-center"
+                                    >
+                                        Sign In
+                                    </Link>
 
-                            <Link to="/signup" onClick={closeMobile}
-                                  className="btn-primary w-full text-center mt-3 inline-block"
-                            >
-                                Get Started
-                            </Link>
+                                    <Link to="/signup" onClick={closeMobile}
+                                          className="btn-primary w-full text-center mt-3 inline-block"
+                                    >
+                                        Get Started
+                                    </Link>
+                                </>
+                            )}
                         </li>
                     </ul>
                 </div>
