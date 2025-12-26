@@ -41,7 +41,7 @@ export default function TrustAndTestimonials() {
 
                         <div className='bg-white/5 backdrop-blur-md p-6 rounded-xl border border-white/10 shadow-lg hover:bg-white/10 hover:border-white/20 hover:-translate-y-1 transition-all duration-300 group'>
                             <p className='italic text-sage-100 text-sm mb-4 group-hover:text-white transition-colors'>"The aromatherapy oils have completely changed my nightly routine. I've never slept better!"</p>
-                            <span className='text-xs font-bold text-sage-400 group-hover:text-sage-200 uppercase tracking-wider'>- Sarah J.</span>
+                            <span className='text-xs font-bold text-sage-400 group-hover:text-sage-200 uppercase tracking-wider'>- Choong SQ</span>
                         </div>
 
                         <div className='bg-white/5 backdrop-blur-md p-6 rounded-xl border border-white/10 shadow-lg hover:bg-white/10 hover:border-white/20 hover:-translate-y-1 transition-all duration-300 group'>
@@ -51,12 +51,12 @@ export default function TrustAndTestimonials() {
 
                         <div className='bg-white/5 backdrop-blur-md p-6 rounded-xl border border-white/10 shadow-lg hover:bg-white/10 hover:border-white/20 hover:-translate-y-1 transition-all duration-300 group'>
                             <p className='italic text-sage-100 text-sm mb-4 group-hover:text-white transition-colors'>"Shipping was incredibly fast, and the packaging is eco-friendly. Truly a brand that cares."</p>
-                            <span className='text-xs font-bold text-sage-400 group-hover:text-sage-200 uppercase tracking-wider'>- Emily R.</span>
+                            <span className='text-xs font-bold text-sage-400 group-hover:text-sage-200 uppercase tracking-wider'>- Emily Wong</span>
                         </div>
 
                         <div className='bg-white/5 backdrop-blur-md p-6 rounded-xl border border-white/10 shadow-lg hover:bg-white/10 hover:border-white/20 hover:-translate-y-1 transition-all duration-300 group'>
-                            <p className='italic text-sage-100 text-sm mb-4 group-hover:text-white transition-colors'>"The customer support team helped me pick the right supplements for my diet. Recommended!"</p>
-                            <span className='text-xs font-bold text-sage-400 group-hover:text-sage-200 uppercase tracking-wider'>- David K.</span>
+                            <p className='italic text-sage-100 text-sm mb-4 group-hover:text-white transition-colors'>"My skin usually hates new products, but this Vitamin C is gentle. Noticed a glow after just a week. Love it!"</p>
+                            <span className='text-xs font-bold text-sage-400 group-hover:text-sage-200 uppercase tracking-wider'>- Jack Tan</span>
                         </div>
 
                     </div>
