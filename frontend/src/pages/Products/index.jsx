@@ -1,72 +1,76 @@
-import {useState} from 'react';
-import {useSearchParams} from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import ProductCard from './ProductCard';
-import {Funnel} from 'lucide-react';
-import {AnimatePresence, motion} from "framer-motion";
+import { Funnel, Loader2 } from 'lucide-react';
+import { AnimatePresence, motion } from "framer-motion";
+import { productsAPI } from '../../services/api';
 
 export default function Products() {
+    const [products, setProducts] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState(null);
     const [isAgeFilterOpen, setIsAgeFilterOpen] = useState(false);
     const [searchParams, setSearchParams] = useSearchParams();
+    
     const category = searchParams.get('category');
     const age = searchParams.get('age');
 
     const CATEGORIES = [
-        {label: "All", value: null},
-        {label: "Vitamins", value: "vitamins"},
-        {label: "Supplements", value: "supplements"},
-        {label: "Aromatherapy", value: "aromatherapy"},
-    ];
-    const PRODUCTS = [
-        {
-            id: 1,
-            name: "Vitamin D3 1000IU",
-            category: "vitamins",
-            price: 24.99,
-            ageGroup: "Adults",
-            image: "/productCard/vitD3.jpg"
-        },
-        {
-            id: 2,
-            name: "Kids Multivitamin Gummies",
-            category: "vitamins",
-            price: 19.99,
-            ageGroup: "Children",
-            image: "/productCard/gummies.jpg"
-        },
-        {
-            id: 3,
-            name: "Omega-3 Fish Oil",
-            category: "supplements",
-            price: 29.99,
-            ageGroup: "Adults",
-            image: "/productCard/fishOil.jpg"
-        },
-        {
-            id: 4,
-            name: "Lavender Essential Oil",
-            category: "aromatherapy",
-            price: 18.99,
-            ageGroup: "Universal",
-            image: "/productCard/essentialOil.jpg"
-        },
+        { label: "All", value: null },
+        { label: "Vitamins", value: "vitamins" },
+        { label: "Supplements", value: "supplements" },
+        { label: "Aromatherapy", value: "aromatherapy" },
     ];
 
     const AGE_GROUPS = [
-        {label: "All Ages", value: null},
-        {label: "Toddler", value: "toddler"},
-        {label: "Children", value: "children"},
-        {label: "Teens", value: "teens"},
-        {label: "Adults", value: "adults"},
-        {label: "Seniors", value: "seniors"},
-        {label: "Universal", value: "universal"},
+        { label: "All Ages", value: null },
+        { label: "Toddler", value: "toddler" },
+        { label: "Children", value: "child" },
+        { label: "Teens", value: "teen" },
+        { label: "Adults", value: "adult" },
+        { label: "Seniors", value: "elderly" },
+        { label: "Universal", value: "all" },
     ];
+
+    // Fetch products from backend
+    useEffect(() => {
+        const fetchProducts = async () => {
+            setIsLoading(true);
+            setError(null);
+            
+            try {
+                const data = await productsAPI.getAll(category);
+                
+                // Transform backend data to match frontend expected format
+                const transformedProducts = data.map(product => ({
+                    id: product.id,
+                    name: product.name,
+                    description: product.description,
+                    category: product.category,
+                    price: product.price,
+                    stock: product.stock,
+                    ageGroup: product.ageGroup,
+                    image: product.imageUrl, // Map imageUrl to image
+                }));
+                
+                setProducts(transformedProducts);
+            } catch (err) {
+                console.error('Failed to fetch products:', err);
+                setError('Failed to load products. Please try again.');
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchProducts();
+    }, [category]);
 
     const setCategory = (value) => {
         if (!value) {
             searchParams.delete('category');
             setSearchParams(searchParams);
         } else {
-            setSearchParams({category: value});
+            setSearchParams({ category: value });
         }
     };
 
@@ -76,22 +80,16 @@ export default function Products() {
             next.delete("age");
             setSearchParams(next);
         } else {
-            setSearchParams({category, age: value});
+            setSearchParams({ category, age: value });
         }
         setIsAgeFilterOpen(false);
     };
 
-    const filteredProducts = PRODUCTS.filter(product => {
-        const matchCategory = category
-            ? product.category === category
-            : true;
-
-        const matchAge = age
-            ? product.ageGroup.toLowerCase() === age
-            : true;
-
-        return matchCategory && matchAge;
-    })
+    // Filter products by age group (category filtering is done by backend)
+    const filteredProducts = products.filter(product => {
+        if (!age) return true;
+        return product.ageGroup?.toLowerCase() === age.toLowerCase();
+    });
 
     const hasResults = filteredProducts.length > 0;
 
@@ -107,7 +105,7 @@ export default function Products() {
             </p>
 
             <div className="flex flex-wrap gap-2 mb-6">
-                { /* Categories Filter Button */}
+                {/* Categories Filter Button */}
                 {CATEGORIES.map((cat) => {
                     const isActive =
                         cat.value === null
@@ -190,24 +188,48 @@ export default function Products() {
                         </div>
                     </div>
                 </div>
-
             )}
 
+            {/* Loading State */}
+            {isLoading && (
+                <div className="flex flex-col items-center justify-center py-20">
+                    <Loader2 className="w-8 h-8 text-sage-600 animate-spin mb-4" />
+                    <p className="text-sage-500">Loading products...</p>
+                </div>
+            )}
+
+            {/* Error State */}
+            {error && !isLoading && (
+                <div className="text-center py-16">
+                    <p className="text-lg font-medium text-red-600 mb-2">
+                        {error}
+                    </p>
+                    <button
+                        onClick={() => window.location.reload()}
+                        className="mt-4 px-6 py-2 rounded-full bg-sage-600 text-white text-sm font-medium hover:bg-sage-700 transition"
+                    >
+                        Try Again
+                    </button>
+                </div>
+            )}
 
             {/* Product Grid */}
-            {hasResults ? (
+            {!isLoading && !error && hasResults && (
                 <motion.div
                     layout
                     className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
                 >
                     <AnimatePresence>
                         {filteredProducts.map((product) => (
-                            <ProductCard key={product.id} product={product}/>
+                            <ProductCard key={product.id} product={product} />
                         ))}
                     </AnimatePresence>
                 </motion.div>
-            ) : (
-                <div className={"text-center py-16"}>
+            )}
+
+            {/* Empty State */}
+            {!isLoading && !error && !hasResults && (
+                <div className="text-center py-16">
                     <p className="text-lg font-medium text-sage-700">
                         No products found
                     </p>

@@ -1,7 +1,7 @@
-package com.aurawell.api.catalog.auth;
+package com.aurawell.api.auth;
 
 import com.aurawell.models.User;
-import com.aurawell.services.UserService;
+import com.aurawell.services.DataManager;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
@@ -17,12 +17,12 @@ import java.util.stream.Collectors;
 @WebServlet(name = "LoginServlet", urlPatterns = "/api/auth/login")
 public class LoginServlet extends HttpServlet {
 
-    private UserService userService;
+    private DataManager dataManager;
     private Gson gson;
 
     @Override
     public void init() throws ServletException {
-        this.userService = new UserService();
+        this.dataManager = DataManager.getInstance();
         this.gson = new Gson();
     }
 
@@ -45,7 +45,7 @@ public class LoginServlet extends HttpServlet {
             }
 
             // 4. Check Credentials
-            User user = userService.login(loginRequest.getEmail(), loginRequest.getPassword());
+            User user = dataManager.login(loginRequest.getEmail(), loginRequest.getPassword());
 
             if (user != null) {
                 // SUCCESS: Create Session

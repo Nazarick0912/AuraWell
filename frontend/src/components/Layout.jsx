@@ -1,8 +1,8 @@
 import React, { useState } from 'react'; // 1. Import useState
 import { Outlet } from 'react-router-dom';
-import Navbar from './Navbar';
-import Footer from './Footer';
-import CartDrawer from './CartDrawer'; // 2. Import your CartDrawer
+import Navbar from './ui/Navbar';
+import Footer from './ui/Footer';
+import CartDrawer from './ui/CartDrawer'; // 2. Import your CartDrawer
 
 export default function Layout() {
   // 3. Create the state to control the Cart (Open/Closed)
