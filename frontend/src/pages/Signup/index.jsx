@@ -1,6 +1,7 @@
 import React, {useState} from "react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff, Loader2 } from 'lucide-react';
+import { authAPI } from "../../services/api";
 
 export default function Signup(){
     const [formData, setFormData] = useState({
@@ -8,19 +9,19 @@ export default function Signup(){
         lastName: '',
         email:'',
         password:'',
-        confirmPassword:''
+        confirmPassword:'',
+        agree: false
     });
     const [showPassword, setShowPassword] = useState(false);
-    const [error, setError] = useState(false);
+    const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
-    const location = useLocation();
     const navigate = useNavigate();
 
     const handleChange = (e) => {
         setFormData({
         ...formData,
-        [e.target.name]: e.target.value,
+        [e.target.name]: e.target.type === 'checkbox' ? e.target.checked : e.target.value,
         });
     };
 
@@ -28,8 +29,8 @@ export default function Signup(){
         e.preventDefault();
         setError('');
 
-        if(formData.password != formData.confirmPassword){
-            setError('Password does not match');
+        if(formData.password !== formData.confirmPassword){
+            setError('Passwords do not match');
             return;
         }
 
@@ -41,9 +42,21 @@ export default function Signup(){
         setIsLoading(true);
 
         try{
-            navigate('/');
+            const data = await authAPI.register({
+                firstName: formData.firstName,
+                lastName: formData.lastName,
+                email: formData.email,
+                password: formData.password
+            });
+
+            if (data?.success) {
+                alert("Account created! Please sign in.");
+                navigate('/login');
+            } else {
+                setError(data?.message || 'Registration failed');
+            }
         } catch (err) {
-            setError(err instanceof Error ? err.message : 'Registration failed');
+            setError('Server connection failed. Is the backend running?');
         } finally {
             setIsLoading(false);
         }

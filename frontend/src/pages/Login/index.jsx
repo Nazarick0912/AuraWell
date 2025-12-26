@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useAuth } from "../../contexts/AuthContext";
+import { authAPI } from "../../services/api";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -9,6 +11,7 @@ export default function Login() {
 
   const navigate = useNavigate();
   const location = useLocation();
+  const { login } = useAuth();
 
   const from = location.state?.from || "/";
 
@@ -18,11 +21,18 @@ export default function Login() {
     setIsLoading(true);
 
     try {
-      // Simulate login success
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      navigate(from, { replace: true });
+      const data = await authAPI.login(email, password);
+
+      if (data?.success) {
+        // Update AuthContext state
+        login(data.user);
+        // Redirect to previous page or home
+        navigate(from, { replace: true });
+      } else {
+        setError(data?.message || "Invalid email or password");
+      }
     } catch (err) {
-      setError("Login failed");
+      setError("Server connection failed. Is the backend running?");
     } finally {
       setIsLoading(false);
     }

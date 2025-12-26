@@ -1,25 +1,17 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import logo from '../assets/logo.png';
+import logo from '../../assets/logo.png';
 
 export default function Footer() {
-    // PRESERVED: Your noise texture
     const noiseTexture = {
         backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E")`,
     };
 
     return (
-        // PRESERVED: bg-sage-900, relative, overflow-hidden
         <footer className='bg-sage-900 text-cream-100 py-12 font-sans relative overflow-hidden border-t border-white/5'>
-
-            {/* --- PRESERVED: BACKGROUND TEXTURE --- */}
             <div className='absolute inset-0 z-0 pointer-events-none' style={noiseTexture}></div>
 
-            {/* Note: I removed the large 'Glow Blobs' from here so the footer text stays clear and readable.
-                The texture keeps it matching the section above. */}
-
             <div className='max-w-7xl mx-auto px-6 lg:px-8 relative z-10'>
-
                 <div className='grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8'>
 
                     <div className='lg:col-span-4'>
@@ -37,18 +29,17 @@ export default function Footer() {
                     <div className='lg:col-span-2'>
                         <h4 className='font-bold text-white mb-6 uppercase tracking-wider text-xs'>Shop</h4>
                         <ul className='space-y-4 text-sm text-sage-300'>
-                            <li><Link to="/vitamins" className='hover:text-white transition-all duration-300 hover:translate-x-1 inline-block'>Vitamins</Link></li>
-                            <li><Link to="/supplements" className='hover:text-white transition-all duration-300 hover:translate-x-1 inline-block'>Supplements</Link></li>
-                            <li><Link to="/aromatherapy" className='hover:text-white transition-all duration-300 hover:translate-x-1 inline-block'>Aromatherapy</Link></li>
+                            <li><Link to="/products?category=vitamins" className='hover:text-white transition-all duration-300 hover:translate-x-1 inline-block'>Vitamins</Link></li>
+                            <li><Link to="/products?category=supplements" className='hover:text-white transition-all duration-300 hover:translate-x-1 inline-block'>Supplements</Link></li>
+                            <li><Link to="/products?category=aromatherapy" className='hover:text-white transition-all duration-300 hover:translate-x-1 inline-block'>Aromatherapy</Link></li>
                         </ul>
                     </div>
 
                     <div className='lg:col-span-2'>
                         <h4 className='font-bold text-white mb-6 uppercase tracking-wider text-xs'>Support</h4>
                         <ul className='space-y-4 text-sm text-sage-300'>
-                            <li><Link to="/contact" className='hover:text-white transition-all duration-300 hover:translate-x-1 inline-block'>Contact Us</Link></li>
-                            <li><Link to="/faq" className='hover:text-white transition-all duration-300 hover:translate-x-1 inline-block'>FAQs</Link></li>
-                            <li><Link to="/shipping" className='hover:text-white transition-all duration-300 hover:translate-x-1 inline-block'>Shipping Info</Link></li>
+                            <li><a href="mailto:support@aurawell.com" className='hover:text-white transition-all duration-300 hover:translate-x-1 inline-block'>Contact Us</a></li>
+                            <li><Link to="/products" className='hover:text-white transition-all duration-300 hover:translate-x-1 inline-block'>Browse Products</Link></li>
                         </ul>
                     </div>
 
@@ -62,10 +53,7 @@ export default function Footer() {
                 </div>
 
                 <div className='mt-12 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center text-xs text-sage-500 tracking-wider'>
-                    {/* Added the ™ symbol here */}
                     <p>&copy; {new Date().getFullYear()} AuraWell™. All rights reserved.</p>
-
-                    {/* You can keep "Designed for Wellness" or swap it for the legal statement */}
                     <div className='flex gap-4'>
                         <span>Designed for Wellness.</span>
                     </div>
