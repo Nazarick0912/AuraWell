@@ -3,7 +3,8 @@ import {Link, useLocation, useSearchParams} from "react-router-dom";
 import logo from "../assets/logo.png";
 import {ShoppingCart} from "lucide-react";
 
-const Navbar = () => {
+// Accept the 'onCartClick' prop
+const Navbar = ({ onCartClick }) => {
     const location = useLocation();
     const [searchParams] = useSearchParams();
     const [mobileOpen, setMobileOpen] = useState(false);
@@ -47,30 +48,49 @@ const Navbar = () => {
                     ))}
                 </ul>
 
-                {/* Desktop Actions */}
+                {/* Desktop Actions (Hidden on Mobile) */}
                 <div className="hidden md:flex items-center gap-3">
                     <Link to="/login">Sign In</Link>
                     <Link to="/signup" className="btn-primary">Get Started</Link>
-                    <ShoppingCart className="w-6 h-6 text-sage-700"/>
+
+                    <button
+                        onClick={onCartClick}
+                        className="p-2 hover:bg-cream-200/60 rounded-full transition-colors cursor-pointer"
+                        aria-label="Open Cart"
+                    >
+                        <ShoppingCart className="w-6 h-6 text-sage-700"/>
+                    </button>
                 </div>
 
-                {/* Hamburger */}
-                <button
-                    onClick={() => setMobileOpen(p => !p)}
-                    className="md:hidden w-11 h-11 flex items-center justify-center rounded-lg hover:bg-cream-200/60"
-                >
-                    <div className="relative w-6 h-6">
-                        <span className={`absolute top-[5px] left-0 w-6 h-[3px] bg-sage-800 rounded transition-all
-                         ${mobileOpen ? "rotate-45 top-[11px]" : ""}`}/>
-                        <span className={`absolute top-[11px] left-0 w-6 h-[3px] bg-sage-800 rounded transition-all
-                         ${mobileOpen ? "opacity-0" : ""}`}/>
-                        <span className={`absolute top-[17px] left-0 w-6 h-[3px] bg-sage-800 rounded transition-all
-                          ${mobileOpen ? "-rotate-45 top-[11px]" : ""}`}/>
-                    </div>
-                </button>
+                <div className="md:hidden flex items-center gap-2">
+
+                    {/* 1. Mobile Cart Button */}
+                    <button
+                        onClick={onCartClick}
+                        className="p-2 hover:bg-cream-200/60 rounded-full transition-colors"
+                        aria-label="Open Cart"
+                    >
+                        <ShoppingCart className="w-6 h-6 text-sage-700"/>
+                    </button>
+
+                    {/* 2. Hamburger Button */}
+                    <button
+                        onClick={() => setMobileOpen(p => !p)}
+                        className="w-11 h-11 flex items-center justify-center rounded-lg hover:bg-cream-200/60"
+                    >
+                        <div className="relative w-6 h-6">
+                            <span className={`absolute top-[5px] left-0 w-6 h-[3px] bg-sage-800 rounded transition-all
+                             ${mobileOpen ? "rotate-45 top-[11px]" : ""}`}/>
+                            <span className={`absolute top-[11px] left-0 w-6 h-[3px] bg-sage-800 rounded transition-all
+                             ${mobileOpen ? "opacity-0" : ""}`}/>
+                            <span className={`absolute top-[17px] left-0 w-6 h-[3px] bg-sage-800 rounded transition-all
+                              ${mobileOpen ? "-rotate-45 top-[11px]" : ""}`}/>
+                        </div>
+                    </button>
+                </div>
             </div>
 
-            {/* MOBILE MENU (NO overflow-hidden HERE) */}
+            {/* MOBILE MENU DROPDOWN */}
             <div className="md:hidden transition-all duration-300 ease-out">
                 <div className={`
                   bg-cream-50 border-t border-cream-200
