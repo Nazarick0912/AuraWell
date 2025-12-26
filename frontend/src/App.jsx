@@ -7,6 +7,7 @@ import Home from './pages/Home';
 import Terms from './pages/Terms';
 import Privacy from './pages/Privacy';
 import Products from './pages/Products';
+import Contact from './pages/Contact';
 import Checkout from './pages/Checkout';
 import AdminPanel from './pages/Admin';
 
@@ -21,6 +22,7 @@ function App() {
                     <Route path="signup" element={<Signup/>}/>
                     <Route path="terms" element={<Terms/>}/>
                     <Route path="privacy" element={<Privacy/>}/>
+                    <Route path="contact" element={<Contact/>}/>
                     <Route path="checkout" element={<Checkout/>}/>
                     <Route path="admin" element={<AdminPanel/>}/>
                 </Route>

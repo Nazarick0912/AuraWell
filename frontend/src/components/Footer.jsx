@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import {Link} from 'react-router-dom';
 import logo from '../assets/logo.png';
 
 export default function Footer() {
@@ -9,26 +9,21 @@ export default function Footer() {
     };
 
     return (
-        // PRESERVED: bg-sage-900, relative, overflow-hidden
         <footer className='bg-sage-900 text-cream-100 py-12 font-sans relative overflow-hidden border-t border-white/5'>
 
-            {/* --- PRESERVED: BACKGROUND TEXTURE --- */}
             <div className='absolute inset-0 z-0 pointer-events-none' style={noiseTexture}></div>
-
-            {/* Note: I removed the large 'Glow Blobs' from here so the footer text stays clear and readable.
-                The texture keeps it matching the section above. */}
-
             <div className='max-w-7xl mx-auto px-6 lg:px-8 relative z-10'>
 
                 <div className='grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8'>
 
                     <div className='lg:col-span-4'>
                         <div className='flex items-center gap-3 mb-6'>
-                            <img src={logo} alt="AuraWell Logo" className="h-10 opacity-90" />
+                            <img src={logo} alt="AuraWell Logo" className="h-10 opacity-90"/>
                             <span className='font-display text-2xl font-bold text-white tracking-tight'>AuraWell</span>
                         </div>
                         <p className='text-sage-300 text-sm leading-relaxed mb-6 max-w-sm font-light'>
-                            Your trusted source for wellness products, from vitamins to aromatherapy. We are dedicated to your journey towards a healthier life.
+                            Your trusted source for wellness products, from vitamins to aromatherapy. We are dedicated
+                            to your journey towards a healthier life.
                         </p>
                     </div>
 
@@ -37,35 +32,50 @@ export default function Footer() {
                     <div className='lg:col-span-2'>
                         <h4 className='font-bold text-white mb-6 uppercase tracking-wider text-xs'>Shop</h4>
                         <ul className='space-y-4 text-sm text-sage-300'>
-                            <li><Link to="/vitamins" className='hover:text-white transition-all duration-300 hover:translate-x-1 inline-block'>Vitamins</Link></li>
-                            <li><Link to="/supplements" className='hover:text-white transition-all duration-300 hover:translate-x-1 inline-block'>Supplements</Link></li>
-                            <li><Link to="/aromatherapy" className='hover:text-white transition-all duration-300 hover:translate-x-1 inline-block'>Aromatherapy</Link></li>
+                            <li><Link to="/products?category=vitamins"
+                                      className='hover:text-white transition-all duration-300 hover:translate-x-1 inline-block'>Vitamins</Link>
+                            </li>
+                            <li><Link to="/products?category=supplements"
+                                      className='hover:text-white transition-all duration-300 hover:translate-x-1 inline-block'>Supplements</Link>
+                            </li>
+                            <li><Link to="/products?category=aromatherapy"
+                                      className='hover:text-white transition-all duration-300 hover:translate-x-1 inline-block'>Aromatherapy</Link>
+                            </li>
                         </ul>
                     </div>
 
                     <div className='lg:col-span-2'>
                         <h4 className='font-bold text-white mb-6 uppercase tracking-wider text-xs'>Support</h4>
                         <ul className='space-y-4 text-sm text-sage-300'>
-                            <li><Link to="/contact" className='hover:text-white transition-all duration-300 hover:translate-x-1 inline-block'>Contact Us</Link></li>
-                            <li><Link to="/faq" className='hover:text-white transition-all duration-300 hover:translate-x-1 inline-block'>FAQs</Link></li>
-                            <li><Link to="/shipping" className='hover:text-white transition-all duration-300 hover:translate-x-1 inline-block'>Shipping Info</Link></li>
+                            <li><Link to="/contact"
+                                      className='hover:text-white transition-all duration-300 hover:translate-x-1 inline-block'>Contact
+                                Us</Link></li>
+                            <li><Link to="/faq"
+                                      className='hover:text-white transition-all duration-300 hover:translate-x-1 inline-block'>FAQs</Link>
+                            </li>
+                            <li><Link to="/shipping"
+                                      className='hover:text-white transition-all duration-300 hover:translate-x-1 inline-block'>Shipping
+                                Info</Link></li>
                         </ul>
                     </div>
 
                     <div className='lg:col-span-3'>
                         <h4 className='font-bold text-white mb-6 uppercase tracking-wider text-xs'>Legal</h4>
                         <ul className='space-y-4 text-sm text-sage-300'>
-                            <li><Link to="/privacy" className='hover:text-white transition-all duration-300 hover:translate-x-1 inline-block'>Privacy Policy</Link></li>
-                            <li><Link to="/terms" className='hover:text-white transition-all duration-300 hover:translate-x-1 inline-block'>Terms of Service</Link></li>
+                            <li><Link to="/privacy"
+                                      className='hover:text-white transition-all duration-300 hover:translate-x-1 inline-block'>Privacy
+                                Policy</Link></li>
+                            <li><Link to="/terms"
+                                      className='hover:text-white transition-all duration-300 hover:translate-x-1 inline-block'>Terms
+                                of Service</Link></li>
                         </ul>
                     </div>
                 </div>
 
-                <div className='mt-12 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center text-xs text-sage-500 tracking-wider'>
-                    {/* Added the ™ symbol here */}
+                <div
+                    className='mt-12 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center text-xs text-sage-500 tracking-wider'>
                     <p>&copy; {new Date().getFullYear()} AuraWell™. All rights reserved.</p>
 
-                    {/* You can keep "Designed for Wellness" or swap it for the legal statement */}
                     <div className='flex gap-4'>
                         <span>Designed for Wellness.</span>
                     </div>
