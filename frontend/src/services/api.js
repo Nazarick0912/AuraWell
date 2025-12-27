@@ -93,8 +93,8 @@ export const authAPI = {
         method: 'GET',
       });
       
-      if (response.ok && data) {
-        return data;
+      if (response.ok && data?.success && data.user) {
+        return data.user;
       }
       return null;
     } catch (error) {

@@ -207,11 +207,9 @@ export default function CartDrawer({ isOpen, onClose }) {
                                             </h3>
                                             <p className="text-xs text-sage-500 mt-1">Qty: {item.quantity}</p>
                                         </div>
-                                        {item.price && (
-                                            <p className="font-bold text-sage-900 text-sm">
-                                                RM {(item.price * item.quantity).toFixed(2)}
-                                            </p>
-                                        )}
+                                        <p className="font-bold text-sage-900 text-sm whitespace-nowrap">
+                                            RM {(item.price * item.quantity).toFixed(2)}
+                                        </p>
                                     </div>
 
                                     {/* Controls */}

@@ -1,7 +1,7 @@
 import React, {useState, useEffect, useRef} from "react";
 import {Link, useLocation, useSearchParams} from "react-router-dom";
 import logo from "../../assets/logo.png";
-import {ShoppingCart, LogOut, X, Menu, User, Package} from "lucide-react";
+import {ShoppingCart, LogOut, X, Menu, User, Package, Settings} from "lucide-react";
 import { useAuth } from "../../contexts/AuthContext";
 import { useCart } from "../../contexts/CartContext";
 
@@ -134,14 +134,25 @@ const Navbar = ({ onCartClick }) => {
 
                                     {/* Menu Items */}
                                     <div className="py-1">
-                                        <Link
-                                            to="/#"
-                                            onClick={closeUserMenu}
-                                            className="flex items-center gap-3 px-4 py-2.5 text-sm text-sage-700 hover:bg-cream-50 transition-colors"
-                                        >
-                                            <Package className="w-4 h-4" />
-                                            My Orders
-                                        </Link>
+                                        {isAdmin ? (
+                                            <Link
+                                                to="/admin"
+                                                onClick={closeUserMenu}
+                                                className="flex items-center gap-3 px-4 py-2.5 text-sm text-sage-700 active:bg-cream-100 transition-colors"
+                                            >
+                                                <Settings className="w-4 h-4" />
+                                                Admin Panel
+                                            </Link>
+                                        ) : (
+                                            <Link
+                                                to="/#"
+                                                onClick={closeUserMenu}
+                                                className="flex items-center gap-3 px-4 py-2.5 text-sm text-sage-700 active:bg-cream-100 transition-colors"
+                                            >
+                                                <Package className="w-4 h-4" />
+                                                My Orders
+                                            </Link>
+                                        )}
                                     </div>
 
                                     {/* Sign Out */}
@@ -151,7 +162,7 @@ const Navbar = ({ onCartClick }) => {
                                                 closeUserMenu();
                                                 logout();
                                             }}
-                                            className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-sage-700 hover:bg-cream-50 transition-colors"
+                                            className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-terracotta-600 hover:bg-terracotta-50 transition-colors"
                                         >
                                             <LogOut className="w-4 h-4" />
                                             Sign Out
@@ -264,15 +275,26 @@ const Navbar = ({ onCartClick }) => {
                             </div>
                             
                             <div className="border-t border-cream-200" />
-                            {/* My Orders */}
-                            <Link
-                                to="/#"
-                                onClick={closeMobile}
-                                className="w-full px-4 py-2.5 text-left text-sm font-medium text-sage-700 active:bg-cream-100 transition-colors flex items-center gap-2"
-                            >
-                                <Package className="w-4 h-4" />
-                                My Orders
-                            </Link>
+                            {/* My Orders / Admin Panel */}
+                            {isAdmin ? (
+                                <Link
+                                    to="/admin"
+                                    onClick={closeMobile}
+                                    className="w-full px-4 py-2.5 text-left text-sm font-medium text-sage-700 active:bg-cream-100 transition-colors flex items-center gap-2"
+                                >
+                                    <Settings className="w-4 h-4" />
+                                    Admin Panel
+                                </Link>
+                            ) : (
+                                <Link
+                                    to="/#"
+                                    onClick={closeMobile}
+                                    className="w-full px-4 py-2.5 text-left text-sm font-medium text-sage-700 active:bg-cream-100 transition-colors flex items-center gap-2"
+                                >
+                                    <Package className="w-4 h-4" />
+                                    My Orders
+                                </Link>
+                            )}
                             
                             {/* Sign Out */}
                             <button
@@ -280,7 +302,7 @@ const Navbar = ({ onCartClick }) => {
                                     closeMobile();
                                     logout();
                                 }}
-                                className="w-full px-4 py-2.5 text-left text-sm font-medium text-sage-700 active:bg-cream-100 transition-colors flex items-center gap-2"
+                                className="w-full px-4 py-2.5 text-left text-sm font-medium text-terracotta-600 active:bg-terracotta-50 transition-colors flex items-center gap-2"
                             >
                                 <LogOut className="w-4 h-4" />
                                 Sign Out
