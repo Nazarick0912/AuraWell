@@ -33,9 +33,9 @@ export default function HeroSection() {
 
     // Define the search function
     const handleSearch = () => {
-        if (query.trim()) {
-            // Navigate to product page with the search query
-            navigate(`/products?search=+${encodeURIComponent(query.trim())}`);
+        const q = query.trim();
+        if (q) {
+            navigate(`/products?search=${encodeURIComponent(q)}`);
         }
     };
 

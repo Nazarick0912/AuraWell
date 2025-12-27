@@ -66,26 +66,6 @@ export default function Products() {
         fetchProducts();
     }, [category]);
 
-    const setCategory = (value) => {
-        if (!value) {
-            searchParams.delete('category');
-            setSearchParams(searchParams);
-        } else {
-            setSearchParams({category: value});
-        }
-    };
-
-    const setAge = (value) => {
-        if (!value) {
-            const next = new URLSearchParams(searchParams);
-            next.delete("age");
-            setSearchParams(next);
-        } else {
-            setSearchParams({category, age: value});
-        }
-        setIsAgeFilterOpen(false);
-    };
-
     // Helper to update search URL param
     const handleSearchChange = (e) => {
         const value = e.target.value;
@@ -104,6 +84,26 @@ export default function Products() {
         const newParams = new URLSearchParams(searchParams);
         newParams.delete('search');
         setSearchParams(newParams);
+    };
+
+    const setCategory = (value) => {
+        const next = new URLSearchParams(searchParams);
+
+        if (!value) next.delete('category');
+        else next.set('category', value);
+
+        setSearchParams(next);
+    };
+
+    const setAge = (value) => {
+        const next = new URLSearchParams(searchParams);
+        if (!value) {
+            next.delete("age");
+        } else {
+            next.set("age", value);
+        }
+        setSearchParams(next);
+        setIsAgeFilterOpen(false);
     };
 
     // Filter products by age group (category filtering is done by backend)
@@ -134,6 +134,25 @@ export default function Products() {
             <p className="text-sage-500 mb-8">
                 Browse our curated wellness products
             </p>
+
+            {/* Search Bar */}
+            <div className="flex gap-2 mb-6">
+                <input
+                    value={searchQuery}
+                    onChange={handleSearchChange}
+                    placeholder="Search products by name or description..."
+                    className="w-full max-w-md px-4 py-3 rounded-xl bg-white border border-cream-300
+               text-sage-800 placeholder-sage-400 focus:outline-none focus:ring-2 focus:ring-sage-300"
+                />
+                {searchQuery && (
+                    <button
+                        onClick={clearSearch}
+                        className="px-4 py-3 rounded-xl bg-cream-100 text-sage-700 hover:bg-cream-200"
+                    >
+                        Clear
+                    </button>
+                )}
+            </div>
 
             <div className="flex flex-wrap gap-2 mb-6">
                 {/* Categories Filter Button */}
