@@ -1,32 +1,32 @@
-import React, { useState, useEffect } from 'react';
-import { Outlet, useLocation } from 'react-router-dom';
+import React, {useEffect, useState} from 'react';
+import {Outlet, useLocation} from 'react-router-dom';
 import Navbar from './ui/Navbar';
 import Footer from './ui/Footer';
-import CartDrawer from './ui/CartDrawer'; 
+import CartDrawer from './ui/CartDrawer';
 
 export default function Layout() {
-  const [isCartOpen, setIsCartOpen] = useState(false);
-  const { pathname } = useLocation();
+    const [isCartOpen, setIsCartOpen] = useState(false);
+    const {pathname} = useLocation();
 
-  // Scroll to top on route change
-  useEffect(() => {
-    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
-  }, [pathname]);
+    // Scroll to top on route change
+    useEffect(() => {
+        window.scrollTo({top: 0, left: 0, behavior: 'instant'});
+    }, [pathname]);
 
-  return (
-    <div className="min-h-screen flex flex-col relative">
-      <Navbar onCartClick={() => setIsCartOpen(true)} />
+    return (
+        <div className="min-h-screen flex flex-col relative">
+            <Navbar onCartClick={() => setIsCartOpen(true)}/>
 
-      <CartDrawer
-          isOpen={isCartOpen}
-          onClose={() => setIsCartOpen(false)}
-      />
+            <CartDrawer
+                isOpen={isCartOpen}
+                onClose={() => setIsCartOpen(false)}
+            />
 
-      <main className="flex-1">
-        <Outlet />
-      </main>
+            <main className="flex-1">
+                <Outlet/>
+            </main>
 
-      <Footer />
-    </div>
-  );
+            <Footer/>
+        </div>
+    );
 }
