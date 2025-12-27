@@ -2,12 +2,14 @@ package com.aurawell.api.cart;
 
 import com.aurawell.models.Cart;
 import com.aurawell.services.DataManager;
+
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.*;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
-@WebServlet(name = "CartItemServlet", urlPatterns = "/api/cart/*")
 public class CartItemServlet extends HttpServlet {
     private final DataManager dataManager = DataManager.getInstance();
 

@@ -207,8 +207,13 @@ public class DataManager {
     // check if the email and password match
     public synchronized User login(String email, String password) {
         for (User user : users) {
-            if (user.getEmail().equalsIgnoreCase(email) && user.getPassword().equals(password)) {
-                return user;
+            // Null-safe password check
+            String storedPassword = user.getPassword();
+            if (storedPassword != null 
+                    && user.getEmail().equalsIgnoreCase(email) 
+                    && storedPassword.equals(password)) {
+                // Return a copy to prevent mutation of the stored user
+                return user.copy();
             }
         }
         return null;
@@ -219,11 +224,26 @@ public class DataManager {
         if (exists) { return Optional.empty(); }
         users.add(newUser);
         saveUsers();
-        return Optional.of(newUser);
+        return Optional.of(newUser.copy()); // Return a copy to prevent mutation of stored data
     }
 
     public synchronized Optional<User> getUserById(String id) {
-        return users.stream().filter(u -> u.getId().equals(id)).findFirst();
+        return users.stream()
+                .filter(u -> u.getId().equals(id))
+                .findFirst()
+                .map(User::copy); // Return a copy to prevent mutation of stored data
+    }
+
+    public synchronized Optional<User> getUserByEmail(String email) {
+        return users.stream()
+                .filter(u -> u.getEmail().equalsIgnoreCase(email))
+                .findFirst()
+                .map(User::copy); // Return a copy to prevent mutation of stored data
+    }
+
+    public synchronized List<User> getUsers() {
+        // Return copies to prevent mutation of stored data
+        return users.stream().map(User::copy).toList();
     }
 
     public synchronized void saveUsers() {
@@ -240,6 +260,25 @@ public class DataManager {
                     carts.add(newCart);
                     return newCart;
                 });
+    }
+
+    public synchronized Cart updateCart(Cart cart) {
+        for (int i = 0; i < carts.size(); i++) {
+            if (carts.get(i).getUserId().equals(cart.getUserId())) {
+                carts.set(i, cart);
+                saveCarts();
+                return cart;
+            }
+        }
+        carts.add(cart);
+        saveCarts();
+        return cart;
+    }
+
+    public synchronized void clearCart(String userId) {
+        Cart cart = getCartByUserId(userId);
+        cart.clear();
+        saveCarts();
     }
 
     public synchronized void saveCarts() {
@@ -274,6 +313,32 @@ public class DataManager {
         return orders.stream()
                 .filter(o -> o.getUserId().equals(userId))
                 .toList();
+    }
+
+    public synchronized List<Order> getOrders() {
+        return new ArrayList<>(orders);
+    }
+
+    public synchronized Optional<Order> getOrderById(String id) {
+        return orders.stream()
+                .filter(o -> o.getId().equals(id))
+                .findFirst();
+    }
+
+    public synchronized Optional<Order> updateOrderStatus(String orderId, String status) {
+        for (Order order : orders) {
+            if (order.getId().equals(orderId)) {
+                order.setStatus(status);
+                saveOrders();
+                return Optional.of(order);
+            }
+        }
+        return Optional.empty();
+    }
+
+    public synchronized void saveOrders() {
+        saveListToFile("orders.json", orders);
+        System.out.println("[DataManager] Saved " + orders.size() + " orders.");
     }
 
     public void removeItemFromCart(String userId, String productId) {

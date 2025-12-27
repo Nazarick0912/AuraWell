@@ -1,7 +1,7 @@
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, useRef} from "react";
 import {Link, useLocation, useSearchParams} from "react-router-dom";
 import logo from "../../assets/logo.png";
-import {ShoppingCart, LogOut, X, Menu, User} from "lucide-react";
+import {ShoppingCart, LogOut, X, Menu, User, Package, Settings} from "lucide-react";
 import { useAuth } from "../../contexts/AuthContext";
 import { useCart } from "../../contexts/CartContext";
 
@@ -10,6 +10,8 @@ const Navbar = ({ onCartClick }) => {
     const location = useLocation();
     const [searchParams] = useSearchParams();
     const [mobileOpen, setMobileOpen] = useState(false);
+    const [userMenuOpen, setUserMenuOpen] = useState(false);
+    const userMenuRef = useRef(null);
 
     // Auth & Cart context
     const { user, isAuthenticated, isAdmin, logout } = useAuth();
@@ -27,11 +29,27 @@ const Navbar = ({ onCartClick }) => {
     };
 
     const closeMobile = () => setMobileOpen(false);
+    const closeUserMenu = () => setUserMenuOpen(false);
 
-    // Close mobile menu on route change
+    // Close menus on route change
     useEffect(() => {
         closeMobile();
+        closeUserMenu();
     }, [location.pathname, location.search]);
+
+    // Close user menu when clicking outside
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (userMenuRef.current && !userMenuRef.current.contains(event.target)) {
+                closeUserMenu();
+            }
+        };
+        
+        if (userMenuOpen) {
+            document.addEventListener("mousedown", handleClickOutside);
+        }
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, [userMenuOpen]);
 
 
     // Calculate total cart items count
@@ -75,30 +93,7 @@ const Navbar = ({ onCartClick }) => {
                     </ul>
 
                     {/* Desktop Actions (Hidden on Mobile) */}
-                    <div className="hidden md:flex items-center gap-3">
-                        {user ? (
-                            // Logged in state
-                            <div className="flex items-center gap-4">
-                                <div className="flex items-center gap-2 text-sage-800">
-                                    <User className="w-5 h-5" />
-                                    <span className="font-medium">Hi, {user.firstName}</span>
-                                </div>
-                                <button
-                                    onClick={logout}
-                                    className="flex items-center gap-1 text-sage-600 hover:text-red-600 transition text-sm font-medium"
-                                >
-                                    <LogOut className="w-4 h-4" />
-                                    Logout
-                                </button>
-                            </div>
-                        ) : (
-                            // Logged out state
-                            <>
-                                <Link to="/login">Sign In</Link>
-                                <Link to="/signup" className="btn-primary">Get Started</Link>
-                            </>
-                        )}
-
+                    <div className="hidden md:flex items-center gap-2">
                         {showCart && (
                             <button
                                 onClick={onCartClick}
@@ -112,6 +107,75 @@ const Navbar = ({ onCartClick }) => {
                                     </span>
                                 )}
                             </button>
+                        )}
+
+                        {user ? (
+                            // Logged in state - User dropdown
+                            <div className="relative" ref={userMenuRef}>
+                                <button
+                                    onClick={() => setUserMenuOpen(prev => !prev)}
+                                    className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-cream-200/60 transition-colors cursor-pointer"
+                                >
+                                    <User className="w-5 h-5 text-sage-700" />
+                                    <span className="font-medium text-sage-800">{user.firstName}</span>
+                                </button>
+
+                                {/* User Dropdown Menu */}
+                                <div className={`absolute right-0 top-full mt-2 w-56 bg-white rounded-xl shadow-lg border border-cream-200 overflow-hidden transition-all duration-200 ${
+                                    userMenuOpen 
+                                        ? "opacity-100 translate-y-0 pointer-events-auto" 
+                                        : "opacity-0 -translate-y-2 pointer-events-none"
+                                }`}>
+                                    {/* User Info */}
+                                    <div className="px-4 py-3 border-b border-cream-100">
+                                        <p className="font-medium text-sage-800">{user.firstName} {user.lastName}</p>
+                                        <p className="text-sm text-sage-500">{user.email}</p>
+                                    </div>
+
+                                    {/* Menu Items */}
+                                    <div className="py-1">
+                                        {isAdmin ? (
+                                            <Link
+                                                to="/admin"
+                                                onClick={closeUserMenu}
+                                                className="flex items-center gap-3 px-4 py-2.5 text-sm text-sage-700 active:bg-cream-100 transition-colors"
+                                            >
+                                                <Settings className="w-4 h-4" />
+                                                Admin Panel
+                                            </Link>
+                                        ) : (
+                                            <Link
+                                                to="/#"
+                                                onClick={closeUserMenu}
+                                                className="flex items-center gap-3 px-4 py-2.5 text-sm text-sage-700 active:bg-cream-100 transition-colors"
+                                            >
+                                                <Package className="w-4 h-4" />
+                                                My Orders
+                                            </Link>
+                                        )}
+                                    </div>
+
+                                    {/* Sign Out */}
+                                    <div className="border-t border-cream-100">
+                                        <button
+                                            onClick={() => {
+                                                closeUserMenu();
+                                                logout();
+                                            }}
+                                            className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-terracotta-600 hover:bg-terracotta-50 transition-colors"
+                                        >
+                                            <LogOut className="w-4 h-4" />
+                                            Sign Out
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        ) : (
+                            // Logged out state
+                            <>
+                                <Link to="/login">Sign In</Link>
+                                <Link to="/signup" className="btn-primary">Get Started</Link>
+                            </>
                         )}
                     </div>
 
@@ -200,16 +264,45 @@ const Navbar = ({ onCartClick }) => {
                         </>
                     )}
 
-                    {/* Logout - Only show if logged in */}
+                    {/* User Section - Only show if logged in */}
                     {user && (
                         <>
                             <div className="border-t border-cream-200" />
+                            {/* User Info */}
+                            <div className="px-4 py-3 bg-cream-50/50">
+                                <p className="font-medium text-sage-800">{user.firstName} {user.lastName}</p>
+                                <p className="text-sm text-sage-500">{user.email}</p>
+                            </div>
+                            
+                            <div className="border-t border-cream-200" />
+                            {/* My Orders / Admin Panel */}
+                            {isAdmin ? (
+                                <Link
+                                    to="/admin"
+                                    onClick={closeMobile}
+                                    className="w-full px-4 py-2.5 text-left text-sm font-medium text-sage-700 active:bg-cream-100 transition-colors flex items-center gap-2"
+                                >
+                                    <Settings className="w-4 h-4" />
+                                    Admin Panel
+                                </Link>
+                            ) : (
+                                <Link
+                                    to="/#"
+                                    onClick={closeMobile}
+                                    className="w-full px-4 py-2.5 text-left text-sm font-medium text-sage-700 active:bg-cream-100 transition-colors flex items-center gap-2"
+                                >
+                                    <Package className="w-4 h-4" />
+                                    My Orders
+                                </Link>
+                            )}
+                            
+                            {/* Sign Out */}
                             <button
                                 onClick={() => {
                                     closeMobile();
                                     logout();
                                 }}
-                                className="w-full px-4 py-2.5 text-left text-sm font-medium text-red-600 active:bg-red-50 transition-colors flex items-center gap-2"
+                                className="w-full px-4 py-2.5 text-left text-sm font-medium text-terracotta-600 active:bg-terracotta-50 transition-colors flex items-center gap-2"
                             >
                                 <LogOut className="w-4 h-4" />
                                 Sign Out

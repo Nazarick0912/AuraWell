@@ -46,5 +46,20 @@ public class User {
 
     public long getCreatedAt() { return createdAt; }
     public void setCreatedAt(long createdAt) { this.createdAt = createdAt; }
+
+    /**
+     * Creates a shallow copy of this user to prevent mutation of stored data.
+     */
+    public User copy() {
+        User copy = new User();
+        copy.id = this.id;
+        copy.email = this.email;
+        copy.password = this.password;
+        copy.firstName = this.firstName;
+        copy.lastName = this.lastName;
+        copy.role = this.role;
+        copy.createdAt = this.createdAt;
+        return copy;
+    }
 }
 

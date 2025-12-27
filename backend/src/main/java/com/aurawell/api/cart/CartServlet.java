@@ -4,13 +4,15 @@ import com.aurawell.models.Cart;
 import com.aurawell.models.CartItem;
 import com.aurawell.services.DataManager;
 import com.google.gson.Gson;
+
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.*;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.stream.Collectors;
 
-@WebServlet(name = "CartServlet", urlPatterns = "/api/cart")
 public class CartServlet extends HttpServlet {
     private final DataManager dataManager = DataManager.getInstance();
     private final Gson gson = new Gson();

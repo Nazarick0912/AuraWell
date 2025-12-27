@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
-import { cartAPI } from '../services/api';
+import { cartAPI, productsAPI } from '../services/api';
 import { useAuth } from './AuthContext';
 
 const CartContext = createContext(null);
@@ -7,7 +7,17 @@ const CartContext = createContext(null);
 export const CartProvider = ({ children }) => {
   const [cart, setCart] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [products, setProducts] = useState([]);
   const { user } = useAuth();
+
+  // Fetch products on mount (needed to enrich cart items with product details)
+  useEffect(() => {
+    const loadProducts = async () => {
+      const productList = await productsAPI.getAll();
+      setProducts(productList);
+    };
+    loadProducts();
+  }, []);
 
   // Fetch cart when user logs in
   useEffect(() => {
@@ -18,11 +28,33 @@ export const CartProvider = ({ children }) => {
     }
   }, [user]);
 
+  // Helper function to enrich cart items with product details
+  const enrichCartItems = (cartData) => {
+    if (!cartData || !cartData.items) return cartData;
+    
+    const enrichedItems = cartData.items.map(item => {
+      const product = products.find(p => p.id === item.productId);
+      return {
+        ...item,
+        productName: product?.name || `Unknown Product`,
+        price: product?.price || 0,
+        image: product?.imageUrl || null,
+        description: product?.description || '',
+      };
+    });
+    
+    return {
+      ...cartData,
+      items: enrichedItems,
+    };
+  };
+
   const fetchCart = async () => {
     setLoading(true);
     try {
       const cartData = await cartAPI.getCart();
-      setCart(cartData);
+      const enrichedCart = enrichCartItems(cartData);
+      setCart(enrichedCart);
     } catch (error) {
       console.error('Failed to fetch cart:', error);
     } finally {
@@ -30,12 +62,22 @@ export const CartProvider = ({ children }) => {
     }
   };
 
+  // Re-enrich cart when products are loaded
+  useEffect(() => {
+    if (products.length > 0 && cart) {
+      setCart(prevCart => enrichCartItems(prevCart));
+    }
+  }, [products]);
+
   // Add or update item quantity in cart
   const addToCart = async (productId, quantity = 1) => {
     try {
       const result = await cartAPI.addItem(productId, quantity);
       if (result?.success) {
-        await fetchCart(); // Refresh cart data
+        // Fetch and enrich cart data
+        const cartData = await cartAPI.getCart();
+        const enrichedCart = enrichCartItems(cartData);
+        setCart(enrichedCart);
         return true;
       }
     } catch (error) {
@@ -49,7 +91,10 @@ export const CartProvider = ({ children }) => {
     try {
       const result = await cartAPI.removeItem(productId);
       if (result?.success) {
-        await fetchCart(); // Refresh UI after deletion
+        // Fetch and enrich cart data
+        const cartData = await cartAPI.getCart();
+        const enrichedCart = enrichCartItems(cartData);
+        setCart(enrichedCart);
         return true;
       }
     } catch (error) {
