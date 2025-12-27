@@ -1,11 +1,12 @@
-import { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
-import { Loader2 } from 'lucide-react';
-import { AnimatePresence, motion } from "framer-motion";
-import { productsAPI } from '../../services/api';
+import {useEffect, useState} from 'react';
+import {useSearchParams} from 'react-router-dom';
+import {Loader2} from 'lucide-react';
+import {AnimatePresence, motion} from "framer-motion";
+import {productsAPI} from '../../services/api';
 import ProductCard from './components/ProductCard';
 import CategoryFilter from './components/CategoryFilter';
 import AgeGroupFilter from './components/AgeGroupFilter';
+import Search from '../../components/ui/Search';
 
 export default function Products() {
     const [products, setProducts] = useState([]);
@@ -13,19 +14,20 @@ export default function Products() {
     const [error, setError] = useState(null);
     const [isAgeFilterOpen, setIsAgeFilterOpen] = useState(false);
     const [searchParams, setSearchParams] = useSearchParams();
-    
+
     const category = searchParams.get('category');
     const age = searchParams.get('age');
+    const searchQuery = searchParams.get('search') || "";
 
     // Fetch products from backend
     useEffect(() => {
         const fetchProducts = async () => {
             setIsLoading(true);
             setError(null);
-            
+
             try {
                 const data = await productsAPI.getAll(category);
-                
+
                 // Transform backend data to match frontend expected format
                 const transformedProducts = data.map(product => ({
                     id: product.id,
@@ -37,7 +39,7 @@ export default function Products() {
                     ageGroup: product.ageGroup,
                     image: product.imageUrl,
                 }));
-                
+
                 setProducts(transformedProducts);
             } catch (err) {
                 console.error('Failed to fetch products:', err);
@@ -51,12 +53,12 @@ export default function Products() {
     }, [category]);
 
     const handleCategoryChange = (value) => {
-        if (!value) {
-            searchParams.delete('category');
-            setSearchParams(searchParams);
-        } else {
-            setSearchParams({ category: value });
-        }
+        const next = new URLSearchParams(searchParams);
+
+        if (!value) next.delete("category");
+        else next.set("category", value);
+
+        setSearchParams(next);
     };
 
     const handleAgeChange = (value) => {
@@ -72,8 +74,17 @@ export default function Products() {
 
     // Filter products by age group (category filtering is done by backend)
     const filteredProducts = products.filter(product => {
-        if (!age) return true;
-        return product.ageGroup?.toLowerCase() === age.toLowerCase();
+        // age filter
+        if (age && product.ageGroup?.toLowerCase() !== age.toLowerCase()) return false;
+
+        // search filter
+        if (searchQuery) {
+            const q = searchQuery.toLowerCase().trim();
+            const matchName = product.name?.toLowerCase().includes(q);
+            const matchDesc = product.description?.toLowerCase().includes(q);
+            return matchName || matchDesc;
+        }
+        return true;
     });
 
     const hasResults = filteredProducts.length > 0;
@@ -88,11 +99,26 @@ export default function Products() {
                 Browse our curated wellness products
             </p>
 
+            {/* Search Bar */}
+            <div className="mt-6 mb-8">
+                <Search
+                    value={searchQuery}
+                    onChange={(val) => {
+                        const next = new URLSearchParams(searchParams);
+                        if (val) next.set("search", val);
+                        else next.delete("search");
+                        setSearchParams(next);
+                    }}
+                    onSearch={() => {
+                    }}
+                />
+            </div>
+
             {/* Filters */}
             <div className="flex flex-wrap gap-2 mb-6">
-                <CategoryFilter 
-                    category={category} 
-                    onCategoryChange={handleCategoryChange} 
+                <CategoryFilter
+                    category={category}
+                    onCategoryChange={handleCategoryChange}
                 />
                 <AgeGroupFilter
                     age={age}
@@ -105,7 +131,7 @@ export default function Products() {
             {/* Loading State */}
             {isLoading && (
                 <div className="flex flex-col items-center justify-center py-20">
-                    <Loader2 className="w-8 h-8 text-sage-600 animate-spin mb-4" />
+                    <Loader2 className="w-8 h-8 text-sage-600 animate-spin mb-4"/>
                     <p className="text-sage-500">Loading products...</p>
                 </div>
             )}
@@ -133,7 +159,7 @@ export default function Products() {
                 >
                     <AnimatePresence>
                         {filteredProducts.map((product) => (
-                            <ProductCard key={product.id} product={product} />
+                            <ProductCard key={product.id} product={product}/>
                         ))}
                     </AnimatePresence>
                 </motion.div>
