@@ -1,25 +1,43 @@
 import React, {useState} from "react";
-import {Link} from "react-router-dom";
-import {ArrowRight, SunMedium} from "lucide-react";
+import {Link, useNavigate} from "react-router-dom";
+import {ArrowRight, Search, SunMedium} from "lucide-react";
 import {motion} from "framer-motion";
 
-const SearchBar = ({query, setQuery}) => {
+const SearchBar = ({query, setQuery, onSearch}) => {
     return (
-        <input
-            type="text"
-            placeholder="Search products..."
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            className="text-lg px-4 py-3 rounded-xl
-        bg-white border border-sage-300
-        text-sage-800 placeholder-sage-400
-        focus:outline-none focus:ring-2 focus:ring-sage-300"
-        />
+        <div className="relative">
+            <input
+                type="text"
+                placeholder="Search products..."
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && onSearch()}
+                className="text-lg px-4 py-3 pr-12 rounded-xl
+                bg-white border border-sage-300
+                text-sage-800 placeholder-sage-400
+                focus:outline-none focus:ring-2 focus:ring-sage-300"
+            />
+            <button
+                onClick={onSearch}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-sage-400 hover:text-sage-600"
+            >
+                <Search className="w-5 h-5"/>
+            </button>
+        </div>
     );
 };
 
 export default function HeroSection() {
     const [query, setQuery] = useState("");
+    const navigate = useNavigate(); // Initialize the navigate block
+
+    // Define the search function
+    const handleSearch = () => {
+        if (query.trim()) {
+            // Navigate to product page with the search query
+            navigate(`/products?search=+${encodeURIComponent(query.trim())}`);
+        }
+    };
 
     const container = {
         hidden: {},
@@ -93,7 +111,7 @@ export default function HeroSection() {
                                 <ArrowRight className="w-5 h-5"/>
                             </Link>
 
-                            <SearchBar query={query} setQuery={setQuery}/>
+                            <SearchBar query={query} setQuery={setQuery} onSearch={handleSearch}/>
                         </motion.div>
                     </motion.div>
                 </div>
