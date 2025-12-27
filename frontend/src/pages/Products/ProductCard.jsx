@@ -12,6 +12,10 @@ export default function ProductCard({product}) {
     const [isAdding, setIsAdding] = useState(false);
     const [justAdded, setJustAdded] = useState(false);
 
+    const handleCardClick = () => {
+            navigate(`/product/${product.id}`);
+        };
+
     const handleAddToCart = async (e) => {
         e.stopPropagation();
         
