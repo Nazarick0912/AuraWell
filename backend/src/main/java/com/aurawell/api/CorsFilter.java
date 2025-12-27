@@ -1,12 +1,15 @@
 package com.aurawell.api;
 
-import javax.servlet.*;
-import javax.servlet.annotation.WebFilter;
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebFilter(filterName = "CorsFilter", urlPatterns = "/api/*")
 public class CorsFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
@@ -18,6 +21,7 @@ public class CorsFilter implements Filter {
         httpResponse.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
         httpResponse.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
         httpResponse.setHeader("Access-Control-Allow-Credentials", "true");
+        httpResponse.setHeader("Access-Control-Max-Age", "3600"); // Cache preflight for 1 hour
 
         // If it's just a pre-check (OPTIONS), say OK and stop
         if ("OPTIONS".equalsIgnoreCase(httpRequest.getMethod())) {
