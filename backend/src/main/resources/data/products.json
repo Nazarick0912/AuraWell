@@ -50,7 +50,7 @@
     "price": 34.99,
     "stock": 70,
     "category": "supplements",
-    "ageGroup": "elderly",
+    "ageGroup": "senior",
     "imageUrl": "https://images.unsplash.com/photo-1550572017-edd951aa8f72?w=400",
     "createdAt": 1764866909457
   },
@@ -61,7 +61,7 @@
     "price": 22.99,
     "stock": 90,
     "category": "vitamins",
-    "ageGroup": "toddler",
+    "ageGroup": "infant",
     "imageUrl": "https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=400",
     "createdAt": 1764866909457
   },

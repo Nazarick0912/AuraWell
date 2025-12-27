@@ -1,9 +1,11 @@
-import {useEffect, useState} from 'react';
-import {useSearchParams} from 'react-router-dom';
-import ProductCard from './ProductCard';
-import {Funnel, Loader2} from 'lucide-react';
-import {AnimatePresence, motion} from "framer-motion";
-import {productsAPI} from '../../services/api';
+import { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { Loader2 } from 'lucide-react';
+import { AnimatePresence, motion } from "framer-motion";
+import { productsAPI } from '../../services/api';
+import ProductCard from './components/ProductCard';
+import CategoryFilter from './components/CategoryFilter';
+import AgeGroupFilter from './components/AgeGroupFilter';
 
 export default function Products() {
     const [products, setProducts] = useState([]);
@@ -11,37 +13,19 @@ export default function Products() {
     const [error, setError] = useState(null);
     const [isAgeFilterOpen, setIsAgeFilterOpen] = useState(false);
     const [searchParams, setSearchParams] = useSearchParams();
-
+    
     const category = searchParams.get('category');
     const age = searchParams.get('age');
-    const searchQuery = searchParams.get('search') || "";
-
-    const CATEGORIES = [
-        {label: "All", value: null},
-        {label: "Vitamins", value: "vitamins"},
-        {label: "Supplements", value: "supplements"},
-        {label: "Aromatherapy", value: "aromatherapy"},
-    ];
-
-    const AGE_GROUPS = [
-        {label: "All Ages", value: null},
-        {label: "Toddler", value: "toddler"},
-        {label: "Children", value: "child"},
-        {label: "Teens", value: "teen"},
-        {label: "Adults", value: "adult"},
-        {label: "Seniors", value: "elderly"},
-        {label: "Universal", value: "all"},
-    ];
 
     // Fetch products from backend
     useEffect(() => {
         const fetchProducts = async () => {
             setIsLoading(true);
             setError(null);
-
+            
             try {
                 const data = await productsAPI.getAll(category);
-
+                
                 // Transform backend data to match frontend expected format
                 const transformedProducts = data.map(product => ({
                     id: product.id,
@@ -51,9 +35,9 @@ export default function Products() {
                     price: product.price,
                     stock: product.stock,
                     ageGroup: product.ageGroup,
-                    image: product.imageUrl, // Map imageUrl to image
+                    image: product.imageUrl,
                 }));
-
+                
                 setProducts(transformedProducts);
             } catch (err) {
                 console.error('Failed to fetch products:', err);
@@ -66,36 +50,16 @@ export default function Products() {
         fetchProducts();
     }, [category]);
 
-    // Helper to update search URL param
-    const handleSearchChange = (e) => {
-        const value = e.target.value;
-        const newParams = new URLSearchParams(searchParams);
-
-        if (value) {
-            newParams.set('search', value);
+    const handleCategoryChange = (value) => {
+        if (!value) {
+            searchParams.delete('category');
+            setSearchParams(searchParams);
         } else {
-            newParams.delete('search');
+            setSearchParams({ category: value });
         }
-        setSearchParams(newParams);
     };
 
-    // Clear the search function
-    const clearSearch = () => {
-        const newParams = new URLSearchParams(searchParams);
-        newParams.delete('search');
-        setSearchParams(newParams);
-    };
-
-    const setCategory = (value) => {
-        const next = new URLSearchParams(searchParams);
-
-        if (!value) next.delete('category');
-        else next.set('category', value);
-
-        setSearchParams(next);
-    };
-
-    const setAge = (value) => {
+    const handleAgeChange = (value) => {
         const next = new URLSearchParams(searchParams);
         if (!value) {
             next.delete("age");
@@ -108,142 +72,40 @@ export default function Products() {
 
     // Filter products by age group (category filtering is done by backend)
     const filteredProducts = products.filter(product => {
-        // Filter by Age
-        if (age && product.ageGroup?.toLowerCase() !== age.toLowerCase()) return false;
-
-        // Filter by Search Query
-        if (searchQuery) {
-            const q = searchQuery.toLowerCase();
-            const matchName = product.name?.toLowerCase().includes(q);
-            const matchDesc = product.description?.toLowerCase().includes(q);
-            return matchName || matchDesc;
-        }
-
-        return true;
+        if (!age) return true;
+        return product.ageGroup?.toLowerCase() === age.toLowerCase();
     });
 
     const hasResults = filteredProducts.length > 0;
 
     return (
-        <div className="max-w-7xl mx-auto px-6 py-12">
-
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
             {/* Header */}
-            <h1 className="text-4xl font-display font-bold mb-2 capitalize">
+            <h1 className="text-3xl sm:text-4xl font-display font-bold mb-2 capitalize">
                 {category || 'All Products'}
             </h1>
-            <p className="text-sage-500 mb-8">
+            <p className="text-sage-500 mb-6 sm:mb-8">
                 Browse our curated wellness products
             </p>
 
-            {/* Search Bar */}
-            <div className="flex gap-2 mb-6">
-                <input
-                    value={searchQuery}
-                    onChange={handleSearchChange}
-                    placeholder="Search products by name or description..."
-                    className="w-full max-w-md px-4 py-3 rounded-xl bg-white border border-cream-300
-               text-sage-800 placeholder-sage-400 focus:outline-none focus:ring-2 focus:ring-sage-300"
-                />
-                {searchQuery && (
-                    <button
-                        onClick={clearSearch}
-                        className="px-4 py-3 rounded-xl bg-cream-100 text-sage-700 hover:bg-cream-200"
-                    >
-                        Clear
-                    </button>
-                )}
-            </div>
-
+            {/* Filters */}
             <div className="flex flex-wrap gap-2 mb-6">
-                {/* Categories Filter Button */}
-                {CATEGORIES.map((cat) => {
-                    const isActive =
-                        cat.value === null
-                            ? category === null
-                            : category === cat.value;
-                    return (
-                        <button
-                            key={cat.label}
-                            onClick={() => setCategory(cat.value)}
-                            className={`
-                              px-5 py-2 rounded-full text-sm font-medium transition
-                              ${
-                                isActive
-                                    ? "bg-sage-600 text-white shadow-sm cursor-default"
-                                    : "bg-cream-100 text-sage-700 hover:bg-cream-200 active:scale-[0.98]"
-                            }
-                            `}
-                        >
-                            {cat.label}
-                        </button>
-                    );
-                })}
-
-                {/* Age Filter Toggle Button */}
-                <button
-                    onClick={() => setIsAgeFilterOpen(prev => !prev)}
-                    className={`
-                      px-5 py-2 rounded-full text-sm font-medium flex items-center gap-2 transition
-                      ${
-                        age
-                            ? "bg-sage-600 text-white"
-                            : "bg-cream-100 text-sage-700 hover:bg-cream-200"
-                    }
-                    `}
-                >
-                    <Funnel className="w-4 h-4"/>
-                    Filter
-                    {age && (
-                        <span className="opacity-80">
-                        • {AGE_GROUPS.find(g => g.value === age)?.label}
-                        </span>
-                    )}
-                </button>
+                <CategoryFilter 
+                    category={category} 
+                    onCategoryChange={handleCategoryChange} 
+                />
+                <AgeGroupFilter
+                    age={age}
+                    isOpen={isAgeFilterOpen}
+                    onToggle={() => setIsAgeFilterOpen(prev => !prev)}
+                    onAgeChange={handleAgeChange}
+                />
             </div>
-
-            {isAgeFilterOpen && (
-                <div
-                    className={`
-                    mt-6 overflow-hidden transition-all duration-300 ease-out
-                    ${isAgeFilterOpen ? "max-h-96 opacity-100 translate-y-0" : "max-h-0 opacity-0 -translate-y-2 pointer-events-none"}
-                  `}
-                >
-                    <div className="p-6 bg-white rounded-xl border border-cream-200 shadow-sm">
-                        <h3 className="text-sm font-semibold text-sage-700 mb-4">
-                            Filter by Age Group
-                        </h3>
-
-                        <div className="flex flex-wrap gap-2">
-                            {AGE_GROUPS.map((group) => {
-                                const isActive =
-                                    group.value === null ? age === null : age === group.value;
-
-                                return (
-                                    <button
-                                        key={group.label}
-                                        onClick={() => setAge(group.value)}
-                                        className={`
-                                          px-4 py-2 rounded-full text-sm font-medium transition
-                                          ${
-                                            isActive
-                                                ? "bg-sage-600 text-white"
-                                                : "bg-cream-100 text-sage-700 hover:bg-cream-200"
-                                        }
-                                        `}
-                                    >
-                                        {group.label}
-                                    </button>
-                                );
-                            })}
-                        </div>
-                    </div>
-                </div>
-            )}
 
             {/* Loading State */}
             {isLoading && (
                 <div className="flex flex-col items-center justify-center py-20">
-                    <Loader2 className="w-8 h-8 text-sage-600 animate-spin mb-4"/>
+                    <Loader2 className="w-8 h-8 text-sage-600 animate-spin mb-4" />
                     <p className="text-sage-500">Loading products...</p>
                 </div>
             )}
@@ -256,7 +118,7 @@ export default function Products() {
                     </p>
                     <button
                         onClick={() => window.location.reload()}
-                        className="mt-4 px-6 py-2 rounded-full bg-sage-600 text-white text-sm font-medium hover:bg-sage-700 transition"
+                        className="mt-4 px-6 py-2 rounded-full bg-sage-600 text-white text-sm font-medium hover:bg-sage-700 transition min-h-[44px]"
                     >
                         Try Again
                     </button>
@@ -267,11 +129,11 @@ export default function Products() {
             {!isLoading && !error && hasResults && (
                 <motion.div
                     layout
-                    className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
+                    className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6"
                 >
                     <AnimatePresence>
                         {filteredProducts.map((product) => (
-                            <ProductCard key={product.id} product={product}/>
+                            <ProductCard key={product.id} product={product} />
                         ))}
                     </AnimatePresence>
                 </motion.div>
@@ -289,7 +151,7 @@ export default function Products() {
 
                     <button
                         onClick={() => setSearchParams({})}
-                        className="mt-6 px-6 py-2 rounded-full bg-sage-600 text-white text-sm font-medium hover:bg-sage-700 transition"
+                        className="mt-6 px-6 py-2 rounded-full bg-sage-600 text-white text-sm font-medium hover:bg-sage-700 transition min-h-[44px]"
                     >
                         View all products
                     </button>
