@@ -6,7 +6,6 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -14,17 +13,9 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.stream.Collectors;
 
-@WebServlet(name = "LoginServlet", urlPatterns = "/api/auth/login")
 public class LoginServlet extends HttpServlet {
-
-    private DataManager dataManager;
-    private Gson gson;
-
-    @Override
-    public void init() throws ServletException {
-        this.dataManager = DataManager.getInstance();
-        this.gson = new Gson();
-    }
+    private final Gson gson = new Gson();
+    private final DataManager dataManager = DataManager.getInstance();
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

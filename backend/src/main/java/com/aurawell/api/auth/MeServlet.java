@@ -3,12 +3,14 @@ package com.aurawell.api.auth;
 import com.aurawell.models.User;
 import com.aurawell.services.DataManager;
 import com.google.gson.Gson;
+
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.*;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
-@WebServlet(name = "MeServlet", urlPatterns = "/api/auth/me")
 public class MeServlet extends HttpServlet {
     private final DataManager dataManager = DataManager.getInstance();
     private final Gson gson = new Gson();

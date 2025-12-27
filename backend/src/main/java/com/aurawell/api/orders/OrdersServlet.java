@@ -5,15 +5,17 @@ import com.aurawell.models.Order;
 import com.aurawell.models.OrderItem;
 import com.aurawell.services.DataManager;
 import com.google.gson.Gson;
+
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.*;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@WebServlet(name = "OrdersServlet", urlPatterns = "/api/orders")
 public class OrdersServlet extends HttpServlet {
     private final DataManager dataManager = DataManager.getInstance();
     private final Gson gson = new Gson();
