@@ -1,11 +1,11 @@
-import {motion} from "framer-motion";
+import { motion } from "framer-motion";
 import { ShoppingCart, Check } from "lucide-react";
 import { useState } from "react";
-import { useCart } from "../../contexts/CartContext";
-import { useAuth } from "../../contexts/AuthContext";
+import { useCart } from "../../../contexts/CartContext";
+import { useAuth } from "../../../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 
-export default function ProductCard({product}) {
+export default function ProductCard({ product }) {
     const { addToCart } = useCart();
     const { user } = useAuth();
     const navigate = useNavigate();
@@ -37,10 +37,10 @@ export default function ProductCard({product}) {
     return (
         <motion.div
             layout
-            initial={{opacity: 0, scale: 0.96, y: 12}}
-            animate={{opacity: 1, scale: 1, y: 0}}
-            exit={{opacity: 0, scale: 0.96, y: 12}}
-            transition={{duration: 0.25, ease: "easeOut"}}
+            initial={{ opacity: 0, scale: 0.96, y: 12 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.96, y: 12 }}
+            transition={{ duration: 0.25, ease: "easeOut" }}
             className="
                 bg-white rounded-xl border border-cream-200 p-4
                 hover:shadow-lg hover:scale-[1.02]
@@ -75,7 +75,7 @@ export default function ProductCard({product}) {
                 className={`
                     mt-4 w-full py-2.5 rounded-lg font-medium text-sm
                     flex items-center justify-center gap-2
-                    transition-all duration-200
+                    transition-all duration-200 min-h-[44px]
                     ${justAdded 
                         ? "bg-emerald-500 text-white" 
                         : "bg-sage-600 text-white hover:bg-sage-700"
@@ -100,3 +100,4 @@ export default function ProductCard({product}) {
         </motion.div>
     );
 }
+

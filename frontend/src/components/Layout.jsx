@@ -1,20 +1,22 @@
-import React, { useState } from 'react'; // 1. Import useState
-import { Outlet } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Outlet, useLocation } from 'react-router-dom';
 import Navbar from './ui/Navbar';
 import Footer from './ui/Footer';
-import CartDrawer from './ui/CartDrawer'; // 2. Import your CartDrawer
+import CartDrawer from './ui/CartDrawer'; 
 
 export default function Layout() {
-  // 3. Create the state to control the Cart (Open/Closed)
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const { pathname } = useLocation();
+
+  // Scroll to top on route change
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+  }, [pathname]);
 
   return (
     <div className="min-h-screen flex flex-col relative">
-      {/* 4. Pass the 'Open' command to the Navbar */}
       <Navbar onCartClick={() => setIsCartOpen(true)} />
 
-      {/* 5. Render the CartDrawer here */}
-      {/* It sits on top of the layout, controlled by the state */}
       <CartDrawer
           isOpen={isCartOpen}
           onClose={() => setIsCartOpen(false)}
