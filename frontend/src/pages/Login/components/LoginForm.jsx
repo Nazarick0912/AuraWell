@@ -1,11 +1,11 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import { Loader2 } from "lucide-react";
+import {useState} from "react";
+import {Link} from "react-router-dom";
+import {Eye, EyeOff, Loader2} from "lucide-react";
 
-export default function LoginForm({ onSubmit, isLoading, error }) {
+export default function LoginForm({onSubmit, isLoading, error}) {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-
+    const [showPassword, setShowPassword] = useState(false);
     const handleSubmit = (e) => {
         e.preventDefault();
         onSubmit(email, password);
@@ -38,16 +38,26 @@ export default function LoginForm({ onSubmit, isLoading, error }) {
                 <label htmlFor="password" className={labelClasses}>
                     Password
                 </label>
-                <input
-                    id="password"
-                    type="password"
-                    className={inputClasses}
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Enter your password"
-                    required
-                    autoComplete="current-password"
-                />
+                <div className="relative">
+                    <input
+                        id="password"
+                        type="password"
+                        className={inputClasses}
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        placeholder="Enter your password"
+                        required
+                        autoComplete="current-password"
+                    />
+                    <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-sage-400 hover:text-sage-600 p-1"
+                    >
+                        {showPassword ? <EyeOff className="w-5 h-5"/> : <Eye className="w-5 h-5"/>}
+                    </button>
+                </div>
+
             </div>
 
             {/* Error Message */}
@@ -65,7 +75,7 @@ export default function LoginForm({ onSubmit, isLoading, error }) {
             >
                 {isLoading ? (
                     <>
-                        <Loader2 className="w-5 h-5 animate-spin" />
+                        <Loader2 className="w-5 h-5 animate-spin"/>
                         Signing in...
                     </>
                 ) : (
@@ -76,8 +86,8 @@ export default function LoginForm({ onSubmit, isLoading, error }) {
             {/* Footer Link */}
             <p className="text-sage-500 text-sm flex flex-wrap items-center justify-center gap-1 pt-2">
                 Don't have an account?
-                <Link 
-                    to="/signup" 
+                <Link
+                    to="/signup"
                     className="text-sage-700 font-semibold hover:text-sage-800 transition-colors"
                 >
                     Sign Up
