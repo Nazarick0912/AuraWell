@@ -1,8 +1,8 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import { Eye, EyeOff, Loader2 } from "lucide-react";
+import {useState} from "react";
+import {Link} from "react-router-dom";
+import {Eye, EyeOff, Loader2} from "lucide-react";
 
-export default function SignupForm({ onSubmit, isLoading, error }) {
+export default function SignupForm({onSubmit, isLoading, error}) {
     const [formData, setFormData] = useState({
         firstName: '',
         lastName: '',
@@ -14,7 +14,7 @@ export default function SignupForm({ onSubmit, isLoading, error }) {
     const [showPassword, setShowPassword] = useState(false);
 
     const handleChange = (e) => {
-        const { name, type, checked, value } = e.target;
+        const {name, type, checked, value} = e.target;
         setFormData(prev => ({
             ...prev,
             [name]: type === 'checkbox' ? checked : value
@@ -107,7 +107,7 @@ export default function SignupForm({ onSubmit, isLoading, error }) {
                         onClick={() => setShowPassword(!showPassword)}
                         className="absolute right-3 top-1/2 -translate-y-1/2 text-sage-400 hover:text-sage-600 p-1 min-h-[44px] min-w-[44px] flex items-center justify-center -mr-1"
                     >
-                        {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                        {showPassword ? <EyeOff className="w-5 h-5"/> : <Eye className="w-5 h-5"/>}
                     </button>
                 </div>
             </div>
@@ -117,17 +117,26 @@ export default function SignupForm({ onSubmit, isLoading, error }) {
                 <label htmlFor="confirmPassword" className={labelClasses}>
                     Confirm Password
                 </label>
-                <input
-                    id="confirmPassword"
-                    name="confirmPassword"
-                    type="password"
-                    value={formData.confirmPassword}
-                    onChange={handleChange}
-                    required
-                    className={inputClasses}
-                    placeholder="••••••••"
-                    autoComplete="new-password"
-                />
+                <div className="relative">
+                    <input
+                        id="confirmPassword"
+                        name="confirmPassword"
+                        type={showPassword ? 'text' : 'password'}
+                        value={formData.confirmPassword}
+                        onChange={handleChange}
+                        required
+                        className={`${inputClasses} pr-12`}
+                        placeholder="••••••••"
+                        autoComplete="new-password"
+                    />
+                    <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-sage-400 hover:text-sage-600 p-1"
+                    >
+                        {showPassword ? <EyeOff className="w-5 h-5"/> : <Eye className="w-5 h-5"/>}
+                    </button>
+                </div>
             </div>
 
             {/* Terms Checkbox */}
@@ -168,7 +177,7 @@ export default function SignupForm({ onSubmit, isLoading, error }) {
             >
                 {isLoading ? (
                     <>
-                        <Loader2 className="w-5 h-5 animate-spin" />
+                        <Loader2 className="w-5 h-5 animate-spin"/>
                         Creating account...
                     </>
                 ) : (
@@ -179,8 +188,8 @@ export default function SignupForm({ onSubmit, isLoading, error }) {
             {/* Footer Link */}
             <p className="text-sage-500 text-sm flex flex-wrap items-center justify-center gap-1 pt-2">
                 Already have an account?
-                <Link 
-                    to="/login" 
+                <Link
+                    to="/login"
                     className="text-sage-700 font-semibold hover:text-sage-800 transition-colors"
                 >
                     Sign In
