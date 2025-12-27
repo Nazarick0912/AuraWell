@@ -16,6 +16,8 @@ import Products from './pages/Products';
 import Checkout from './pages/Checkout';
 import AdminPanel from './pages/Admin';
 import ProductDetail from './pages/ProductDetail';
+import OrderSuccess from './pages/OrderSuccess';
+import MyOrders from './pages/MyOrders';
 
 // Loading Spinner component
 function LoadingSpinner() {
@@ -76,6 +78,24 @@ function AppRoutes() {
                     element={
                         <ProtectedRoute>
                             <Checkout />
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="order-success"
+                    element={
+                        <ProtectedRoute>
+                            <OrderSuccess />
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="my-orders"
+                    element={
+                        <ProtectedRoute>
+                            <MyOrders />
                         </ProtectedRoute>
                     }
                 />
