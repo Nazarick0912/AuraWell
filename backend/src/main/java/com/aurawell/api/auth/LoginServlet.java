@@ -39,8 +39,14 @@ public class LoginServlet extends HttpServlet {
             User user = dataManager.login(loginRequest.getEmail(), loginRequest.getPassword());
 
             if (user != null) {
-                // SUCCESS: Create Session
-                HttpSession session = req.getSession();
+                // Session fixation prevention: invalidate old session and create new one
+                HttpSession oldSession = req.getSession(false);
+                if (oldSession != null) {
+                    oldSession.invalidate();
+                }
+                
+                // SUCCESS: Create new Session
+                HttpSession session = req.getSession(true);
                 session.setAttribute("userId", user.getId());
                 session.setAttribute("userRole", user.getRole());
 

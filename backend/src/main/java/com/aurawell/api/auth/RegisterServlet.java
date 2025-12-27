@@ -28,12 +28,18 @@ public class RegisterServlet extends HttpServlet {
             java.util.Optional<User> registered = dataManager.register(newUser);
 
             if (registered.isPresent()) {
+                User user = registered.get();
+                
                 // Auto-login: Create session immediately after successful signup
                 HttpSession session = req.getSession();
-                session.setAttribute("userId", registered.get().getId());
+                session.setAttribute("userId", user.getId());
+                session.setAttribute("userRole", user.getRole());
+                
+                // Return user data (hide password)
+                user.setPassword(null);
                 
                 resp.setStatus(HttpServletResponse.SC_CREATED);
-                resp.getWriter().write("{\"success\": true, \"message\": \"User created successfully\"}");
+                resp.getWriter().write("{\"success\": true, \"message\": \"User created successfully\", \"user\": " + gson.toJson(user) + "}");
             } else {
                 resp.setStatus(HttpServletResponse.SC_CONFLICT);
                 resp.getWriter().write("{\"success\": false, \"message\": \"Email already exists\"}");
