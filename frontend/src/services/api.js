@@ -265,10 +265,126 @@ export const ordersAPI = {
   },
 };
 
+// ========================
+// ADMIN API
+// ========================
+
+export const adminAPI = {
+  /**
+   * Get all orders (admin only)
+   * @returns {Promise<object[]>} Array of all orders
+   */
+  async getAllOrders() {
+    try {
+      const { response, data } = await apiRequest('/admin/orders', {
+        method: 'GET',
+      });
+      
+      if (response.ok && data) {
+        return data;
+      }
+      return [];
+    } catch (error) {
+      console.error('Failed to fetch admin orders:', error);
+      return [];
+    }
+  },
+
+  /**
+   * Update order status (admin only)
+   * @param {string} orderId 
+   * @param {string} status - One of: pending, processing, shipped, delivered, cancelled
+   * @returns {Promise<{success: boolean, order?: object, error?: string}>}
+   */
+  async updateOrderStatus(orderId, status) {
+    try {
+      const { response, data } = await apiRequest('/admin/orders', {
+        method: 'PUT',
+        body: JSON.stringify({ orderId, status }),
+      });
+      
+      if (response.ok && data?.success) {
+        return { success: true, order: data.order };
+      }
+      return { success: false, error: data?.error || 'Failed to update order status' };
+    } catch (error) {
+      console.error('Failed to update order status:', error);
+      return { success: false, error: 'Failed to update order status' };
+    }
+  },
+
+  /**
+   * Update product (admin only)
+   * @param {string} productId 
+   * @param {object} productData 
+   * @returns {Promise<{success: boolean, product?: object, error?: string}>}
+   */
+  async updateProduct(productId, productData) {
+    try {
+      const { response, data } = await apiRequest(`/admin/products/${productId}`, {
+        method: 'PUT',
+        body: JSON.stringify(productData),
+      });
+      
+      if (response.ok && data?.success) {
+        return { success: true, product: data.product };
+      }
+      return { success: false, error: data?.error || 'Failed to update product' };
+    } catch (error) {
+      console.error('Failed to update product:', error);
+      return { success: false, error: 'Failed to update product' };
+    }
+  },
+
+  /**
+   * Delete product (admin only)
+   * @param {string} productId 
+   * @returns {Promise<{success: boolean, error?: string}>}
+   */
+  async deleteProduct(productId) {
+    try {
+      const { response, data } = await apiRequest(`/admin/products/${productId}`, {
+        method: 'DELETE',
+      });
+      
+      if (response.ok && data?.success) {
+        return { success: true };
+      }
+      return { success: false, error: data?.error || 'Failed to delete product' };
+    } catch (error) {
+      console.error('Failed to delete product:', error);
+      return { success: false, error: 'Failed to delete product' };
+    }
+  },
+
+  /**
+   * Create new product (admin only)
+   * @param {object} productData 
+   * @returns {Promise<{success: boolean, product?: object, error?: string}>}
+   */
+  async createProduct(productData) {
+    try {
+      const { response, data } = await apiRequest('/admin/products', {
+        method: 'POST',
+        body: JSON.stringify(productData),
+      });
+      
+      if (response.ok && data?.success) {
+        return { success: true, product: data.product };
+      }
+      return { success: false, error: data?.error || 'Failed to create product' };
+    } catch (error) {
+      console.error('Failed to create product:', error);
+      return { success: false, error: 'Failed to create product' };
+    }
+  },
+};
+
 export default {
   auth: authAPI,
   cart: cartAPI,
   products: productsAPI,
   orders: ordersAPI,
+  admin: adminAPI,
 };
 
