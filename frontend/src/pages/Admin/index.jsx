@@ -3,12 +3,27 @@ import { Package, Plus, ShoppingBag } from 'lucide-react';
 import ProductTable from './components/ProductTable';
 import OrderTable from './components/OrderTable';
 import ProductFormModal from './components/ProductFormModal';
+import Dialog from '../../components/ui/Dialog';
 import { useProducts } from './hooks/useProducts';
 import { useOrders } from './hooks/useOrders';
 import { useProductForm } from './hooks/useProductForm';
 
 export default function AdminPanel() {
     const [activeTab, setActiveTab] = useState('products');
+
+    // Dialog state
+    const [dialog, setDialog] = useState({
+        isOpen: false,
+        title: '',
+        message: '',
+        variant: 'info',
+        confirmText: 'OK',
+        showCancel: false,
+        onConfirm: null,
+    });
+
+    // Pending delete state
+    const [pendingDelete, setPendingDelete] = useState(null);
 
     // Custom hooks for data management
     const { products, loading: productsLoading, updateProduct, deleteProduct, addProduct } = useProducts();
@@ -24,6 +39,29 @@ export default function AdminPanel() {
         resetForm 
     } = useProductForm();
 
+    // Show dialog helper
+    const showDialog = ({ title, message, variant = 'info', confirmText = 'OK', showCancel = false, onConfirm = null }) => {
+        setDialog({
+            isOpen: true,
+            title,
+            message,
+            variant,
+            confirmText,
+            showCancel,
+            onConfirm,
+        });
+    };
+
+    // Close dialog helper
+    const closeDialog = () => {
+        setDialog(prev => ({ ...prev, isOpen: false }));
+    };
+
+    // Show error dialog helper
+    const showError = (title, message) => {
+        showDialog({ title, message, variant: 'error' });
+    };
+
     // Save product handler - receives updated formData with uploaded image URL
     const handleSaveProduct = async (e, updatedFormData) => {
         e.preventDefault();
@@ -34,13 +72,13 @@ export default function AdminPanel() {
         if (isEditing) {
             const result = await updateProduct(dataToSave.id, dataToSave);
             if (!result.success) {
-                alert('Failed to update product: ' + result.error);
+                showError('Update Failed', result.error || 'Failed to update product. Please try again.');
                 return;
             }
         } else {
             const result = await addProduct(dataToSave);
             if (!result.success) {
-                alert('Failed to create product: ' + result.error);
+                showError('Creation Failed', result.error || 'Failed to create product. Please try again.');
                 return;
             }
         }
@@ -49,11 +87,26 @@ export default function AdminPanel() {
         resetForm();
     };
 
-    // Delete product handler
-    const handleDelete = async (product) => {
+    // Delete product handler - show confirmation first
+    const handleDelete = (product) => {
+        setPendingDelete(product);
+        showDialog({
+            title: 'Delete Product',
+            message: `Are you sure you want to delete "${product.name}"? This action cannot be undone.`,
+            variant: 'danger',
+            confirmText: 'Delete',
+            showCancel: true,
+            onConfirm: () => confirmDelete(product),
+        });
+    };
+
+    // Confirm delete after dialog
+    const confirmDelete = async (product) => {
         const result = await deleteProduct(product);
+        setPendingDelete(null);
+
         if (!result.success && !result.cancelled) {
-            alert('Failed to delete product: ' + result.error);
+            showError('Delete Failed', result.error || 'Failed to delete product. Please try again.');
         }
     };
 
@@ -61,7 +114,7 @@ export default function AdminPanel() {
     const handleOrderStatusChange = async (order, newStatus) => {
         const result = await updateOrderStatus(order, newStatus);
         if (!result.success) {
-            alert('Failed to update order status: ' + result.error);
+            showError('Update Failed', result.error || 'Failed to update order status. Please try again.');
         }
     };
 
@@ -140,6 +193,18 @@ export default function AdminPanel() {
                 onInputChange={handleInputChange}
                 onSubmit={handleSaveProduct}
                 onClose={closeModal}
+            />
+
+            {/* Dialog for confirmations and errors */}
+            <Dialog
+                isOpen={dialog.isOpen}
+                onClose={closeDialog}
+                onConfirm={dialog.onConfirm}
+                title={dialog.title}
+                message={dialog.message}
+                variant={dialog.variant}
+                confirmText={dialog.confirmText}
+                showCancel={dialog.showCancel}
             />
         </div>
     );

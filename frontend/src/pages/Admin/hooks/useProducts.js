@@ -63,10 +63,6 @@ export function useProducts() {
 
     // Delete product
     const deleteProduct = useCallback(async (product) => {
-        if (!window.confirm(`Are you sure you want to delete "${product.name}"?\n\nThis action cannot be undone.`)) {
-            return { success: false, cancelled: true };
-        }
-
         const result = await adminAPI.deleteProduct(product.id);
         if (result.success) {
             setProducts(prev => prev.filter(p => p.id !== product.id));
