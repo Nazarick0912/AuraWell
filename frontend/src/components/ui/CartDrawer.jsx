@@ -26,12 +26,19 @@ export default function CartDrawer({ isOpen, onClose }) {
     const progress = Math.min((subtotal / freeShippingThreshold) * 100, 100);
 
     const updateQty = async (productId, change) => {
+        // Find the current item to check quantity
+        const currentItem = cartItems.find(item => item.productId === productId);
+        
         if (change > 0) {
             await addToCart(productId, change);
         } else if (change < 0) {
-            // For decreasing, we'll need to handle this differently
-            // For now, we can add negative (the backend should handle this)
-            await addToCart(productId, change);
+            // If quantity would become 0 or less, remove the item
+            if (currentItem && currentItem.quantity + change <= 0) {
+                await removeFromCart(productId);
+            } else {
+                // Otherwise, decrease the quantity
+                await addToCart(productId, change);
+            }
         }
     };
 
@@ -205,10 +212,12 @@ export default function CartDrawer({ isOpen, onClose }) {
                                             <h3 className="text-base font-bold text-sage-900 leading-tight">
                                                 {item.productName || `Product #${item.productId}`}
                                             </h3>
-                                            <p className="text-xs text-sage-500 mt-1">Qty: {item.quantity}</p>
+                                            <p className="text-xs text-sage-500 mt-1">
+                                                RM {(item.price || 0).toFixed(2)} × {item.quantity}
+                                            </p>
                                         </div>
                                         <p className="font-bold text-sage-900 text-sm whitespace-nowrap">
-                                            RM {(item.price * item.quantity).toFixed(2)}
+                                            RM {((item.price || 0) * item.quantity).toFixed(2)}
                                         </p>
                                     </div>
 

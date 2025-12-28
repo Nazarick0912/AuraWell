@@ -27,11 +27,20 @@ public class Cart {
     public void addItem(String productId, int quantity) {
         for (CartItem item : items) {
             if (item.getProductId().equals(productId)) {
-                item.setQuantity(item.getQuantity() + quantity);
+                int newQuantity = item.getQuantity() + quantity;
+                if (newQuantity <= 0) {
+                    // Auto-remove item when quantity becomes 0 or negative
+                    items.remove(item);
+                } else {
+                    item.setQuantity(newQuantity);
+                }
                 return;
             }
         }
-        items.add(new CartItem(productId, quantity));
+        // Only add new item if quantity is positive
+        if (quantity > 0) {
+            items.add(new CartItem(productId, quantity));
+        }
     }
 
     public void updateItem(String productId, int quantity) {
