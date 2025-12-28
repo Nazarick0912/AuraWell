@@ -1,14 +1,10 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Package, Plus, Archive, CheckCircle2, AlertCircle } from 'lucide-react';
-import AdminSidebar from './components/AdminSidebar';
-import StatCard from './components/StatCard';
+import { Package, Plus, ShoppingBag } from 'lucide-react'; // Added ShoppingBag
 import ProductTable from './components/ProductTable';
 import ProductFormModal from './components/ProductFormModal';
+import OrdersTable from './components/OrdersTable';
 
 export default function AdminPanel() {
-    const navigate = useNavigate();
-
     // Dummy Data
     const [products, setProducts] = useState([
         { id: 1, name: "Organic Lavender Essential Oil", category: "Aromatherapy", price: 24.00, stock: 12, status: "Active", image: "https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?auto=format&fit=crop&q=80&w=200", description: "Pure organic lavender oil.", ageGroup: "All" },
@@ -20,6 +16,7 @@ export default function AdminPanel() {
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [openActionMenuId, setOpenActionMenuId] = useState(null);
     const [isEditing, setIsEditing] = useState(false);
+    const [activeTab, setActiveTab] = useState('products');
 
     // Form State
     const initialFormState = {
@@ -96,81 +93,76 @@ export default function AdminPanel() {
         setOpenActionMenuId(null);
     };
 
-    const handleLogout = () => {
-        if (window.confirm("Are you sure you want to sign out?")) {
-            navigate('/login');
-        }
-    };
-
-    // Stats calculations
-    const totalProducts = products.length;
-    const activeListings = products.filter(p => p.status === 'Active').length;
-    const lowStock = products.filter(p => p.stock < 5).length;
-
     return (
-        <div 
-            className="min-h-screen bg-stone-50 font-sans text-sage-900 lg:flex relative" 
+        <div
+            className="min-h-screen bg-stone-50 font-sans text-sage-900 p-6 sm:p-10"
             onClick={() => setOpenActionMenuId(null)}
         >
-            <AdminSidebar onLogout={handleLogout} />
+            <div className="max-w-7xl mx-auto space-y-6">
 
-            {/* Main Content */}
-            <main 
-                className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto pt-20 lg:pt-8" 
-                onClick={() => setOpenActionMenuId(null)}
-            >
-                <div className="max-w-6xl mx-auto space-y-6 sm:space-y-8">
-                    {/* Header */}
-                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
-                        <div>
-                            <h1 className="font-display text-2xl sm:text-3xl font-bold text-[#3A4D39]">Admin Panel</h1>
-                            <div className="flex gap-4 mt-4 border-b border-stone-200">
-                                <button className="pb-2 border-b-2 border-[#3A4D39] text-[#3A4D39] font-bold text-sm flex gap-2 items-center min-h-[44px]">
-                                    <Package size={16} /> Products
-                                </button>
-                            </div>
-                        </div>
+                {/* --- HEADER --- */}
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                    <div>
+                        <h1 className="font-display text-3xl font-bold text-[#3A4D39]">Admin Panel</h1>
+                        <p className="text-sage-600 mt-1">Manage your inventory, prices, and product details.</p>
+                    </div>
+
+                    {/* Button on the right */}
+                    {activeTab === 'products' && (
                         <button
                             onClick={(e) => { e.stopPropagation(); openAddModal(); }}
-                            className="w-full sm:w-auto bg-[#3A4D39] text-white px-5 py-2.5 rounded-lg flex items-center justify-center gap-2 hover:bg-[#2F4030] transition-all font-bold text-sm shadow-sm hover:shadow-md hover:-translate-y-0.5 min-h-[44px]"
+                            className="bg-[#3A4D39] text-white px-6 py-3 rounded-xl flex items-center gap-2 hover:bg-[#2F4030] transition-all font-bold shadow-lg hover:shadow-xl hover:-translate-y-0.5"
                         >
-                            <Plus size={18} /> Add Product
+                            <Plus size={20} /> Add Product
                         </button>
-                    </div>
-
-                    {/* Stats */}
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
-                        <StatCard 
-                            icon={Archive} 
-                            label="Total Products" 
-                            value={totalProducts} 
-                            color="bg-blue-100 text-blue-700" 
-                        />
-                        <StatCard 
-                            icon={CheckCircle2} 
-                            label="Active Listings" 
-                            value={activeListings} 
-                            color="bg-green-100 text-green-700" 
-                        />
-                        <StatCard 
-                            icon={AlertCircle} 
-                            label="Low Stock" 
-                            value={lowStock} 
-                            color="bg-amber-100 text-amber-700" 
-                        />
-                    </div>
-
-                    {/* Product Table */}
-                    <ProductTable
-                        products={products}
-                        openActionMenuId={openActionMenuId}
-                        onToggleActionMenu={toggleActionMenu}
-                        onEdit={handleEdit}
-                        onToggleStatus={handleToggleStatus}
-                        onDelete={handleDelete}
-                    />
+                    )}
                 </div>
-            </main>
+
+                {/* --- TABS --- */}
+                <div className="flex items-center gap-8 border-b border-stone-200">
+                    <button
+                        onClick={(e) => { e.stopPropagation(); setActiveTab('products'); }}
+                        className={`pb-3 flex items-center gap-2 text-sm font-bold transition-colors relative
+                            ${activeTab === 'products' ? 'text-[#3A4D39]' : 'text-sage-400 hover:text-sage-600'}
+                        `}
+                    >
+                        <Package size={18} /> Products
+                        {activeTab === 'products' && (
+                            <div className="absolute bottom-0 left-0 w-full h-0.5 bg-[#3A4D39] rounded-t-full"></div>
+                        )}
+                    </button>
+
+                    <button
+                        onClick={(e) => { e.stopPropagation(); setActiveTab('orders'); }}
+                        className={`pb-3 flex items-center gap-2 text-sm font-bold transition-colors relative
+                            ${activeTab === 'orders' ? 'text-[#3A4D39]' : 'text-sage-400 hover:text-sage-600'}
+                        `}
+                    >
+                        <ShoppingBag size={18} /> Orders
+                        {activeTab === 'orders' && (
+                            <div className="absolute bottom-0 left-0 w-full h-0.5 bg-[#3A4D39] rounded-t-full"></div>
+                        )}
+                    </button>
+                </div>
+
+                {/* Main Content Area (Table) */}
+                <div className="mt-6">
+                   {activeTab === 'products' ? (
+                       <div className="p-1">
+                           <ProductTable
+                               products={products}
+                               openActionMenuId={openActionMenuId}
+                               onToggleActionMenu={toggleActionMenu}
+                               onEdit={handleEdit}
+                               onToggleStatus={handleToggleStatus}
+                               onDelete={handleDelete}
+                           />
+                       </div>
+                   ) : (
+                       <OrdersTable />
+                   )}
+               </div>
+           </div>
 
             {/* Product Form Modal */}
             <ProductFormModal

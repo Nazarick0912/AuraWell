@@ -1,5 +1,5 @@
 import { ChevronDown } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 export default function DetailsForm({
     shippingMethod,
@@ -7,8 +7,17 @@ export default function DetailsForm({
     isFreeShipping,
     total
 }) {
+    const navigate = useNavigate();
     const inputClasses = "w-full bg-white border border-stone-200 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#3A4D39]/20 focus:border-[#3A4D39] transition-all min-h-[44px]";
     const labelClasses = "block text-xs font-bold text-sage-500 uppercase tracking-wider mb-1.5";
+
+    const handlePayment = (e) => {
+            e.preventDefault();
+            const randomOrderId = "ORD-" + Math.floor(Math.random() * 1000000);
+            navigate('/order-success', {
+                state: { orderId: randomOrderId }
+            });
+        };
 
     return (
         <div className="space-y-10 sm:space-y-12">
@@ -27,18 +36,18 @@ export default function DetailsForm({
                 <div className="space-y-4 pl-0 sm:pl-11">
                     <div>
                         <label className={labelClasses}>Email Address</label>
-                        <input 
-                            type="email" 
-                            className={inputClasses} 
-                            placeholder="you@example.com" 
+                        <input
+                            type="email"
+                            className={inputClasses}
+                            placeholder="you@example.com"
                         />
                     </div>
                     <div>
                         <label className={labelClasses}>Phone Number</label>
-                        <input 
-                            type="tel" 
-                            className={inputClasses} 
-                            placeholder="+60 12-345 6789" 
+                        <input
+                            type="tel"
+                            className={inputClasses}
+                            placeholder="+60 12-345 6789"
                         />
                     </div>
                 </div>
@@ -54,42 +63,42 @@ export default function DetailsForm({
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pl-0 sm:pl-11">
                     <div className="sm:col-span-2">
                         <label className={labelClasses}>Full Name</label>
-                        <input 
-                            type="text" 
-                            className={inputClasses} 
-                            placeholder="e.g. Sarah Tan" 
+                        <input
+                            type="text"
+                            className={inputClasses}
+                            placeholder="e.g. Sarah Tan"
                         />
                     </div>
                     <div className="sm:col-span-2">
                         <label className={labelClasses}>Address Line 1</label>
-                        <input 
-                            type="text" 
-                            className={inputClasses} 
-                            placeholder="Street address, P.O. box" 
+                        <input
+                            type="text"
+                            className={inputClasses}
+                            placeholder="Street address, P.O. box"
                         />
                     </div>
                     <div className="sm:col-span-2">
                         <label className={labelClasses}>Address Line 2 (Optional)</label>
-                        <input 
-                            type="text" 
-                            className={inputClasses} 
-                            placeholder="Apartment, suite, unit, etc." 
+                        <input
+                            type="text"
+                            className={inputClasses}
+                            placeholder="Apartment, suite, unit, etc."
                         />
                     </div>
                     <div>
                         <label className={labelClasses}>City</label>
-                        <input 
-                            type="text" 
-                            className={inputClasses} 
-                            placeholder="City" 
+                        <input
+                            type="text"
+                            className={inputClasses}
+                            placeholder="City"
                         />
                     </div>
                     <div>
                         <label className={labelClasses}>Postcode</label>
-                        <input 
-                            type="text" 
-                            className={inputClasses} 
-                            placeholder="Postcode" 
+                        <input
+                            type="text"
+                            className={inputClasses}
+                            placeholder="Postcode"
                         />
                     </div>
                     <div className="sm:col-span-2">
@@ -154,7 +163,10 @@ export default function DetailsForm({
                     </div>
 
                     {/* Pay Button */}
-                    <button className="w-full py-4 sm:py-5 bg-[#3A4D39] text-white rounded-xl font-bold text-base sm:text-lg hover:bg-[#2F4030] hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 flex justify-center items-center gap-2 min-h-[56px]">
+                    <button
+                        onClick={handlePayment}
+                        className="w-full py-4 sm:py-5 bg-[#3A4D39] text-white rounded-xl font-bold text-base sm:text-lg hover:bg-[#2F4030] hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 flex justify-center items-center gap-2 min-h-[56px]"
+                    >
                         Pay RM {total.toFixed(2)}
                     </button>
                 </div>
