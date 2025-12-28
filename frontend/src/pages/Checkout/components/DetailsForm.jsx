@@ -28,9 +28,6 @@ export default function DetailsForm({
                         <span className="flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[#3A4D39] text-white text-xs sm:text-sm font-sans">1</span>
                         Contact Information
                     </h2>
-                    <span className="text-xs text-sage-500 pl-10 sm:pl-0">
-                        Already have an account? <Link to="/login" className="text-[#3A4D39] font-bold hover:underline">Log in</Link>
-                    </span>
                 </div>
 
                 <div className="space-y-4 pl-0 sm:pl-11">

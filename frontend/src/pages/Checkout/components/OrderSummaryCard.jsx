@@ -71,7 +71,7 @@ export default function OrderSummaryCard({
 
     // Desktop sidebar version
     return (
-        <div className="hidden lg:block lg:col-span-5 order-1 lg:order-2">
+        <div className="hidden lg:block lg:col-span-5 order-1 lg:order-2 self-stretch">
             <div className="sticky top-24">
                 <div className="bg-[#3A4D39] text-cream-50 rounded-3xl p-8 shadow-2xl">
                     <h3 className="font-display text-lg font-bold text-white mb-6">Order Summary</h3>
@@ -106,7 +106,7 @@ export default function OrderSummaryCard({
 
                     <hr className="border-[#4A5E49] mb-6" />
 
-                    {/* Discount Code */}
+                    {/* Discount Code
                     <div className="flex gap-2 sm:gap-3 mb-8">
                         <input
                             type="text"
@@ -118,7 +118,7 @@ export default function OrderSummaryCard({
                         </button>
                     </div>
 
-                    <hr className="border-[#4A5E49] mb-6" />
+                    <hr className="border-[#4A5E49] mb-6" /> */}
 
                     {/* Totals */}
                     <div className="space-y-3 text-sm text-sage-300 mb-6">
