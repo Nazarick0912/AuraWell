@@ -4,8 +4,7 @@ import { CheckCircle, ShoppingBag, ArrowRight } from 'lucide-react';
 export default function SuccessContent({ orderId }) {
     return (
         <div className="min-h-[80vh] flex flex-col items-center justify-center bg-[#FDFBF7] text-center px-6">
-
-            {/* Success Icon */}
+            {/* success icon */}
             <div className="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center mb-6 animate-in zoom-in duration-300">
                 <CheckCircle className="text-green-600 w-12 h-12" strokeWidth={3} />
             </div>
@@ -14,10 +13,10 @@ export default function SuccessContent({ orderId }) {
                 Order Placed Successfully!
             </h1>
 
-            <p className="text-sage-600 mb-2">Thank you for your purchase.</p>
-            <p className="text-sm text-sage-400 mb-10">Order ID: <span className="font-mono text-sage-600">{orderId}</span></p>
+            <p className="text-sage-600 mb-2">thank you for your purchase.</p>
+            {/* display the real order id from the backend */}
+            <p className="text-sm text-sage-400 mb-10">order id: <span className="font-mono text-sage-600">{orderId || 'processing...'}</span></p>
 
-            {/* Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 w-full max-w-md">
                 <Link
                     to="/my-orders"
@@ -36,4 +35,3 @@ export default function SuccessContent({ orderId }) {
         </div>
     );
 }
-
