@@ -2,7 +2,7 @@ import React, { useState } from 'react'; //added useState
 import { ChevronDown } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { ordersAPI } from '../../../services/api'; //to use centralized API from api.js
-import { useCart } from '../../../context/CartContext'; //clear cart locally after success
+import { useCart } from '../../../contexts/CartContext'; //clear cart locally after success
 
 export default function DetailsForm({
     shippingMethod,
