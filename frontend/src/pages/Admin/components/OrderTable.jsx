@@ -114,23 +114,33 @@ export default function OrderTable({ orders, loading, onStatusChange }) {
                     {orders.map((order) => (
                         <div
                             key={order.id}
-                            className="grid items-center gap-4 px-4 py-3 hover:bg-stone-50 transition-colors relative"
+                            className="grid items-start gap-4 px-4 py-3 hover:bg-stone-50 transition-colors relative"
                             style={{ gridTemplateColumns: '100px 1fr 120px 1.5fr 100px 140px' }}
                         >
-                            {/* Order ID */}
-                            <span className="font-bold text-[#3A4D39] text-sm">{order.id}</span>
+                            {/* Order ID - shortened with ellipsis */}
+                            <span className="font-bold text-[#3A4D39] text-sm whitespace-nowrap" title={order.id}>
+                                {order.id.length > 8 ? `${order.id.substring(0, 8)}...` : order.id}
+                            </span>
 
-                            {/* Customer */}
-                            <span className="text-sm font-medium text-sage-900">{order.customer}</span>
+                            {/* Customer - allows multiple lines */}
+                            <span className="text-sm font-medium text-sage-900 break-words">{order.customer}</span>
 
                             {/* Date */}
-                            <span className="text-sm text-sage-500">{order.date}</span>
+                            <span className="text-sm text-sage-500 whitespace-nowrap">{order.date}</span>
 
-                            {/* Items */}
-                            <span className="text-sm text-sage-600 truncate">{order.items}</span>
+                            {/* Items - each item on separate line */}
+                            <div className="text-sm text-sage-600">
+                                {order.itemsList && order.itemsList.length > 0 ? (
+                                    order.itemsList.map((item, idx) => (
+                                        <div key={idx}>{item}</div>
+                                    ))
+                                ) : (
+                                    <span>No items</span>
+                                )}
+                            </div>
 
                             {/* Total */}
-                            <span className="text-sm font-bold text-sage-900">RM {order.total.toFixed(2)}</span>
+                            <span className="text-sm font-bold text-sage-900 whitespace-nowrap">RM {order.total.toFixed(2)}</span>
 
                             {/* Status */}
                             <StatusDropdown order={order} />
@@ -145,7 +155,9 @@ export default function OrderTable({ orders, loading, onStatusChange }) {
                     <div key={order.id} className="bg-white rounded-xl border border-stone-200 shadow-sm p-4 relative">
                         <div className="flex justify-between items-start mb-3">
                             <div>
-                                <h3 className="font-bold text-[#3A4D39]">{order.id}</h3>
+                                <h3 className="font-bold text-[#3A4D39]" title={order.id}>
+                                    {order.id.length > 8 ? `${order.id.substring(0, 8)}...` : order.id}
+                                </h3>
                                 <p className="text-xs text-sage-500">{order.date}</p>
                             </div>
                             <span className="font-bold text-sage-900">RM {order.total.toFixed(2)}</span>
@@ -153,7 +165,15 @@ export default function OrderTable({ orders, loading, onStatusChange }) {
 
                         <div className="mb-4">
                             <p className="text-sm font-medium text-sage-900 mb-1">{order.customer}</p>
-                            <p className="text-xs text-sage-600 line-clamp-2">{order.items}</p>
+                            <div className="text-xs text-sage-600">
+                                {order.itemsList && order.itemsList.length > 0 ? (
+                                    order.itemsList.map((item, idx) => (
+                                        <div key={idx}>{item}</div>
+                                    ))
+                                ) : (
+                                    <span>No items</span>
+                                )}
+                            </div>
                         </div>
 
                         {/* Mobile Status Dropdown */}

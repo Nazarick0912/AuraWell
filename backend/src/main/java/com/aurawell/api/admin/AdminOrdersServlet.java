@@ -1,8 +1,10 @@
 package com.aurawell.api.admin;
 
 import com.aurawell.models.Order;
+import com.aurawell.models.User;
 import com.aurawell.services.DataManager;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import javax.servlet.ServletException;
@@ -39,9 +41,26 @@ public class AdminOrdersServlet extends HttpServlet {
             return;
         }
 
-        // Return all orders
+        // Return all orders with customer name
         List<Order> orders = dataManager.getOrders();
-        resp.getWriter().write(gson.toJson(orders));
+        JsonArray ordersWithCustomer = new JsonArray();
+        
+        for (Order order : orders) {
+            JsonObject orderJson = gson.toJsonTree(order).getAsJsonObject();
+            
+            // Lookup user to get customer name
+            Optional<User> userOpt = dataManager.getUserById(order.getUserId());
+            if (userOpt.isPresent()) {
+                User user = userOpt.get();
+                orderJson.addProperty("customerName", user.getFirstName() + " " + user.getLastName());
+            } else {
+                orderJson.addProperty("customerName", "Unknown Customer");
+            }
+            
+            ordersWithCustomer.add(orderJson);
+        }
+        
+        resp.getWriter().write(gson.toJson(ordersWithCustomer));
     }
 
     @Override

@@ -112,18 +112,18 @@ export default function ProductFormModal({
                         </div>
                         <div>
                             <label className={labelClasses}>Age Group</label>
-                            <select 
-                                name="ageGroup" 
-                                value={formData.ageGroup} 
-                                onChange={onInputChange} 
+                            <select
+                                name="ageGroup"
+                                value={formData.ageGroup}
+                                onChange={onInputChange}
                                 className={`${inputClasses} cursor-pointer`}
                             >
-                                <option value="Toddler">Toddler</option>
-                                <option value="Child">Child</option>
-                                <option value="Teen">Teen</option>
-                                <option value="Adult">Adult</option>
-                                <option value="Elderly">Elderly</option>
-                                <option value="All">All</option>
+                                <option value={null}>All Ages</option>
+                                <option value="infant">Infants (0-2)</option>
+                                <option value="child">Children (3-12)</option>
+                                <option value="teen">Teens (13-19)</option>
+                                <option value="adult">Adults (20-64)</option>
+                                <option value="senior">Seniors (65+)</option>
                             </select>
                         </div>
                         <div>
