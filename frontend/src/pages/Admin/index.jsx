@@ -38,7 +38,11 @@ export default function AdminPanel() {
                 return;
             }
         } else {
-            addProduct(dataToSave);
+            const result = await addProduct(dataToSave);
+            if (!result.success) {
+                alert('Failed to create product: ' + result.error);
+                return;
+            }
         }
 
         closeModal();

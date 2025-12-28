@@ -75,18 +75,17 @@ export function useProducts() {
         return { success: false, error: result.error || 'Unknown error' };
     }, []);
 
-    // Add new product (local only for now)
-    const addProduct = useCallback((formData) => {
+    // Add new product
+    const addProduct = useCallback(async (formData) => {
         const processedData = transformProductForAPI(formData);
-        const newProduct = { 
-            ...processedData, 
-            id: Date.now(),
-            // Transform back to frontend format for display
-            category: formData.category,
-            ageGroup: formData.ageGroup,
-            image: processedData.imageUrl
-        };
-        setProducts(prev => [newProduct, ...prev]);
+        const result = await adminAPI.createProduct(processedData);
+        
+        if (result.success) {
+            const newProduct = transformProduct(result.product);
+            setProducts(prev => [newProduct, ...prev]);
+            return { success: true };
+        }
+        return { success: false, error: result.error || 'Unknown error' };
     }, []);
 
     return { 
