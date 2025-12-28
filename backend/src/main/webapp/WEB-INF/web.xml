@@ -125,29 +125,4 @@
         <url-pattern>/api/admin/orders</url-pattern>
     </servlet-mapping>
 
-    <!-- ImageUploadServlet -->
-    <servlet>
-        <servlet-name>ImageUploadServlet</servlet-name>
-        <servlet-class>com.aurawell.api.media.ImageUploadServlet</servlet-class>
-        <multipart-config>
-            <max-file-size>10485760</max-file-size>
-            <max-request-size>15728640</max-request-size>
-            <file-size-threshold>1048576</file-size-threshold>
-        </multipart-config>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>ImageUploadServlet</servlet-name>
-        <url-pattern>/api/upload/image</url-pattern>
-    </servlet-mapping>
-
-    <!-- ImageServlet -->
-    <servlet>
-        <servlet-name>ImageServlet</servlet-name>
-        <servlet-class>com.aurawell.api.media.ImageServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>ImageServlet</servlet-name>
-        <url-pattern>/api/images/*</url-pattern>
-    </servlet-mapping>
-
 </web-app>

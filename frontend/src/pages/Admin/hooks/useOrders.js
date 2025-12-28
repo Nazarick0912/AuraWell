@@ -4,15 +4,16 @@ import { adminAPI } from '../../../services/api';
 // Transform backend order data to frontend format
 const transformOrder = (order) => ({
     id: order.id,
-    customer: order.shippingAddress || 'Unknown Customer',
+    customer: order.customerName || 'Unknown Customer',
     date: new Date(order.createdAt).toISOString().split('T')[0],
     total: order.totalAmount,
     status: order.status 
         ? order.status.charAt(0).toUpperCase() + order.status.slice(1) 
         : 'Pending',
-    items: order.items 
-        ? order.items.map(item => `${item.productName || 'Product'} (x${item.quantity})`).join(', ') 
-        : 'No items'
+    // Store items as array for multi-line display
+    itemsList: order.items 
+        ? order.items.map(item => `${item.productName || 'Product'} (x${item.quantity})`) 
+        : []
 });
 
 export function useOrders() {

@@ -1,14 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { ArrowLeft, Minus, Plus, ShoppingCart, CheckCircle, Check } from 'lucide-react'; // Added Check icon
+import { ArrowLeft, Minus, Plus, ShoppingCart, CheckCircle, Check } from 'lucide-react';
 import { useCart } from '../../contexts/CartContext';
 import { useAuth } from '../../contexts/AuthContext';
-
-const DUMMY_PRODUCTS = [
-    { id: 1, name: "Organic Lavender Essential Oil", category: "Aromatherapy", price: 24.00, stock: 12, status: "Active", image: "https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?auto=format&fit=crop&q=80&w=600", description: "Pure organic lavender oil for relaxation and better sleep.", ageGroup: "All Ages" },
-    { id: 2, name: "Vitamin D3 1000IU", category: "Vitamins", price: 24.99, stock: 45, status: "Active", image: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&q=80&w=600", description: "Essential vitamin for bone health and immune support. Perfect for daily supplementation.", ageGroup: "Adults (20-64 years)" },
-    { id: 3, name: "Kids Multivitamin Gummies", category: "Vitamins", price: 19.99, stock: 20, status: "Active", image: "https://images.unsplash.com/photo-1550572017-edd951aa8f72?auto=format&fit=crop&q=80&w=600", description: "Delicious fruit-flavored gummies packed with essential vitamins.", ageGroup: "Children" },
-];
+import { productsAPI } from '../../services/api';
 
 export default function ProductDetail() {
     const { id } = useParams();
@@ -19,19 +14,57 @@ export default function ProductDetail() {
     const [product, setProduct] = useState(null);
     const [quantity, setQuantity] = useState(1);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     const [isAdding, setIsAdding] = useState(false);
     const [justAdded, setJustAdded] = useState(false);
 
-    // Fetch Product Data
+    // Fetch Product Data from API
     useEffect(() => {
-        const foundProduct = DUMMY_PRODUCTS.find(p => p.id === parseInt(id));
-        setProduct(foundProduct);
-        setLoading(false);
+        const fetchProduct = async () => {
+            setLoading(true);
+            setError(null);
+            try {
+                const data = await productsAPI.getById(id);
+                if (data) {
+                    setProduct(data);
+                } else {
+                    setError('Product not found');
+                }
+            } catch (err) {
+                console.error('Failed to fetch product:', err);
+                setError('Failed to load product');
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchProduct();
     }, [id]);
 
-    if (loading) return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
-    if (!product) return <div className="min-h-screen flex items-center justify-center">Product not found</div>;
+    if (loading) {
+        return (
+            <div className="min-h-screen bg-[#FDFBF7] flex items-center justify-center">
+                <div className="text-center">
+                    <div className="w-12 h-12 border-4 border-[#3A4D39] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                    <p className="text-sage-600 font-medium">Loading product...</p>
+                </div>
+            </div>
+        );
+    }
+
+    if (error || !product) {
+        return (
+            <div className="min-h-screen bg-[#FDFBF7] flex items-center justify-center">
+                <div className="text-center">
+                    <p className="text-xl font-bold text-sage-800 mb-2">{error || 'Product not found'}</p>
+                    <Link to="/products" className="text-[#3A4D39] font-medium hover:underline">
+                        ← Back to Products
+                    </Link>
+                </div>
+            </div>
+        );
+    }
 
     const handleQuantityChange = (change) => {
         const newQty = quantity + change;

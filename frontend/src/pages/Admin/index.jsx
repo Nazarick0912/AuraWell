@@ -24,18 +24,21 @@ export default function AdminPanel() {
         resetForm 
     } = useProductForm();
 
-    // Save product handler
-    const handleSaveProduct = async (e) => {
+    // Save product handler - receives updated formData with uploaded image URL
+    const handleSaveProduct = async (e, updatedFormData) => {
         e.preventDefault();
 
+        // Use updatedFormData if provided (contains Cloudinary URL), otherwise fall back to formData
+        const dataToSave = updatedFormData || formData;
+
         if (isEditing) {
-            const result = await updateProduct(formData.id, formData);
+            const result = await updateProduct(dataToSave.id, dataToSave);
             if (!result.success) {
                 alert('Failed to update product: ' + result.error);
                 return;
             }
         } else {
-            addProduct(formData);
+            addProduct(dataToSave);
         }
 
         closeModal();
