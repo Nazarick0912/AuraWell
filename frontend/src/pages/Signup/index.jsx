@@ -2,10 +2,12 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { authAPI } from "../../services/api";
 import SignupForm from "./components/SignupForm";
+import Dialog from "../../components/ui/Dialog";
 
 export default function Signup() {
     const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const [showSuccessDialog, setShowSuccessDialog] = useState(false);
     const navigate = useNavigate();
 
     const handleSubmit = async (formData) => {
@@ -33,8 +35,12 @@ export default function Signup() {
             });
 
             if (data?.success) {
-                alert("Account created! Please sign in.");
-                navigate('/login');
+                setShowSuccessDialog(true);
+                // Auto-close dialog and navigate after 3 seconds
+                setTimeout(() => {
+                    setShowSuccessDialog(false);
+                    navigate('/login');
+                }, 3000);
             } else {
                 setError(data?.message || 'Registration failed');
             }
@@ -57,12 +63,21 @@ export default function Signup() {
                 </div>
 
                 {/* Form */}
-                <SignupForm 
-                    onSubmit={handleSubmit} 
-                    isLoading={isLoading} 
-                    error={error} 
+                <SignupForm
+                    onSubmit={handleSubmit}
+                    isLoading={isLoading}
+                    error={error}
                 />
             </div>
+
+            {/* Success Dialog */}
+            <Dialog
+                isOpen={showSuccessDialog}
+                onClose={() => setShowSuccessDialog(false)}
+                title="Account Created!"
+                message="Your account has been successfully created. Redirecting to sign in..."
+                variant="success"
+            />
         </div>
     );
 }

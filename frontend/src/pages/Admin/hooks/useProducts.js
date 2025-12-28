@@ -63,10 +63,6 @@ export function useProducts() {
 
     // Delete product
     const deleteProduct = useCallback(async (product) => {
-        if (!window.confirm(`Are you sure you want to delete "${product.name}"?\n\nThis action cannot be undone.`)) {
-            return { success: false, cancelled: true };
-        }
-
         const result = await adminAPI.deleteProduct(product.id);
         if (result.success) {
             setProducts(prev => prev.filter(p => p.id !== product.id));
@@ -75,18 +71,17 @@ export function useProducts() {
         return { success: false, error: result.error || 'Unknown error' };
     }, []);
 
-    // Add new product (local only for now)
-    const addProduct = useCallback((formData) => {
+    // Add new product
+    const addProduct = useCallback(async (formData) => {
         const processedData = transformProductForAPI(formData);
-        const newProduct = { 
-            ...processedData, 
-            id: Date.now(),
-            // Transform back to frontend format for display
-            category: formData.category,
-            ageGroup: formData.ageGroup,
-            image: processedData.imageUrl
-        };
-        setProducts(prev => [newProduct, ...prev]);
+        const result = await adminAPI.createProduct(processedData);
+        
+        if (result.success) {
+            const newProduct = transformProduct(result.product);
+            setProducts(prev => [newProduct, ...prev]);
+            return { success: true };
+        }
+        return { success: false, error: result.error || 'Unknown error' };
     }, []);
 
     return { 
