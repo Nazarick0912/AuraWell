@@ -157,7 +157,7 @@ const Navbar = ({ onCartClick }) => {
                                             </Link>
                                         ) : (
                                             <Link
-                                                to="/#"
+                                                to="/my-orders"
                                                 onClick={closeUserMenu}
                                                 className="flex items-center gap-3 px-4 py-2.5 text-sm text-sage-700 active:bg-cream-100 transition-colors"
                                             >
