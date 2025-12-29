@@ -1,113 +1,134 @@
 import { useState } from 'react';
-import { Package, Plus, ShoppingBag } from 'lucide-react'; // Added ShoppingBag
+import { Package, Plus, ShoppingBag } from 'lucide-react';
 import ProductTable from './components/ProductTable';
+import OrderTable from './components/OrderTable';
 import ProductFormModal from './components/ProductFormModal';
-import OrdersTable from './components/OrdersTable';
+import Dialog from '../../components/ui/Dialog';
+import { useProducts } from './hooks/useProducts';
+import { useOrders } from './hooks/useOrders';
+import { useProductForm } from './hooks/useProductForm';
 
 export default function AdminPanel() {
-    // Dummy Data
-    const [products, setProducts] = useState([
-        { id: 1, name: "Organic Lavender Essential Oil", category: "Aromatherapy", price: 24.00, stock: 12, status: "Active", image: "https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?auto=format&fit=crop&q=80&w=200", description: "Pure organic lavender oil.", ageGroup: "All" },
-        { id: 2, name: "Premium Vitamin C Complex", category: "Vitamins", price: 65.00, stock: 45, status: "Active", image: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&q=80&w=200", description: "High potency vitamin C.", ageGroup: "Adult" },
-        { id: 3, name: "Magnesium Glycinate Sleep Blend", category: "Supplements", price: 45.00, stock: 0, status: "Draft", image: "https://images.unsplash.com/photo-1550572017-edd951aa8f72?auto=format&fit=crop&q=80&w=200", description: "Sleep aid supplement.", ageGroup: "Adult" },
-    ]);
-
-    // State Management
-    const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-    const [openActionMenuId, setOpenActionMenuId] = useState(null);
-    const [isEditing, setIsEditing] = useState(false);
     const [activeTab, setActiveTab] = useState('products');
 
-    // Form State
-    const initialFormState = {
-        id: null,
-        name: '',
-        description: '',
-        price: '',
-        stock: '',
-        category: 'Vitamins',
-        ageGroup: 'Adult',
-        status: 'Active',
-        image: ''
-    };
-    const [formData, setFormData] = useState(initialFormState);
+    // Dialog state
+    const [dialog, setDialog] = useState({
+        isOpen: false,
+        title: '',
+        message: '',
+        variant: 'info',
+        confirmText: 'OK',
+        showCancel: false,
+        onConfirm: null,
+    });
 
-    // Handlers
-    const toggleActionMenu = (id) => {
-        setOpenActionMenuId(openActionMenuId === id ? null : id);
+    // Pending delete state
+    const [pendingDelete, setPendingDelete] = useState(null);
+
+    // Custom hooks for data management
+    const { products, loading: productsLoading, updateProduct, deleteProduct, addProduct } = useProducts();
+    const { orders, loading: ordersLoading, updateOrderStatus } = useOrders();
+    const { 
+        formData, 
+        isEditing, 
+        isModalOpen, 
+        handleInputChange, 
+        openAddModal, 
+        openEditModal, 
+        closeModal, 
+        resetForm 
+    } = useProductForm();
+
+    // Show dialog helper
+    const showDialog = ({ title, message, variant = 'info', confirmText = 'OK', showCancel = false, onConfirm = null }) => {
+        setDialog({
+            isOpen: true,
+            title,
+            message,
+            variant,
+            confirmText,
+            showCancel,
+            onConfirm,
+        });
     };
 
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({ ...prev, [name]: value }));
+    // Close dialog helper
+    const closeDialog = () => {
+        setDialog(prev => ({ ...prev, isOpen: false }));
     };
 
-    const openAddModal = () => {
-        setFormData(initialFormState);
-        setIsEditing(false);
-        setIsAddModalOpen(true);
+    // Show error dialog helper
+    const showError = (title, message) => {
+        showDialog({ title, message, variant: 'error' });
     };
 
-    const handleEdit = (product) => {
-        setFormData(product);
-        setIsEditing(true);
-        setIsAddModalOpen(true);
-        setOpenActionMenuId(null);
-    };
-
-    const handleSaveProduct = (e) => {
+    // Save product handler - receives updated formData with uploaded image URL
+    const handleSaveProduct = async (e, updatedFormData) => {
         e.preventDefault();
 
-        const processedData = {
-            ...formData,
-            price: parseFloat(formData.price) || 0,
-            stock: parseInt(formData.stock) || 0,
-            image: formData.image || "https://via.placeholder.com/200x200?text=No+Image"
-        };
+        // Use updatedFormData if provided (contains Cloudinary URL), otherwise fall back to formData
+        const dataToSave = updatedFormData || formData;
 
         if (isEditing) {
-            setProducts(products.map(p => p.id === formData.id ? processedData : p));
-        } else {
-            const newProduct = { ...processedData, id: Date.now() };
-            setProducts([newProduct, ...products]);
-        }
-
-        setIsAddModalOpen(false);
-        setFormData(initialFormState);
-    };
-
-    const handleToggleStatus = (id) => {
-        setProducts(products.map(p => {
-            if (p.id === id) {
-                return { ...p, status: p.status === "Active" ? "Draft" : "Active" };
+            const result = await updateProduct(dataToSave.id, dataToSave);
+            if (!result.success) {
+                showError('Update Failed', result.error || 'Failed to update product. Please try again.');
+                return;
             }
-            return p;
-        }));
-        setOpenActionMenuId(null);
+        } else {
+            const result = await addProduct(dataToSave);
+            if (!result.success) {
+                showError('Creation Failed', result.error || 'Failed to create product. Please try again.');
+                return;
+            }
+        }
+
+        closeModal();
+        resetForm();
     };
 
-    const handleDelete = (id, productName) => {
-        if (window.confirm(`Are you sure you want to delete "${productName}"?\n\nThis action cannot be undone.`)) {
-            setProducts(products.filter(p => p.id !== id));
+    // Delete product handler - show confirmation first
+    const handleDelete = (product) => {
+        setPendingDelete(product);
+        showDialog({
+            title: 'Delete Product',
+            message: `Are you sure you want to delete "${product.name}"? This action cannot be undone.`,
+            variant: 'danger',
+            confirmText: 'Delete',
+            showCancel: true,
+            onConfirm: () => confirmDelete(product),
+        });
+    };
+
+    // Confirm delete after dialog
+    const confirmDelete = async (product) => {
+        const result = await deleteProduct(product);
+        setPendingDelete(null);
+
+        if (!result.success && !result.cancelled) {
+            showError('Delete Failed', result.error || 'Failed to delete product. Please try again.');
         }
-        setOpenActionMenuId(null);
+    };
+
+    // Order status change handler
+    const handleOrderStatusChange = async (order, newStatus) => {
+        const result = await updateOrderStatus(order, newStatus);
+        if (!result.success) {
+            showError('Update Failed', result.error || 'Failed to update order status. Please try again.');
+        }
     };
 
     return (
-        <div
-            className="min-h-screen bg-stone-50 font-sans text-sage-900 p-6 sm:p-10"
-            onClick={() => setOpenActionMenuId(null)}
-        >
+        <div className="min-h-screen bg-stone-50 font-sans text-sage-900 p-6 sm:p-10">
             <div className="max-w-7xl mx-auto space-y-6">
 
-                {/* --- HEADER --- */}
+                {/* Header */}
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                     <div>
                         <h1 className="font-display text-3xl font-bold text-[#3A4D39]">Admin Panel</h1>
                         <p className="text-sage-600 mt-1">Manage your inventory, prices, and product details.</p>
                     </div>
 
-                    {/* Button on the right */}
                     {activeTab === 'products' && (
                         <button
                             onClick={(e) => { e.stopPropagation(); openAddModal(); }}
@@ -118,7 +139,7 @@ export default function AdminPanel() {
                     )}
                 </div>
 
-                {/* --- TABS --- */}
+                {/* Tabs */}
                 <div className="flex items-center gap-8 border-b border-stone-200">
                     <button
                         onClick={(e) => { e.stopPropagation(); setActiveTab('products'); }}
@@ -145,33 +166,45 @@ export default function AdminPanel() {
                     </button>
                 </div>
 
-                {/* Main Content Area (Table) */}
+                {/* Content */}
                 <div className="mt-6">
-                   {activeTab === 'products' ? (
-                       <div className="p-1">
-                           <ProductTable
-                               products={products}
-                               openActionMenuId={openActionMenuId}
-                               onToggleActionMenu={toggleActionMenu}
-                               onEdit={handleEdit}
-                               onToggleStatus={handleToggleStatus}
-                               onDelete={handleDelete}
-                           />
-                       </div>
-                   ) : (
-                       <OrdersTable />
-                   )}
-               </div>
-           </div>
+                    {activeTab === 'products' ? (
+                        <ProductTable
+                            products={products}
+                            loading={productsLoading}
+                            onEdit={openEditModal}
+                            onDelete={handleDelete}
+                        />
+                    ) : (
+                        <OrderTable
+                            orders={orders}
+                            loading={ordersLoading}
+                            onStatusChange={handleOrderStatusChange}
+                        />
+                    )}
+                </div>
+            </div>
 
             {/* Product Form Modal */}
             <ProductFormModal
-                isOpen={isAddModalOpen}
+                isOpen={isModalOpen}
                 isEditing={isEditing}
                 formData={formData}
                 onInputChange={handleInputChange}
                 onSubmit={handleSaveProduct}
-                onClose={() => setIsAddModalOpen(false)}
+                onClose={closeModal}
+            />
+
+            {/* Dialog for confirmations and errors */}
+            <Dialog
+                isOpen={dialog.isOpen}
+                onClose={closeDialog}
+                onConfirm={dialog.onConfirm}
+                title={dialog.title}
+                message={dialog.message}
+                variant={dialog.variant}
+                confirmText={dialog.confirmText}
+                showCancel={dialog.showCancel}
             />
         </div>
     );
