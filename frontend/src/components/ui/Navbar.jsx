@@ -1,7 +1,8 @@
-import React, {useState, useEffect, useRef} from "react";
-import {Link, useLocation, useSearchParams} from "react-router-dom";
+import React, { useState, useEffect, useRef } from "react";
+import { Link, useLocation, useSearchParams } from "react-router-dom";
 import logo from "../../assets/logo.png";
-import {ShoppingCart, LogOut, X, Menu, User, Package, Settings} from "lucide-react";
+import { ShoppingCart, LogOut, X, Menu, User, Package, Settings } from "lucide-react";
+import ConfirmationModal from "./ConfirmationModal";
 import { useAuth } from "../../contexts/AuthContext";
 import { useCart } from "../../contexts/CartContext";
 
@@ -11,6 +12,7 @@ const Navbar = ({ onCartClick }) => {
     const [searchParams] = useSearchParams();
     const [mobileOpen, setMobileOpen] = useState(false);
     const [userMenuOpen, setUserMenuOpen] = useState(false);
+    const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
     const userMenuRef = useRef(null);
 
     // Auth & Cart context
@@ -31,6 +33,17 @@ const Navbar = ({ onCartClick }) => {
     const closeMobile = () => setMobileOpen(false);
     const closeUserMenu = () => setUserMenuOpen(false);
 
+    const handleLogoutClick = () => {
+        closeUserMenu();
+        closeMobile();
+        setIsLogoutModalOpen(true);
+    };
+
+    const handleLogoutConfirm = async () => {
+        await logout();
+        setIsLogoutModalOpen(false);
+    };
+
     // Close menus on route change
     useEffect(() => {
         closeMobile();
@@ -44,7 +57,7 @@ const Navbar = ({ onCartClick }) => {
                 closeUserMenu();
             }
         };
-        
+
         if (userMenuOpen) {
             document.addEventListener("mousedown", handleClickOutside);
         }
@@ -75,7 +88,7 @@ const Navbar = ({ onCartClick }) => {
                 <div className="h-[76px] flex items-center justify-between">
                     {/* Logo */}
                     <Link to="/" onClick={closeMobile} className="flex items-center gap-2">
-                        <img src={logo} alt="AuraWell Logo" className="h-10"/>
+                        <img src={logo} alt="AuraWell Logo" className="h-10" />
                         <h1 className="text-xl font-semibold text-sage-800">AuraWell</h1>
                     </Link>
 
@@ -84,7 +97,7 @@ const Navbar = ({ onCartClick }) => {
                         {categories.map((cat, i) => (
                             <li key={i}>
                                 <Link to={`/products${cat.key ? `?category=${cat.key}` : ""}`}
-                                      className={`nav-link ${isActiveCategory(cat.key || null) ? "nav-link-active" : ""}`}
+                                    className={`nav-link ${isActiveCategory(cat.key || null) ? "nav-link-active" : ""}`}
                                 >
                                     {cat.label}
                                 </Link>
@@ -100,7 +113,7 @@ const Navbar = ({ onCartClick }) => {
                                 className="relative p-2 hover:bg-cream-200/60 rounded-full transition-colors cursor-pointer"
                                 aria-label="Open Cart"
                             >
-                                <ShoppingCart className="w-6 h-6 text-sage-700"/>
+                                <ShoppingCart className="w-6 h-6 text-sage-700" />
                                 {cartCount > 0 && (
                                     <span className="absolute top-0 right-0 bg-sage-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center border-2 border-cream-50">
                                         {cartCount}
@@ -121,11 +134,10 @@ const Navbar = ({ onCartClick }) => {
                                 </button>
 
                                 {/* User Dropdown Menu */}
-                                <div className={`absolute right-0 top-full mt-2 w-56 bg-white rounded-xl shadow-lg border border-cream-200 overflow-hidden transition-all duration-200 ${
-                                    userMenuOpen 
-                                        ? "opacity-100 translate-y-0 pointer-events-auto" 
+                                <div className={`absolute right-0 top-full mt-2 w-56 bg-white rounded-xl shadow-lg border border-cream-200 overflow-hidden transition-all duration-200 ${userMenuOpen
+                                        ? "opacity-100 translate-y-0 pointer-events-auto"
                                         : "opacity-0 -translate-y-2 pointer-events-none"
-                                }`}>
+                                    }`}>
                                     {/* User Info */}
                                     <div className="px-4 py-3 border-b border-cream-100">
                                         <p className="font-medium text-sage-800">{user.firstName} {user.lastName}</p>
@@ -159,8 +171,7 @@ const Navbar = ({ onCartClick }) => {
                                     <div className="border-t border-cream-100">
                                         <button
                                             onClick={() => {
-                                                closeUserMenu();
-                                                logout();
+                                                handleLogoutClick();
                                             }}
                                             className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-terracotta-600 hover:bg-terracotta-50 transition-colors"
                                         >
@@ -188,7 +199,7 @@ const Navbar = ({ onCartClick }) => {
                                 className="relative p-2.5 hover:bg-cream-200/60 rounded-full transition-colors active:scale-95"
                                 aria-label="Open Cart"
                             >
-                                <ShoppingCart className="w-6 h-6 text-sage-700"/>
+                                <ShoppingCart className="w-6 h-6 text-sage-700" />
                                 {cartCount > 0 && (
                                     <span className="absolute -top-0.5 -right-0.5 bg-sage-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center border-2 border-cream-50">
                                         {cartCount}
@@ -214,11 +225,10 @@ const Navbar = ({ onCartClick }) => {
             </nav>
 
             {/* MOBILE MENU DROPDOWN - Sticky, simplified */}
-            <div className={`md:hidden fixed left-0 right-0 top-[76px] z-40 transition-all duration-200 ease-out ${
-                mobileOpen
+            <div className={`md:hidden fixed left-0 right-0 top-[76px] z-40 transition-all duration-200 ease-out ${mobileOpen
                     ? "opacity-100 translate-y-0 pointer-events-auto"
                     : "opacity-0 -translate-y-2 pointer-events-none"
-            }`}>
+                }`}>
                 <div className="mx-3 mt-2 bg-white rounded-xl shadow-lg border border-cream-200 overflow-hidden">
                     {/* Category Links - Simple list */}
                     <div className="py-1">
@@ -229,11 +239,10 @@ const Navbar = ({ onCartClick }) => {
                                     key={i}
                                     to={`/products${cat.key ? `?category=${cat.key}` : ""}`}
                                     onClick={closeMobile}
-                                    className={`block px-4 py-2.5 text-sm font-medium transition-colors active:bg-cream-100 ${
-                                        isActive
+                                    className={`block px-4 py-2.5 text-sm font-medium transition-colors active:bg-cream-100 ${isActive
                                             ? "text-sage-600 bg-sage-50"
                                             : "text-sage-800"
-                                    }`}
+                                        }`}
                                 >
                                     {cat.label}
                                 </Link>
@@ -273,7 +282,7 @@ const Navbar = ({ onCartClick }) => {
                                 <p className="font-medium text-sage-800">{user.firstName} {user.lastName}</p>
                                 <p className="text-sm text-sage-500">{user.email}</p>
                             </div>
-                            
+
                             <div className="border-t border-cream-200" />
                             {/* My Orders / Admin Panel */}
                             {isAdmin ? (
@@ -295,12 +304,11 @@ const Navbar = ({ onCartClick }) => {
                                     My Orders
                                 </Link>
                             )}
-                            
+
                             {/* Sign Out */}
                             <button
                                 onClick={() => {
-                                    closeMobile();
-                                    logout();
+                                    handleLogoutClick();
                                 }}
                                 className="w-full px-4 py-2.5 text-left text-sm font-medium text-terracotta-600 active:bg-terracotta-50 transition-colors flex items-center gap-2"
                             >
@@ -320,6 +328,14 @@ const Navbar = ({ onCartClick }) => {
                     onClick={closeMobile}
                 />
             )}
+
+            <ConfirmationModal
+                isOpen={isLogoutModalOpen}
+                onClose={() => setIsLogoutModalOpen(false)}
+                onConfirm={handleLogoutConfirm}
+                title="Sign Out"
+                message="Are you sure you want to sign out of your account?"
+            />
         </>
     );
 };

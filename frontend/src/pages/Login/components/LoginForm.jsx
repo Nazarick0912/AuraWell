@@ -41,7 +41,7 @@ export default function LoginForm({onSubmit, isLoading, error}) {
                 <div className="relative">
                     <input
                         id="password"
-                        type="password"
+                        type={showPassword ? "text" : "password"}
                         className={inputClasses}
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
