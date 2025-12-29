@@ -27,7 +27,12 @@ export default function ProductDetail() {
             try {
                 const data = await productsAPI.getById(id);
                 if (data) {
-                    setProduct(data);
+                    // Transform backend data to match frontend expected format
+                    const transformedProduct = {
+                        ...data,
+                        image: data.imageUrl || data.image,
+                    };
+                    setProduct(transformedProduct);
                 } else {
                     setError('Product not found');
                 }
@@ -103,7 +108,15 @@ export default function ProductDetail() {
                     {/* LEFT COLUMN: Image */}
                     <div className="bg-white p-2 rounded-3xl shadow-sm border border-stone-100">
                         <div className="aspect-square rounded-2xl overflow-hidden bg-stone-50">
-                            <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
+                            <img 
+                                src={product.image} 
+                                alt={product.name} 
+                                className="w-full h-full object-cover"
+                                onError={(e) => {
+                                    e.target.src = '/productCard/placeholder.jpg';
+                                    e.target.onerror = null;
+                                }}
+                            />
                         </div>
                     </div>
 
