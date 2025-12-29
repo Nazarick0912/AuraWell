@@ -16,14 +16,15 @@ public class CorsFilter implements Filter {
         HttpServletResponse httpResponse = (HttpServletResponse) response;
         HttpServletRequest httpRequest = (HttpServletRequest) request;
 
-        // Allow React to talk to Java
-        httpResponse.setHeader("Access-Control-Allow-Origin", "http://localhost:5173"); 
+        // SECURE: Only allow your official Vercel deployment to access the API
+        httpResponse.setHeader("Access-Control-Allow-Origin", "https://aura-well-three.vercel.app"); 
+        
         httpResponse.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
         httpResponse.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
         httpResponse.setHeader("Access-Control-Allow-Credentials", "true");
-        httpResponse.setHeader("Access-Control-Max-Age", "3600"); // Cache preflight for 1 hour
+        httpResponse.setHeader("Access-Control-Max-Age", "3600");
 
-        // If it's just a pre-check (OPTIONS), say OK and stop
+        // Handle the preflight OPTIONS request
         if ("OPTIONS".equalsIgnoreCase(httpRequest.getMethod())) {
             httpResponse.setStatus(HttpServletResponse.SC_OK);
             return;
