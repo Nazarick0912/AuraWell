@@ -133,7 +133,9 @@ export default function ProductDetail() {
                         <div className="grid grid-cols-2 gap-4 mb-8">
                             <div className="bg-[#FAF9F6] p-4 rounded-xl border border-stone-100">
                                 <span className="block text-xs text-sage-400 font-bold uppercase mb-1">Suitable For</span>
-                                <span className="font-medium text-sage-900">{product.ageGroup}</span>
+                                <span className="font-medium text-sage-900">
+                                    {product.ageGroup === 'All' ? 'All Ages' : product.ageGroup}
+                                </span>
                             </div>
                             <div className="bg-[#FAF9F6] p-4 rounded-xl border border-stone-100">
                                 <span className="block text-xs text-sage-400 font-bold uppercase mb-1">Stock Availability</span>

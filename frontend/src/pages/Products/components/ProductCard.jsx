@@ -60,7 +60,9 @@ export default function ProductCard({ product }) {
                 />
             </div>
 
-            <p className="mt-2 text-xs text-sage-500 capitalize">{product.ageGroup}</p>
+            <p className="mt-2 text-xs text-sage-500 capitalize">
+                {product.ageGroup === 'All' ? 'All Ages' : product.ageGroup}
+            </p>
 
             <h3 className="mt-1 font-medium text-sage-800">
                 {product.name}

@@ -74,8 +74,10 @@ export default function Products() {
 
     // Filter products by age group (category filtering is done by backend)
     const filteredProducts = products.filter(product => {
-        // age filter
-        if (age && product.ageGroup?.toLowerCase() !== age.toLowerCase()) return false;
+        // age filter - if age is empty/null, show all; otherwise match exactly
+        if (age && age !== "") {
+            if (product.ageGroup !== age) return false;
+        }
 
         // search filter
         if (searchQuery) {
