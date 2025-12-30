@@ -21,12 +21,13 @@ public class AdminProductServlet extends HttpServlet {
     private final DataManager dataManager = DataManager.getInstance();
     private final Gson gson = new Gson();
 
-    // Valid categories and age groups for validation
+    // Valid categories: Vitamins, Supplements, Aromatherapy (capitalized)
     private static final Set<String> VALID_CATEGORIES = new HashSet<>(Arrays.asList(
-            "vitamins", "supplements", "aromatherapy"
+            "Vitamins", "Supplements", "Aromatherapy"
     ));
+    // Valid age groups: All, Infant, Child, Teen, Adult, Senior (capitalized)
     private static final Set<String> VALID_AGE_GROUPS = new HashSet<>(Arrays.asList(
-            "toddler", "child", "teen", "adult", "elderly", "all"
+            "All", "Infant", "Child", "Teen", "Adult", "Senior"
     ));
 
     @Override
@@ -60,8 +61,8 @@ public class AdminProductServlet extends HttpServlet {
                     productData.getDescription(),
                     productData.getPrice(),
                     productData.getStock(),
-                    productData.getCategory().toLowerCase(),
-                    productData.getAgeGroup().toLowerCase(),
+                    productData.getCategory(),
+                    productData.getAgeGroup(),
                     productData.getImageUrl()
             );
 
@@ -115,11 +116,6 @@ public class AdminProductServlet extends HttpServlet {
                 resp.getWriter().write(errorJson(validationError));
                 return;
             }
-
-            // Normalize category and ageGroup
-            productData.setCategory(productData.getCategory().toLowerCase());
-            productData.setAgeGroup(productData.getAgeGroup().toLowerCase());
-
             // Update product (DataManager preserves ID and createdAt)
             Optional<Product> updatedProduct = dataManager.updateProduct(productId, productData);
 
@@ -218,11 +214,11 @@ public class AdminProductServlet extends HttpServlet {
         if (product.getStock() < 0) {
             return "Stock cannot be negative";
         }
-        if (product.getCategory() == null || !VALID_CATEGORIES.contains(product.getCategory().toLowerCase())) {
-            return "Invalid category. Valid categories: vitamins, supplements, aromatherapy";
+        if (product.getCategory() == null || !VALID_CATEGORIES.contains(product.getCategory())) {
+            return "Invalid category. Valid categories: Vitamins, Supplements, Aromatherapy";
         }
-        if (product.getAgeGroup() == null || !VALID_AGE_GROUPS.contains(product.getAgeGroup().toLowerCase())) {
-            return "Invalid age group. Valid age groups: toddler, child, teen, adult, elderly, all";
+        if (product.getAgeGroup() == null || !VALID_AGE_GROUPS.contains(product.getAgeGroup())) {
+            return "Invalid age group. Valid age groups: All, Infant, Child, Teen, Adult, Senior";
         }
         return null; // No errors
     }

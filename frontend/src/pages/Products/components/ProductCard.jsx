@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useCart } from "../../../contexts/CartContext";
 import { useAuth } from "../../../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { AGE_GROUPS } from "../../../constants/ageGroups";
 
 export default function ProductCard({ product }) {
     const { addToCart } = useCart();
@@ -61,7 +62,7 @@ export default function ProductCard({ product }) {
             </div>
 
             <p className="mt-2 text-xs text-sage-500 capitalize">
-                {product.ageGroup === 'All' ? 'All Ages' : product.ageGroup}
+                {AGE_GROUPS.find(g => g.value === product.ageGroup)?.label || product.ageGroup}
             </p>
 
             <h3 className="mt-1 font-medium text-sage-800">

@@ -4,6 +4,7 @@ import { ArrowLeft, Minus, Plus, ShoppingCart, CheckCircle, Check } from 'lucide
 import { useCart } from '../../contexts/CartContext';
 import { useAuth } from '../../contexts/AuthContext';
 import { productsAPI } from '../../services/api';
+import { AGE_GROUPS } from '../../constants/ageGroups';
 
 export default function ProductDetail() {
     const { id } = useParams();
@@ -134,7 +135,7 @@ export default function ProductDetail() {
                             <div className="bg-[#FAF9F6] p-4 rounded-xl border border-stone-100">
                                 <span className="block text-xs text-sage-400 font-bold uppercase mb-1">Suitable For</span>
                                 <span className="font-medium text-sage-900">
-                                    {product.ageGroup === 'All' ? 'All Ages' : product.ageGroup}
+                                    {AGE_GROUPS.find(g => g.value === product.ageGroup)?.label || product.ageGroup}
                                 </span>
                             </div>
                             <div className="bg-[#FAF9F6] p-4 rounded-xl border border-stone-100">
