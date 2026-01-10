@@ -1,20 +1,29 @@
-import {useState} from "react";
-import {Link} from "react-router-dom";
-import {Eye, EyeOff, Loader2} from "lucide-react";
+import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { Eye, EyeOff, Loader2 } from "lucide-react";
 
-export default function SignupForm({onSubmit, isLoading, error}) {
-    const [formData, setFormData] = useState({
-        firstName: '',
-        lastName: '',
-        email: '',
-        password: '',
-        confirmPassword: '',
-        agree: false
+export default function SignupForm({ onSubmit, isLoading, error }) {
+    const [formData, setFormData] = useState(() => {
+        // Initialize from sessionStorage if available
+        const savedData = sessionStorage.getItem('signupFormData');
+        return savedData ? JSON.parse(savedData) : {
+            firstName: '',
+            lastName: '',
+            email: '',
+            password: '',
+            confirmPassword: '',
+            agree: false
+        };
     });
+
+    // Save to sessionStorage whenever formData changes
+    useEffect(() => {
+        sessionStorage.setItem('signupFormData', JSON.stringify(formData));
+    }, [formData]);
     const [showPassword, setShowPassword] = useState(false);
 
     const handleChange = (e) => {
-        const {name, type, checked, value} = e.target;
+        const { name, type, checked, value } = e.target;
         setFormData(prev => ({
             ...prev,
             [name]: type === 'checkbox' ? checked : value
@@ -107,7 +116,7 @@ export default function SignupForm({onSubmit, isLoading, error}) {
                         onClick={() => setShowPassword(!showPassword)}
                         className="absolute right-3 top-1/2 -translate-y-1/2 text-sage-400 hover:text-sage-600 p-1 min-h-[44px] min-w-[44px] flex items-center justify-center -mr-1"
                     >
-                        {showPassword ? <EyeOff className="w-5 h-5"/> : <Eye className="w-5 h-5"/>}
+                        {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                     </button>
                 </div>
             </div>
@@ -134,7 +143,7 @@ export default function SignupForm({onSubmit, isLoading, error}) {
                         onClick={() => setShowPassword(!showPassword)}
                         className="absolute right-3 top-1/2 -translate-y-1/2 text-sage-400 hover:text-sage-600 p-1"
                     >
-                        {showPassword ? <EyeOff className="w-5 h-5"/> : <Eye className="w-5 h-5"/>}
+                        {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                     </button>
                 </div>
             </div>
@@ -177,7 +186,7 @@ export default function SignupForm({onSubmit, isLoading, error}) {
             >
                 {isLoading ? (
                     <>
-                        <Loader2 className="w-5 h-5 animate-spin"/>
+                        <Loader2 className="w-5 h-5 animate-spin" />
                         Creating account...
                     </>
                 ) : (
