@@ -1,11 +1,12 @@
-import {useEffect, useState} from 'react';
-import {useSearchParams} from 'react-router-dom';
-import {Loader2} from 'lucide-react';
-import {AnimatePresence, motion} from "framer-motion";
-import {productsAPI} from '../../services/api';
+import { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { Loader2 } from 'lucide-react';
+import { AnimatePresence, motion } from "framer-motion";
+import { productsAPI } from '../../services/api';
 import ProductCard from './components/ProductCard';
-import CategoryFilter from './components/CategoryFilter';
 import AgeGroupFilter from './components/AgeGroupFilter';
+import PriceFilter from './components/PriceFilter';
+import SortFilter from './components/SortFilter';
 import Search from '../../components/ui/Search';
 
 export default function Products() {
@@ -13,10 +14,14 @@ export default function Products() {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
     const [isAgeFilterOpen, setIsAgeFilterOpen] = useState(false);
+    const [isPriceFilterOpen, setIsPriceFilterOpen] = useState(false);
+    const [isSortFilterOpen, setIsSortFilterOpen] = useState(false);
     const [searchParams, setSearchParams] = useSearchParams();
 
     const category = searchParams.get('category');
     const age = searchParams.get('age');
+    const price = searchParams.get('price');
+    const sort = searchParams.get('sort');
     const searchQuery = searchParams.get('search') || "";
 
     // Fetch products from backend
@@ -52,14 +57,7 @@ export default function Products() {
         fetchProducts();
     }, [category]);
 
-    const handleCategoryChange = (value) => {
-        const next = new URLSearchParams(searchParams);
 
-        if (!value) next.delete("category");
-        else next.set("category", value);
-
-        setSearchParams(next);
-    };
 
     const handleAgeChange = (value) => {
         const next = new URLSearchParams(searchParams);
@@ -72,19 +70,52 @@ export default function Products() {
         setIsAgeFilterOpen(false);
     };
 
-    // Filter products by age group (category filtering is done by backend)
+    const handlePriceChange = (value) => {
+        const next = new URLSearchParams(searchParams);
+        if (!value) {
+            next.delete("price");
+        } else {
+            next.set("price", value);
+        }
+        setSearchParams(next);
+        setIsPriceFilterOpen(false);
+    };
+
+    const handleSortChange = (value) => {
+        const next = new URLSearchParams(searchParams);
+        if (!value) {
+            next.delete("sort");
+        } else {
+            next.set("sort", value);
+        }
+        setSearchParams(next);
+        setIsSortFilterOpen(false);
+    };
+
+    // Filter products
     const filteredProducts = products.filter(product => {
         // age filter
         if (age && product.ageGroup?.toLowerCase() !== age.toLowerCase()) return false;
 
-        // search filter
+        // price filter
+        if (price) {
+            const p = product.price;
+            if (price === "under-20" && p >= 20) return false;
+            if (price === "20-50" && (p < 20 || p > 50)) return false;
+            if (price === "50-100" && (p < 50 || p > 100)) return false;
+            if (price === "100-plus" && p < 100) return false;
+        }
+
+        // search filter - NAME ONLY
         if (searchQuery) {
             const q = searchQuery.toLowerCase().trim();
-            const matchName = product.name?.toLowerCase().includes(q);
-            const matchDesc = product.description?.toLowerCase().includes(q);
-            return matchName || matchDesc;
+            return product.name?.toLowerCase().includes(q);
         }
         return true;
+    }).sort((a, b) => {
+        if (sort === "name-asc") return a.name.localeCompare(b.name);
+        if (sort === "name-desc") return b.name.localeCompare(a.name);
+        return 0;
     });
 
     const hasResults = filteredProducts.length > 0;
@@ -116,9 +147,11 @@ export default function Products() {
 
             {/* Filters */}
             <div className="flex flex-wrap gap-2 mb-6">
-                <CategoryFilter
-                    category={category}
-                    onCategoryChange={handleCategoryChange}
+                <PriceFilter
+                    price={price}
+                    isOpen={isPriceFilterOpen}
+                    onToggle={() => setIsPriceFilterOpen(prev => !prev)}
+                    onPriceChange={handlePriceChange}
                 />
                 <AgeGroupFilter
                     age={age}
@@ -126,12 +159,18 @@ export default function Products() {
                     onToggle={() => setIsAgeFilterOpen(prev => !prev)}
                     onAgeChange={handleAgeChange}
                 />
+                <SortFilter
+                    sort={sort}
+                    isOpen={isSortFilterOpen}
+                    onToggle={() => setIsSortFilterOpen(prev => !prev)}
+                    onSortChange={handleSortChange}
+                />
             </div>
 
             {/* Loading State */}
             {isLoading && (
                 <div className="flex flex-col items-center justify-center py-20">
-                    <Loader2 className="w-8 h-8 text-sage-600 animate-spin mb-4"/>
+                    <Loader2 className="w-8 h-8 text-sage-600 animate-spin mb-4" />
                     <p className="text-sage-500">Loading products...</p>
                 </div>
             )}
@@ -159,7 +198,7 @@ export default function Products() {
                 >
                     <AnimatePresence>
                         {filteredProducts.map((product) => (
-                            <ProductCard key={product.id} product={product}/>
+                            <ProductCard key={product.id} product={product} />
                         ))}
                     </AnimatePresence>
                 </motion.div>
