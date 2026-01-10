@@ -124,6 +124,16 @@ export default function DetailsForm({
                                 <option>Penang</option>
                                 <option>Johor</option>
                                 <option>Perak</option>
+                                <option>Perlis</option>
+                                <option>Pulau Pinang</option>
+                                <option>Terengganu</option>
+                                <option>Melaka</option>
+                                <option>Kedah</option>
+                                <option>Kelantan</option>
+                                <option>Negeri Sembilan</option>
+                                <option>Pahang</option>
+                                <option>Sabah</option>
+                                <option>Sarawak</option>
                             </select>
                             <ChevronDown size={16} className="absolute right-4 top-1/2 -translate-y-1/2 text-sage-400 pointer-events-none" />
                         </div>
