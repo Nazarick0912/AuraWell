@@ -1,5 +1,6 @@
 package com.aurawell.api.auth;
 
+import com.aurawell.api.SessionCookieHelper;
 import com.aurawell.models.User;
 import com.aurawell.services.DataManager;
 import com.google.gson.Gson;
@@ -49,6 +50,9 @@ public class LoginServlet extends HttpServlet {
                 HttpSession session = req.getSession(true);
                 session.setAttribute("userId", user.getId());
                 session.setAttribute("userRole", user.getRole());
+                
+                // Set session cookie with SameSite=None; Secure for cross-origin support
+                SessionCookieHelper.setSessionCookie(session, resp);
 
                 // Return User Data (Hide password first!)
                 user.setPassword(null); 
