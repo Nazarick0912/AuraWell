@@ -188,13 +188,32 @@ export default function OrderTable({ orders, loading, onStatusChange }) {
                                                 </div>
                                                 <div>
                                                     <span className="text-sage-500">Total: </span>
-                                                    <span className="text-sage-800 font-bold">RM {order.total.toFixed(2)}</span>
+                                                    <span className="text-sage-800 font-medium">RM {order.total.toFixed(2)}</span>
                                                 </div>
                                                 {order.shippingAddress && (
-                                                    <div>
-                                                        <span className="text-sage-500">Shipping: </span>
-                                                        <span className="text-sage-800 font-medium">{order.shippingAddress}</span>
-                                                    </div>
+                                                    <>
+                                                        <div>
+                                                            <span className="text-sage-500">Address: </span>
+                                                            <span className="text-sage-800 font-medium">
+                                                                {(() => {
+                                                                    let addr = order.shippingAddress.includes('. Phone:')
+                                                                        ? order.shippingAddress.split('. Phone:')[0]
+                                                                        : order.shippingAddress;
+                                                                    // Remove the name (first part before comma)
+                                                                    const parts = addr.split(', ');
+                                                                    return parts.length > 1 ? parts.slice(1).join(', ') : addr;
+                                                                })()}
+                                                            </span>
+                                                        </div>
+                                                        {order.shippingAddress.includes('. Phone:') && (
+                                                            <div>
+                                                                <span className="text-sage-500">Phone: </span>
+                                                                <span className="text-sage-800 font-medium">
+                                                                    {order.shippingAddress.split('. Phone:')[1]?.trim()}
+                                                                </span>
+                                                            </div>
+                                                        )}
+                                                    </>
                                                 )}
                                             </div>
                                         </div>
@@ -251,9 +270,28 @@ export default function OrderTable({ orders, loading, onStatusChange }) {
                                 </div>
 
                                 {order.shippingAddress && (
-                                    <div className="text-sm mb-4">
-                                        <span className="text-sage-500">Shipping: </span>
-                                        <span className="text-sage-800 font-medium">{order.shippingAddress}</span>
+                                    <div className="space-y-2 mb-4">
+                                        <div className="text-sm">
+                                            <span className="text-sage-500">Address: </span>
+                                            <span className="text-sage-800 font-medium">
+                                                {(() => {
+                                                    let addr = order.shippingAddress.includes('. Phone:')
+                                                        ? order.shippingAddress.split('. Phone:')[0]
+                                                        : order.shippingAddress;
+                                                    // Remove the name (first part before comma)
+                                                    const parts = addr.split(', ');
+                                                    return parts.length > 1 ? parts.slice(1).join(', ') : addr;
+                                                })()}
+                                            </span>
+                                        </div>
+                                        {order.shippingAddress.includes('. Phone:') && (
+                                            <div className="text-sm">
+                                                <span className="text-sage-500">Phone: </span>
+                                                <span className="text-sage-800 font-medium">
+                                                    {order.shippingAddress.split('. Phone:')[1]?.trim()}
+                                                </span>
+                                            </div>
+                                        )}
                                     </div>
                                 )}
                             </div>
