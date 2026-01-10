@@ -1,7 +1,7 @@
-import React, {useState} from "react";
-import {Link, useNavigate} from "react-router-dom";
-import {ArrowRight, Leaf, SunMedium} from "lucide-react";
-import {motion} from "framer-motion";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { ArrowRight, Leaf, SunMedium } from "lucide-react";
+import { motion } from "framer-motion";
 import Search from "../../../components/ui/Search";
 import heroImage from "../../../assets/hero-healthcare.png";
 
@@ -27,27 +27,27 @@ export default function HeroSection() {
     };
 
     const item = {
-        hidden: {opacity: 0, y: 16},
+        hidden: { opacity: 0, y: 16 },
         show: {
             opacity: 1,
             y: 0,
-            transition: {duration: 0.2, ease: "easeOut"},
+            transition: { duration: 0.2, ease: "easeOut" },
         },
     };
 
     // SAME FLOATING MOTION AS YOUR LEAF
     const float = {
         y: [0, -10, 0],
-        transition: {duration: 3, repeat: Infinity, ease: "easeInOut"},
+        transition: { duration: 3, repeat: Infinity, ease: "easeInOut" },
     };
 
     return (
         <section className="relative flex items-center overflow-hidden min-h-[95vh]">
             {/* Background */}
-            <div className="absolute inset-0 bg-gradient-to-br from-sage-100 via-cream-100 to-cream-200"/>
+            <div className="absolute inset-0 bg-gradient-to-br from-sage-100 via-cream-100 to-cream-200" />
             <div className="absolute inset-0 opacity-30">
-                <div className="absolute top-20 left-10 w-72 h-72 bg-sage-300 rounded-full blur-3xl"/>
-                <div className="absolute bottom-20 right-10 w-96 h-96 bg-terracotta-200 rounded-full blur-3xl"/>
+                <div className="absolute top-20 left-10 w-72 h-72 bg-sage-300 rounded-full blur-3xl" />
+                <div className="absolute bottom-20 right-10 w-96 h-96 bg-terracotta-200 rounded-full blur-3xl" />
             </div>
 
             <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
@@ -76,7 +76,7 @@ export default function HeroSection() {
                                     animate={float}
                                     className="absolute top-5 right-5 bg-white p-3 rounded-xl shadow-lg"
                                 >
-                                    <Leaf className="w-5 h-5 text-sage-600"/>
+                                    <Leaf className="w-5 h-5 text-sage-600" />
                                 </motion.div>
 
                                 {/* Image */}
@@ -99,7 +99,7 @@ export default function HeroSection() {
                             animate={float}
                             className="inline-flex items-center gap-2 px-4 py-2 bg-sage-100 text-sage-700 rounded-full text-sm font-medium mb-4"
                         >
-                            <SunMedium className="w-4 h-4"/>
+                            <SunMedium className="w-4 h-4" />
                             Wellness for Every Generation
                         </motion.span>
 
@@ -120,11 +120,11 @@ export default function HeroSection() {
                         </motion.p>
 
                         <motion.div variants={item} className="flex flex-wrap gap-4">
-                            <Search value={query} onChange={setQuery} onSearch={handleSearch}/>
+                            <Search value={query} onChange={setQuery} onSearch={handleSearch} />
 
                             <Link to="/products" className="btn-primary flex items-center gap-2 text-lg">
                                 Shop now
-                                <ArrowRight className="w-5 h-5"/>
+                                <ArrowRight className="w-5 h-5" />
                             </Link>
                         </motion.div>
                     </div>

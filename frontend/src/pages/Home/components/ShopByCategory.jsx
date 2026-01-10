@@ -29,8 +29,11 @@ const categories = [
 
 export default function ShopByCategory() {
   return (
-    <section className="py-16 px-4 bg-sage-100">
-      <div className="max-w-6xl mx-auto">
+    <section className="relative py-16 px-4 overflow-hidden">
+      {/* Background - same as Hero */}
+      <div className="absolute inset-0 bg-gradient-to-br from-sage-100 via-cream-100 to-cream-200" />
+
+      <div className="relative max-w-6xl mx-auto">
         {/* Section Title */}
         <h2 className="font-display text-3xl md:text-4xl font-semibold text-sage-800 text-center mb-12">
           Shop By Category
@@ -44,7 +47,7 @@ export default function ShopByCategory() {
               to={category.link}
               className="group block"
             >
-              <div className="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+              <div className="bg-white rounded-2xl overflow-hidden shadow-md">
                 {/* Image Container */}
                 <div className="aspect-[4/5] overflow-hidden">
                   <img
