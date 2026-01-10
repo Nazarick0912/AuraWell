@@ -26,7 +26,7 @@ public class ProductsServlet extends HttpServlet {
     
     // Allowlist of valid categories
     private static final Set<String> VALID_CATEGORIES = new HashSet<>(Arrays.asList(
-        "vitamins", "supplements", "aromatherapy"
+        "Vitamins", "Supplements", "Aromatherapy"
     ));
 
     @Override
@@ -54,18 +54,18 @@ public class ProductsServlet extends HttpServlet {
         List<Product> products;
 
         if (category != null && !category.trim().isEmpty()) {
-            String normalizedCategory = category.trim().toLowerCase();
+            String trimmedCategory = category.trim();
             
             // Validate category against allowlist
-            if (!VALID_CATEGORIES.contains(normalizedCategory)) {
+            if (!VALID_CATEGORIES.contains(trimmedCategory)) {
                 System.out.println("[ProductsServlet] Invalid category requested: " + category);
                 resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                out.print(gson.toJson(new ErrorResponse("Invalid category. Valid categories: vitamins, supplements, aromatherapy")));
+                out.print(gson.toJson(new ErrorResponse("Invalid category. Valid categories: Vitamins, Supplements, Aromatherapy")));
                 return;
             }
             
-            products = DataManager.getInstance().getProductsByCategory(normalizedCategory);
-            System.out.println("[ProductsServlet] GET /api/products?category=" + normalizedCategory + " → " + products.size() + " products");
+            products = DataManager.getInstance().getProductsByCategory(trimmedCategory);
+            System.out.println("[ProductsServlet] GET /api/products?category=" + trimmedCategory + " → " + products.size() + " products");
         } else {
             products = DataManager.getInstance().getAllProducts();
             System.out.println("[ProductsServlet] GET /api/products → " + products.size() + " products");

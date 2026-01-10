@@ -7,6 +7,8 @@ import {
     revokeLocalPreview,
     isCloudinaryConfigured 
 } from '../../../services/imageService';
+import { AGE_GROUPS } from '../../../constants/ageGroups';
+import { CATEGORIES } from '../../../constants/categories';
 
 export default function ProductFormModal({ 
     isOpen, 
@@ -143,8 +145,13 @@ export default function ProductFormModal({
             finalImageUrl = result.url;
         }
 
-        // Call the original onSubmit with updated image URL
-        const updatedFormData = { ...formData, image: finalImageUrl };
+        // Prepare form data with all fields, preserving ID for edits
+        const updatedFormData = { 
+            ...formData, 
+            image: finalImageUrl,
+            // Ensure ID is preserved when editing
+            id: formData.id || null
+        };
         
         // Create a synthetic event with the updated data
         const syntheticEvent = {
@@ -250,33 +257,34 @@ export default function ProductFormModal({
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                         <div>
                             <label className={labelClasses}>Category</label>
-                            <select 
-                                name="category" 
-                                value={formData.category} 
-                                onChange={onInputChange} 
+                            <select
+                                name="category"
+                                value={formData.category}
+                                onChange={onInputChange}
                                 disabled={isUploading}
                                 className={`${inputClasses} cursor-pointer`}
                             >
-                                <option value="Vitamins">Vitamins</option>
-                                <option value="Supplements">Supplements</option>
-                                <option value="Aromatherapy">Aromatherapy</option>
+                                {CATEGORIES.map((category) => (
+                                    <option key={category.value} value={category.value}>
+                                        {category.label}
+                                    </option>
+                                ))}
                             </select>
                         </div>
                         <div>
                             <label className={labelClasses}>Age Group</label>
                             <select
                                 name="ageGroup"
-                                value={formData.ageGroup}
+                                value={formData.ageGroup || "All"}
                                 onChange={onInputChange}
                                 disabled={isUploading}
                                 className={`${inputClasses} cursor-pointer`}
                             >
-                                <option value={null}>All Ages</option>
-                                <option value="infant">Infants (0-2)</option>
-                                <option value="child">Children (3-12)</option>
-                                <option value="teen">Teens (13-19)</option>
-                                <option value="adult">Adults (20-64)</option>
-                                <option value="senior">Seniors (65+)</option>
+                                {AGE_GROUPS.map((group) => (
+                                    <option key={group.value} value={group.value}>
+                                        {group.label}
+                                    </option>
+                                ))}
                             </select>
                         </div>
                     </div>

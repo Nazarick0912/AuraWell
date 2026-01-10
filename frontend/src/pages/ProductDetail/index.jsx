@@ -4,6 +4,7 @@ import { ArrowLeft, Minus, Plus, ShoppingCart, CheckCircle, Check } from 'lucide
 import { useCart } from '../../contexts/CartContext';
 import { useAuth } from '../../contexts/AuthContext';
 import { productsAPI } from '../../services/api';
+import { AGE_GROUPS } from '../../constants/ageGroups';
 
 export default function ProductDetail() {
     const { id } = useParams();
@@ -27,7 +28,12 @@ export default function ProductDetail() {
             try {
                 const data = await productsAPI.getById(id);
                 if (data) {
-                    setProduct(data);
+                    // Transform backend data to match frontend expected format
+                    const transformedProduct = {
+                        ...data,
+                        image: data.imageUrl || data.image,
+                    };
+                    setProduct(transformedProduct);
                 } else {
                     setError('Product not found');
                 }
@@ -103,7 +109,15 @@ export default function ProductDetail() {
                     {/* LEFT COLUMN: Image */}
                     <div className="bg-white p-2 rounded-3xl shadow-sm border border-stone-100">
                         <div className="aspect-square rounded-2xl overflow-hidden bg-stone-50">
-                            <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
+                            <img 
+                                src={product.image} 
+                                alt={product.name} 
+                                className="w-full h-full object-cover"
+                                onError={(e) => {
+                                    e.target.src = '/productCard/placeholder.jpg';
+                                    e.target.onerror = null;
+                                }}
+                            />
                         </div>
                     </div>
 
@@ -120,7 +134,9 @@ export default function ProductDetail() {
                         <div className="grid grid-cols-2 gap-4 mb-8">
                             <div className="bg-[#FAF9F6] p-4 rounded-xl border border-stone-100">
                                 <span className="block text-xs text-sage-400 font-bold uppercase mb-1">Suitable For</span>
-                                <span className="font-medium text-sage-900">{product.ageGroup}</span>
+                                <span className="font-medium text-sage-900">
+                                    {AGE_GROUPS.find(g => g.value === product.ageGroup)?.label || product.ageGroup}
+                                </span>
                             </div>
                             <div className="bg-[#FAF9F6] p-4 rounded-xl border border-stone-100">
                                 <span className="block text-xs text-sage-400 font-bold uppercase mb-1">Stock Availability</span>

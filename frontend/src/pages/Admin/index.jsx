@@ -64,18 +64,26 @@ export default function AdminPanel() {
 
     // Save product handler - receives updated formData with uploaded image URL
     const handleSaveProduct = async (e, updatedFormData) => {
-        e.preventDefault();
+        // Prevent default if it's a real event
+        if (e && typeof e.preventDefault === 'function') {
+            e.preventDefault();
+        }
 
         // Use updatedFormData if provided (contains Cloudinary URL), otherwise fall back to formData
         const dataToSave = updatedFormData || formData;
 
-        if (isEditing) {
+        // Check if we're editing by checking if formData has an ID
+        const isEditMode = isEditing && dataToSave.id;
+
+        if (isEditMode) {
+            // Update existing product
             const result = await updateProduct(dataToSave.id, dataToSave);
             if (!result.success) {
                 showError('Update Failed', result.error || 'Failed to update product. Please try again.');
                 return;
             }
         } else {
+            // Create new product
             const result = await addProduct(dataToSave);
             if (!result.success) {
                 showError('Creation Failed', result.error || 'Failed to create product. Please try again.');

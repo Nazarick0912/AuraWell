@@ -5,7 +5,7 @@
     "description": "Essential vitamin for bone health and immune support. Perfect for daily supplementation.",
     "price": 24.99,
     "stock": 100,
-    "category": "vitamins",
+    "category": "Vitamins",
     "ageGroup": "Adult",
     "imageUrl": "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400",
     "createdAt": 1764866909457
@@ -16,7 +16,7 @@
     "description": "Delicious fruit-flavored gummies packed with essential vitamins for growing children.",
     "price": 19.99,
     "stock": 149,
-    "category": "vitamins",
+    "category": "Vitamins",
     "ageGroup": "Child",
     "imageUrl": "https://images.unsplash.com/photo-1471864190281-a93a3070b6de?w=400",
     "createdAt": 1764866909457
@@ -27,7 +27,7 @@
     "description": "High-quality fish oil supplement for heart and brain health.",
     "price": 29.99,
     "stock": 80,
-    "category": "supplements",
+    "category": "Supplements",
     "ageGroup": "Adult",
     "imageUrl": "https://images.unsplash.com/photo-1577401239170-897942555fb3?w=400",
     "createdAt": 1764866909457
@@ -38,7 +38,7 @@
     "description": "Pure lavender oil for relaxation and better sleep. Perfect for aromatherapy diffusers.",
     "price": 18.99,
     "stock": 60,
-    "category": "aromatherapy",
+    "category": "Aromatherapy",
     "ageGroup": "All",
     "imageUrl": "https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?w=400",
     "createdAt": 1764866909457
@@ -49,7 +49,7 @@
     "description": "Calcium and Vitamin D formula designed for elderly bone health.",
     "price": 34.99,
     "stock": 70,
-    "category": "supplements",
+    "category": "Supplements",
     "ageGroup": "Senior",
     "imageUrl": "https://images.unsplash.com/photo-1550572017-edd951aa8f72?w=400",
     "createdAt": 1764866909457
@@ -60,7 +60,7 @@
     "description": "Gentle vitamin drops formulated for infants and toddlers.",
     "price": 22.99,
     "stock": 90,
-    "category": "vitamins",
+    "category": "Vitamins",
     "ageGroup": "Infant",
     "imageUrl": "https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=400",
     "createdAt": 1764866909457
@@ -71,7 +71,7 @@
     "description": "Refreshing eucalyptus blend for respiratory support and mental clarity.",
     "price": 15.99,
     "stock": 45,
-    "category": "aromatherapy",
+    "category": "Aromatherapy",
     "ageGroup": "All",
     "imageUrl": "https://images.unsplash.com/photo-1600857544200-b2f666a9a2ec?w=400",
     "createdAt": 1764866909457
@@ -82,7 +82,7 @@
     "description": "Plant-based protein powder for muscle recovery and daily nutrition.",
     "price": 44.99,
     "stock": 55,
-    "category": "supplements",
+    "category": "Supplements",
     "ageGroup": "Adult",
     "imageUrl": "https://images.unsplash.com/photo-1593095948071-474c5cc2989d?w=400",
     "createdAt": 1764866909457

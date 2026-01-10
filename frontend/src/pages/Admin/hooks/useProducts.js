@@ -8,12 +8,8 @@ const transformProduct = (product) => ({
     description: product.description || '',
     price: product.price,
     stock: product.stock,
-    category: product.category 
-        ? product.category.charAt(0).toUpperCase() + product.category.slice(1) 
-        : 'Vitamins',
-    ageGroup: product.ageGroup 
-        ? product.ageGroup.charAt(0).toUpperCase() + product.ageGroup.slice(1) 
-        : 'Adult',
+    category: product.category || 'Vitamins',
+    ageGroup: product.ageGroup || 'Adult',
     image: product.imageUrl || 'https://via.placeholder.com/200x200?text=No+Image'
 });
 
@@ -23,8 +19,8 @@ const transformProductForAPI = (formData) => ({
     description: formData.description || '',
     price: parseFloat(formData.price) || 0,
     stock: parseInt(formData.stock) || 0,
-    category: formData.category.toLowerCase(),
-    ageGroup: formData.ageGroup.toLowerCase(),
+    category: formData.category || "Vitamins",
+    ageGroup: formData.ageGroup || "Adult",
     imageUrl: formData.image || "https://via.placeholder.com/200x200?text=No+Image"
 });
 

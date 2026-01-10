@@ -8,8 +8,8 @@ public class Product {
     private String description;
     private double price;
     private int stock;
-    private String category; // "vitamins", "supplements", "aromatherapy"
-    private String ageGroup; // "toddler", "child", "teen", "adult", "elderly", "all"
+    private String category; // "Vitamins", "Supplements", "Aromatherapy"
+    private String ageGroup; // "All", "Infant", "Child", "Teen", "Adult", "Senior"
     private String imageUrl;
     private long createdAt;
 

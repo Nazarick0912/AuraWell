@@ -37,13 +37,13 @@ export default function Footer() {
                     <div className='lg:col-span-2'>
                         <h4 className='font-bold text-white mb-6 uppercase tracking-wider text-xs'>Shop</h4>
                         <ul className='space-y-4 text-sm text-sage-300'>
-                            <li><Link to="/products?category=vitamins" onClick={scrollToTop}
+                            <li><Link to="/products?category=Vitamins" onClick={scrollToTop}
                                       className='hover:text-white transition-all duration-300 hover:translate-x-1 inline-block'>Vitamins</Link>
                             </li>
-                            <li><Link to="/products?category=supplements" onClick={scrollToTop}
+                            <li><Link to="/products?category=Supplements" onClick={scrollToTop}
                                       className='hover:text-white transition-all duration-300 hover:translate-x-1 inline-block'>Supplements</Link>
                             </li>
-                            <li><Link to="/products?category=aromatherapy" onClick={scrollToTop}
+                            <li><Link to="/products?category=Aromatherapy" onClick={scrollToTop}
                                       className='hover:text-white transition-all duration-300 hover:translate-x-1 inline-block'>Aromatherapy</Link>
                             </li>
                         </ul>

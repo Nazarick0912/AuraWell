@@ -1,13 +1,5 @@
 import { SlidersHorizontal, X } from 'lucide-react';
-
-const AGE_GROUPS = [
-    { label: "All Ages", value: null },
-    { label: "Infants (0-2)", value: "infant" },
-    { label: "Children (3-12)", value: "child" },
-    { label: "Teens (13-19)", value: "teen" },
-    { label: "Adults (20-64)", value: "adult" },
-    { label: "Seniors (65+)", value: "senior" },
-];
+import { AGE_GROUPS } from '../../../constants/ageGroups';
 
 export default function AgeGroupFilter({ age, isOpen, onToggle, onAgeChange }) {
     const activeGroup = AGE_GROUPS.find(g => g.value === age);
@@ -59,7 +51,7 @@ export default function AgeGroupFilter({ age, isOpen, onToggle, onAgeChange }) {
                     {/* Dropdown Panel */}
                     <div className="absolute left-0 top-full mt-2 z-50 bg-white rounded-xl border border-cream-200 shadow-lg p-2 min-w-[200px]">
                         {AGE_GROUPS.map((group) => {
-                            const isActive = group.value === null ? age === null : age === group.value;
+                            const isActive = group.value === age;
 
                             return (
                                 <button

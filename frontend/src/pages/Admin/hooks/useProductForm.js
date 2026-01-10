@@ -28,7 +28,17 @@ export function useProductForm() {
     }, []);
 
     const openEditModal = useCallback((product) => {
-        setFormData(product);
+        // Ensure all form fields are properly formatted for the form inputs
+        setFormData({
+            id: product.id,
+            name: product.name || '',
+            description: product.description || '',
+            price: product.price?.toString() || '',
+            stock: product.stock?.toString() || '',
+            category: product.category || 'Vitamins',
+            ageGroup: product.ageGroup || 'Adult',
+            image: product.image || ''
+        });
         setIsEditing(true);
         setIsModalOpen(true);
     }, []);

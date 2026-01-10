@@ -5,6 +5,7 @@ import { ShoppingCart, LogOut, X, Menu, User, Package, Settings } from "lucide-r
 import ConfirmationModal from "./ConfirmationModal";
 import { useAuth } from "../../contexts/AuthContext";
 import { useCart } from "../../contexts/CartContext";
+import { CATEGORIES } from "../../constants/categories";
 
 // Accept the 'onCartClick' prop
 const Navbar = ({ onCartClick }) => {
@@ -70,9 +71,7 @@ const Navbar = ({ onCartClick }) => {
 
     const categories = [
         { key: "", label: "Shop All" },
-        { key: "supplements", label: "Supplements" },
-        { key: "vitamins", label: "Vitamins" },
-        { key: "aromatherapy", label: "Aromatherapy" },
+        ...CATEGORIES.map(cat => ({ key: cat.value, label: cat.label }))
     ];
 
     return (
@@ -157,7 +156,7 @@ const Navbar = ({ onCartClick }) => {
                                             </Link>
                                         ) : (
                                             <Link
-                                                to="/#"
+                                                to="/my-orders"
                                                 onClick={closeUserMenu}
                                                 className="flex items-center gap-3 px-4 py-2.5 text-sm text-sage-700 active:bg-cream-100 transition-colors"
                                             >

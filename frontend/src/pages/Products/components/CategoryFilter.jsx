@@ -1,9 +1,4 @@
-const CATEGORIES = [
-    { label: "All", value: null },
-    { label: "Vitamins", value: "vitamins" },
-    { label: "Supplements", value: "supplements" },
-    { label: "Aromatherapy", value: "aromatherapy" },
-];
+import { CATEGORIES } from '../../../constants/categories';
 
 export default function CategoryFilter({ category, onCategoryChange }) {
     return (
