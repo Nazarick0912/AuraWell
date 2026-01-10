@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Clock, Truck, CheckCircle, XCircle, ChevronDown, Loader2 } from 'lucide-react';
+import { Clock, Truck, CheckCircle, XCircle, ChevronDown, ChevronUp, Loader2 } from 'lucide-react';
 
 const STATUS_OPTIONS = [
     { value: 'Processing', label: 'Processing', icon: <Clock size={14} />, style: 'bg-amber-100 text-amber-700 hover:bg-amber-200' },
@@ -10,6 +10,7 @@ const STATUS_OPTIONS = [
 
 export default function OrderTable({ orders, loading, onStatusChange }) {
     const [openDropdownId, setOpenDropdownId] = useState(null);
+    const [expandedOrderId, setExpandedOrderId] = useState(null);
 
     // Close dropdown on outside click
     useEffect(() => {
@@ -24,6 +25,10 @@ export default function OrderTable({ orders, loading, onStatusChange }) {
 
     const toggleDropdown = (id) => {
         setOpenDropdownId(openDropdownId === id ? null : id);
+    };
+
+    const toggleExpanded = (id) => {
+        setExpandedOrderId(expandedOrderId === id ? null : id);
     };
 
     const handleStatusSelect = (order, newStatus) => {
@@ -96,14 +101,14 @@ export default function OrderTable({ orders, loading, onStatusChange }) {
             <div className="hidden lg:block overflow-visible rounded-xl border border-stone-200 shadow-sm bg-white">
                 {/* Header */}
                 <div className="bg-[#F9F7F2] text-sm font-bold text-sage-700 border-b border-stone-100 rounded-t-xl">
-                    <div 
+                    <div
                         className="grid items-center gap-4 px-4 py-3"
-                        style={{ gridTemplateColumns: '100px 1fr 120px 1.5fr 100px 140px' }}
+                        style={{ gridTemplateColumns: '30px 100px 1fr 120px 100px 140px' }}
                     >
+                        <div></div>
                         <div>Order ID</div>
                         <div>Customer</div>
                         <div>Date</div>
-                        <div>Items</div>
                         <div>Total</div>
                         <div>Status</div>
                     </div>
@@ -112,38 +117,109 @@ export default function OrderTable({ orders, loading, onStatusChange }) {
                 {/* Body */}
                 <div className="divide-y divide-stone-100">
                     {orders.map((order) => (
-                        <div
-                            key={order.id}
-                            className="grid items-start gap-4 px-4 py-3 hover:bg-stone-50 transition-colors relative"
-                            style={{ gridTemplateColumns: '100px 1fr 120px 1.5fr 100px 140px' }}
-                        >
-                            {/* Order ID - shortened with ellipsis */}
-                            <span className="font-bold text-[#3A4D39] text-sm whitespace-nowrap" title={order.id}>
-                                {order.id.length > 8 ? `${order.id.substring(0, 8)}...` : order.id}
-                            </span>
+                        <div key={order.id}>
+                            {/* Order Row */}
+                            <div
+                                className="grid items-center gap-4 px-4 py-3 hover:bg-stone-50 transition-colors relative cursor-pointer"
+                                style={{ gridTemplateColumns: '30px 100px 1fr 120px 100px 140px' }}
+                                onClick={() => toggleExpanded(order.id)}
+                                title="Click to view details"
+                            >
+                                {/* Expand Icon */}
+                                <div className="text-sage-400">
+                                    {expandedOrderId === order.id ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+                                </div>
 
-                            {/* Customer - allows multiple lines */}
-                            <span className="text-sm font-medium text-sage-900 break-words">{order.customer}</span>
+                                {/* Order ID */}
+                                <span className="font-bold text-[#3A4D39] text-sm whitespace-nowrap" title={order.id}>
+                                    {order.id.length > 8 ? `${order.id.substring(0, 8)}...` : order.id}
+                                </span>
 
-                            {/* Date */}
-                            <span className="text-sm text-sage-500 whitespace-nowrap">{order.date}</span>
+                                {/* Customer */}
+                                <span className="text-sm font-medium text-sage-900 break-words">{order.customer}</span>
 
-                            {/* Items - each item on separate line */}
-                            <div className="text-sm text-sage-600">
-                                {order.itemsList && order.itemsList.length > 0 ? (
-                                    order.itemsList.map((item, idx) => (
-                                        <div key={idx}>{item}</div>
-                                    ))
-                                ) : (
-                                    <span>No items</span>
-                                )}
+                                {/* Date */}
+                                <span className="text-sm text-sage-500 whitespace-nowrap">{order.date}</span>
+
+                                {/* Total */}
+                                <span className="text-sm font-bold text-sage-900 whitespace-nowrap">RM {order.total.toFixed(2)}</span>
+
+                                {/* Status */}
+                                <div onClick={(e) => e.stopPropagation()}>
+                                    <StatusDropdown order={order} />
+                                </div>
                             </div>
 
-                            {/* Total */}
-                            <span className="text-sm font-bold text-sage-900 whitespace-nowrap">RM {order.total.toFixed(2)}</span>
+                            {/* Expanded Details */}
+                            {expandedOrderId === order.id && (
+                                <div className="px-4 py-4 bg-stone-50 border-t border-stone-100">
+                                    <div className="grid grid-cols-2 gap-6">
+                                        {/* Order Items */}
+                                        <div>
+                                            <h4 className="text-sm font-bold text-sage-800 mb-2">Order Items</h4>
+                                            <div className="space-y-1">
+                                                {order.itemsList && order.itemsList.length > 0 ? (
+                                                    order.itemsList.map((item, idx) => (
+                                                        <div key={idx} className="text-sm text-sage-600 py-1 border-b border-stone-200 last:border-0">
+                                                            {item}
+                                                        </div>
+                                                    ))
+                                                ) : (
+                                                    <span className="text-sm text-sage-400">No items</span>
+                                                )}
+                                            </div>
+                                        </div>
 
-                            {/* Status */}
-                            <StatusDropdown order={order} />
+                                        {/* Order Info */}
+                                        <div>
+                                            <h4 className="text-sm font-bold text-sage-800 mb-2">Order Information</h4>
+                                            <div className="space-y-2 text-sm">
+                                                <div>
+                                                    <span className="text-sage-500">Order ID: </span>
+                                                    <span className="text-sage-800 font-medium">{order.id}</span>
+                                                </div>
+                                                <div>
+                                                    <span className="text-sage-500">Customer: </span>
+                                                    <span className="text-sage-800 font-medium">{order.customer}</span>
+                                                </div>
+                                                <div>
+                                                    <span className="text-sage-500">Date: </span>
+                                                    <span className="text-sage-800 font-medium">{order.date}</span>
+                                                </div>
+                                                <div>
+                                                    <span className="text-sage-500">Total: </span>
+                                                    <span className="text-sage-800 font-medium">RM {order.total.toFixed(2)}</span>
+                                                </div>
+                                                {order.shippingAddress && (
+                                                    <>
+                                                        <div>
+                                                            <span className="text-sage-500">Address: </span>
+                                                            <span className="text-sage-800 font-medium">
+                                                                {(() => {
+                                                                    let addr = order.shippingAddress.includes('. Phone:')
+                                                                        ? order.shippingAddress.split('. Phone:')[0]
+                                                                        : order.shippingAddress;
+                                                                    // Remove the name (first part before comma)
+                                                                    const parts = addr.split(', ');
+                                                                    return parts.length > 1 ? parts.slice(1).join(', ') : addr;
+                                                                })()}
+                                                            </span>
+                                                        </div>
+                                                        {order.shippingAddress.includes('. Phone:') && (
+                                                            <div>
+                                                                <span className="text-sage-500">Phone: </span>
+                                                                <span className="text-sage-800 font-medium">
+                                                                    {order.shippingAddress.split('. Phone:')[1]?.trim()}
+                                                                </span>
+                                                            </div>
+                                                        )}
+                                                    </>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     ))}
                 </div>
@@ -152,32 +228,79 @@ export default function OrderTable({ orders, loading, onStatusChange }) {
             {/* Mobile Cards */}
             <div className="lg:hidden space-y-3">
                 {orders.map((order) => (
-                    <div key={order.id} className="bg-white rounded-xl border border-stone-200 shadow-sm p-4 relative">
-                        <div className="flex justify-between items-start mb-3">
-                            <div>
-                                <h3 className="font-bold text-[#3A4D39]" title={order.id}>
-                                    {order.id.length > 8 ? `${order.id.substring(0, 8)}...` : order.id}
-                                </h3>
-                                <p className="text-xs text-sage-500">{order.date}</p>
+                    <div key={order.id} className="bg-white rounded-xl border border-stone-200 shadow-sm overflow-hidden">
+                        {/* Clickable Header */}
+                        <div
+                            className="p-4 cursor-pointer"
+                            onClick={() => toggleExpanded(order.id)}
+                            title="Click to view details"
+                        >
+                            <div className="flex justify-between items-start mb-3">
+                                <div className="flex items-center gap-2">
+                                    <div className="text-sage-400">
+                                        {expandedOrderId === order.id ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+                                    </div>
+                                    <div>
+                                        <h3 className="font-bold text-[#3A4D39]" title={order.id}>
+                                            {order.id.length > 8 ? `${order.id.substring(0, 8)}...` : order.id}
+                                        </h3>
+                                        <p className="text-xs text-sage-500">{order.date}</p>
+                                    </div>
+                                </div>
+                                <span className="font-bold text-sage-900">RM {order.total.toFixed(2)}</span>
                             </div>
-                            <span className="font-bold text-sage-900">RM {order.total.toFixed(2)}</span>
+
+                            <p className="text-sm font-medium text-sage-900 mb-2">{order.customer}</p>
                         </div>
 
-                        <div className="mb-4">
-                            <p className="text-sm font-medium text-sage-900 mb-1">{order.customer}</p>
-                            <div className="text-xs text-sage-600">
-                                {order.itemsList && order.itemsList.length > 0 ? (
-                                    order.itemsList.map((item, idx) => (
-                                        <div key={idx}>{item}</div>
-                                    ))
-                                ) : (
-                                    <span>No items</span>
+                        {/* Expanded Details */}
+                        {expandedOrderId === order.id && (
+                            <div className="px-4 py-4 bg-stone-50 border-t border-stone-100">
+                                <h4 className="text-sm font-bold text-sage-800 mb-2">Order Items</h4>
+                                <div className="space-y-1 mb-4">
+                                    {order.itemsList && order.itemsList.length > 0 ? (
+                                        order.itemsList.map((item, idx) => (
+                                            <div key={idx} className="text-sm text-sage-600 py-1 border-b border-stone-200 last:border-0">
+                                                {item}
+                                            </div>
+                                        ))
+                                    ) : (
+                                        <span className="text-sm text-sage-400">No items</span>
+                                    )}
+                                </div>
+
+                                {order.shippingAddress && (
+                                    <div className="space-y-2 mb-4">
+                                        <div className="text-sm">
+                                            <span className="text-sage-500">Address: </span>
+                                            <span className="text-sage-800 font-medium">
+                                                {(() => {
+                                                    let addr = order.shippingAddress.includes('. Phone:')
+                                                        ? order.shippingAddress.split('. Phone:')[0]
+                                                        : order.shippingAddress;
+                                                    // Remove the name (first part before comma)
+                                                    const parts = addr.split(', ');
+                                                    return parts.length > 1 ? parts.slice(1).join(', ') : addr;
+                                                })()}
+                                            </span>
+                                        </div>
+                                        {order.shippingAddress.includes('. Phone:') && (
+                                            <div className="text-sm">
+                                                <span className="text-sage-500">Phone: </span>
+                                                <span className="text-sage-800 font-medium">
+                                                    {order.shippingAddress.split('. Phone:')[1]?.trim()}
+                                                </span>
+                                            </div>
+                                        )}
+                                    </div>
                                 )}
                             </div>
-                        </div>
+                        )}
 
-                        {/* Mobile Status Dropdown */}
-                        <StatusDropdown order={order} />
+                        {/* Mobile Status Dropdown - always visible */}
+                        <div className="px-4 pb-4" onClick={(e) => e.stopPropagation()}>
+                            <StatusDropdown order={order} />
+                        </div>
                     </div>
                 ))}
             </div>
