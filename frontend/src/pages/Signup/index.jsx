@@ -35,6 +35,8 @@ export default function Signup() {
             });
 
             if (data?.success) {
+                // Clear form data from storage on success
+                sessionStorage.removeItem('signupFormData');
                 setShowSuccessDialog(true);
                 // Auto-close dialog and navigate after 3 seconds
                 setTimeout(() => {

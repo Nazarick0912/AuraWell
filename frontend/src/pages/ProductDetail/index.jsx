@@ -10,7 +10,7 @@ export default function ProductDetail() {
     const { id } = useParams();
     const navigate = useNavigate();
     const { addToCart } = useCart();
-    const { user } = useAuth();
+    const { user, isAdmin } = useAuth();
 
     const [product, setProduct] = useState(null);
     const [quantity, setQuantity] = useState(1);
@@ -109,9 +109,9 @@ export default function ProductDetail() {
                     {/* LEFT COLUMN: Image */}
                     <div className="bg-white p-2 rounded-3xl shadow-sm border border-stone-100">
                         <div className="aspect-square rounded-2xl overflow-hidden bg-stone-50">
-                            <img 
-                                src={product.image} 
-                                alt={product.name} 
+                            <img
+                                src={product.image}
+                                alt={product.name}
                                 className="w-full h-full object-cover"
                                 onError={(e) => {
                                     e.target.src = '/productCard/placeholder.jpg';
@@ -154,7 +154,7 @@ export default function ProductDetail() {
                             </div>
                         </div>
 
-                        {product.stock > 0 && (
+                        {product.stock > 0 && !isAdmin && (
                             <div className="space-y-6">
                                 <div>
                                     <label className="block text-sm font-bold text-sage-700 mb-2">Quantity</label>

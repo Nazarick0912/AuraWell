@@ -8,18 +8,18 @@ import { AGE_GROUPS } from "../../../constants/ageGroups";
 
 export default function ProductCard({ product }) {
     const { addToCart } = useCart();
-    const { user } = useAuth();
+    const { user, isAdmin } = useAuth();
     const navigate = useNavigate();
     const [isAdding, setIsAdding] = useState(false);
     const [justAdded, setJustAdded] = useState(false);
 
     const handleCardClick = () => {
-            navigate(`/product/${product.id}`);
-        };
+        navigate(`/product/${product.id}`);
+    };
 
     const handleAddToCart = async (e) => {
         e.stopPropagation();
-        
+
         if (!user) {
             navigate('/login');
             return;
@@ -28,7 +28,7 @@ export default function ProductCard({ product }) {
         setIsAdding(true);
         const success = await addToCart(product.id, 1);
         setIsAdding(false);
-        
+
         if (success) {
             setJustAdded(true);
             setTimeout(() => setJustAdded(false), 2000);
@@ -73,34 +73,36 @@ export default function ProductCard({ product }) {
                 RM {product.price?.toFixed(2)}
             </p>
 
-            <button
-                onClick={handleAddToCart}
-                disabled={isAdding}
-                className={`
-                    mt-4 w-full py-2.5 rounded-lg font-medium text-sm
-                    flex items-center justify-center gap-2
-                    transition-all duration-200 min-h-[44px]
-                    ${justAdded 
-                        ? "bg-emerald-500 text-white" 
-                        : "bg-sage-600 text-white hover:bg-sage-700"
-                    }
-                    ${isAdding ? "opacity-70 cursor-wait" : ""}
-                `}
-            >
-                {justAdded ? (
-                    <>
-                        <Check size={16} />
-                        Added!
-                    </>
-                ) : isAdding ? (
-                    "Adding..."
-                ) : (
-                    <>
-                        <ShoppingCart size={16} />
-                        Add to Cart
-                    </>
-                )}
-            </button>
+            {!isAdmin && (
+                <button
+                    onClick={handleAddToCart}
+                    disabled={isAdding}
+                    className={`
+                        mt-4 w-full py-2.5 rounded-lg font-medium text-sm
+                        flex items-center justify-center gap-2
+                        transition-all duration-200 min-h-[44px]
+                        ${justAdded
+                            ? "bg-emerald-500 text-white"
+                            : "bg-sage-600 text-white hover:bg-sage-700"
+                        }
+                        ${isAdding ? "opacity-70 cursor-wait" : ""}
+                    `}
+                >
+                    {justAdded ? (
+                        <>
+                            <Check size={16} />
+                            Added!
+                        </>
+                    ) : isAdding ? (
+                        "Adding..."
+                    ) : (
+                        <>
+                            <ShoppingCart size={16} />
+                            Add to Cart
+                        </>
+                    )}
+                </button>
+            )}
         </motion.div>
     );
 }
