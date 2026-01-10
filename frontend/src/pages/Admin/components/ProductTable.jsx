@@ -49,7 +49,7 @@ export default function ProductTable({ products, loading, onEdit, onDelete }) {
             <div className="hidden lg:block overflow-visible rounded-xl border border-stone-200 shadow-sm bg-white">
                 {/* Header */}
                 <div className="bg-[#F9F7F2] text-sm font-bold text-sage-700 border-b border-stone-100 rounded-t-xl">
-                    <div 
+                    <div
                         className="grid items-center gap-4 px-4 py-3"
                         style={{ gridTemplateColumns: '1fr 120px 100px 100px 90px' }}
                     >
@@ -66,8 +66,10 @@ export default function ProductTable({ products, loading, onEdit, onDelete }) {
                     {products.map((product) => (
                         <div
                             key={product.id}
-                            className="grid items-center gap-4 px-4 py-3 hover:bg-stone-50 transition-colors relative"
+                            className="grid items-center gap-4 px-4 py-3 hover:bg-stone-50 transition-colors relative cursor-pointer"
                             style={{ gridTemplateColumns: '1fr 120px 100px 100px 90px' }}
+                            onClick={() => onEdit(product)}
+                            title="Click to edit"
                         >
                             {/* Product Name + Image */}
                             <div className="flex items-center gap-3 overflow-hidden">
@@ -93,11 +95,10 @@ export default function ProductTable({ products, loading, onEdit, onDelete }) {
                                 <div className="relative action-menu-container">
                                     <button
                                         onClick={(e) => { e.stopPropagation(); toggleMenu(product.id); }}
-                                        className={`p-2 rounded-lg transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center ${
-                                            openMenuId === product.id
-                                                ? 'bg-stone-100 text-[#3A4D39]'
-                                                : 'text-stone-400 hover:text-[#3A4D39] hover:bg-stone-50'
-                                        }`}
+                                        className={`p-2 rounded-lg transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center ${openMenuId === product.id
+                                            ? 'bg-stone-100 text-[#3A4D39]'
+                                            : 'text-stone-400 hover:text-[#3A4D39] hover:bg-stone-50'
+                                            }`}
                                     >
                                         <MoreHorizontal size={20} />
                                     </button>
@@ -130,7 +131,12 @@ export default function ProductTable({ products, loading, onEdit, onDelete }) {
             {/* Mobile Cards */}
             <div className="lg:hidden space-y-3">
                 {products.map((product) => (
-                    <div key={product.id} className="bg-white rounded-xl border border-stone-200 shadow-sm p-4 relative">
+                    <div
+                        key={product.id}
+                        className="bg-white rounded-xl border border-stone-200 shadow-sm p-4 relative cursor-pointer"
+                        onClick={() => onEdit(product)}
+                        title="Click to edit"
+                    >
                         <div className="flex items-start gap-3">
                             {/* Product Image */}
                             <div className="w-16 h-16 bg-stone-100 rounded-lg overflow-hidden border border-stone-100 shrink-0">
@@ -155,11 +161,10 @@ export default function ProductTable({ products, loading, onEdit, onDelete }) {
                         <div className="absolute top-4 right-4 action-menu-container">
                             <button
                                 onClick={(e) => { e.stopPropagation(); toggleMenu(product.id); }}
-                                className={`p-2 rounded-lg transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center ${
-                                    openMenuId === product.id
-                                        ? 'bg-stone-100 text-[#3A4D39]'
-                                        : 'text-stone-400 hover:text-[#3A4D39] hover:bg-stone-50'
-                                }`}
+                                className={`p-2 rounded-lg transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center ${openMenuId === product.id
+                                    ? 'bg-stone-100 text-[#3A4D39]'
+                                    : 'text-stone-400 hover:text-[#3A4D39] hover:bg-stone-50'
+                                    }`}
                             >
                                 <MoreHorizontal size={20} />
                             </button>
