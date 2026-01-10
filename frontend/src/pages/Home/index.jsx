@@ -12,8 +12,8 @@ export default function Home() {
         <main>
             <HeroSection />
             <ShopByCategory />
-            {!isAuthenticated && <MarketingCTA />}
             <TrustAndTestimonials />
+            {!isAuthenticated && <MarketingCTA />}
         </main>
     );
 }
